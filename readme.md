@@ -1,7 +1,7 @@
 # Личный проект «Типотека» [![Build status][travis-image]][travis-url]
 
 * Студент: [Анна](https://up.htmlacademy.ru/nodejs/3/user/691337).
-* Наставник: `Неизвестно`.
+* Наставник: `Денис Выхрыстюк`.
 
 ---
 
