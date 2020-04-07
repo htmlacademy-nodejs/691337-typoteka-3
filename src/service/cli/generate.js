@@ -2,17 +2,20 @@
 
 const fs = require(`fs`).promises;
 const chalk = require(`chalk`);
+const nanoid = require(`nanoid`);
 const {shuffle, getRandomInt} = require(`../../utils`);
 
 const FILE_PATH_TITLES = `./data/titles.txt`;
 const FILE_PATH_CATEGORIES = `./data/categories.txt`;
 const FILE_PATH_SENTENCES = `./data/sentences.txt`;
+const FILE_PATH_COMMENTS = `./data/comments.txt`;
 
 const DEFAULT_AMOUNT = 1;
 const MAX_AMOUNT = 1000;
 const FILE_NAME = `mocks.json`;
 const MS_IN_MONTH = 30 * 24 * 60 * 60 * 1000;
 const MONTHS_AMOUNT = 3;
+const ID_LENGTH = 6;
 
 
 const DateRange = {
@@ -30,7 +33,8 @@ const readContent = async (filepath) => {
   }
 };
 
-const generateArticles = (amount, titles, categories, sentences) => Array(amount).fill({}).map(() => ({
+const generateArticles = (amount, titles, categories, sentences, comments) => Array(amount).fill({}).map(() => ({
+  id: nanoid(ID_LENGTH),
   title: titles[getRandomInt(0, titles.length - 1)],
   createdDate: new Date(getRandomInt(DateRange.min, DateRange.max)),
   announce: Array(getRandomInt(1, 5)).fill(``)
@@ -41,15 +45,20 @@ const generateArticles = (amount, titles, categories, sentences) => Array(amount
   category: Array(getRandomInt(1, 3)).fill(``)
       .map(() => categories[getRandomInt(0, categories.length - 1)])
       .reduce((acc, it) => !acc.includes(it) ? [...acc, it] : acc, []),
+  comments: Array(getRandomInt(1, 5)).fill({}).map(() => ({
+    id: nanoid(ID_LENGTH),
+    text: comments[getRandomInt(0, comments.length - 1)],
+  })),
 }));
 
 module.exports = {
   name: `--generate`,
   async run(args) {
-    const [titles, categories, sentences] = await Promise.all([
+    const [titles, categories, sentences, comments] = await Promise.all([
       readContent(FILE_PATH_TITLES),
       readContent(FILE_PATH_CATEGORIES),
-      readContent(FILE_PATH_SENTENCES)
+      readContent(FILE_PATH_SENTENCES),
+      readContent(FILE_PATH_COMMENTS),
     ]);
 
     const [amount] = args;
@@ -60,7 +69,7 @@ module.exports = {
       return;
     }
 
-    const content = JSON.stringify(generateArticles(articleAmount, titles, categories, sentences));
+    const content = JSON.stringify(generateArticles(articleAmount, titles, categories, sentences, comments));
 
     try {
       await fs.writeFile(FILE_NAME, content);
