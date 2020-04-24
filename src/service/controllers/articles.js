@@ -2,14 +2,15 @@
 
 const {storage} = require(`../../storage`);
 const {HttpCode} = require(`../../constants`);
+const data = require(`../../../mocks`);
 
 module.exports.getAll = async (req, res) => {
-  const articles = storage.getAllArticles();
+  const articles = storage.getAllArticles(data);
   return res.json(articles);
 };
 
 module.exports.getArticle = async (req, res) => {
-  const article = storage.getArticleById(req.params.articleId);
+  const article = storage.getArticleById(data, req.params.articleId);
 
   if (!article) {
     return res.status(HttpCode.NOT_FOUND).end();
@@ -19,7 +20,7 @@ module.exports.getArticle = async (req, res) => {
 };
 
 module.exports.getComments = async (req, res) => {
-  const comments = storage.getComments(req.params.articleId);
+  const comments = storage.getComments(data, req.params.articleId);
 
   if (!comments) {
     return res.status(HttpCode.NOT_FOUND).end();
@@ -29,7 +30,7 @@ module.exports.getComments = async (req, res) => {
 };
 
 module.exports.removeArticle = async (req, res) => {
-  const article = storage.removeArticleById(req.params.articleId);
+  const article = storage.removeArticleById(data, req.params.articleId);
 
   if (!article) {
     return res.status(HttpCode.NOT_FOUND).end();
@@ -39,7 +40,7 @@ module.exports.removeArticle = async (req, res) => {
 };
 
 module.exports.removeComment = async (req, res) => {
-  const comment = storage.removeCommentById(req.params.articleId, req.params.commentId);
+  const comment = storage.removeCommentById(data, req.params.articleId, req.params.commentId);
 
   if (!comment) {
     return res.status(HttpCode.NOT_FOUND).end();
@@ -49,13 +50,13 @@ module.exports.removeComment = async (req, res) => {
 };
 
 module.exports.updateArticle = async (req, res) => {
-  const isValid = storage.isValidArticle(req.body);
+  const isValid = storage.isArticleValid(req.body);
 
   if (!isValid) {
     return res.status(HttpCode.BAD_REQUEST).send(`Bad request. Not all data`);
   }
 
-  const article = storage.updateArticle(req.params.articleId, req.body);
+  const article = storage.updateArticle(data, req.params.articleId, req.body);
 
   if (!article) {
     return res.status(HttpCode.NOT_FOUND).end();
@@ -71,7 +72,7 @@ module.exports.addComment = async (req, res) => {
     return res.status(HttpCode.BAD_REQUEST).send(`Bad request. No comment text`);
   }
 
-  const comment = storage.addNewComment(req.params.articleId, req.body);
+  const comment = storage.addNewComment(data, req.params.articleId, req.body);
 
   if (!comment) {
     return res.status(HttpCode.NOT_FOUND).end();
@@ -81,13 +82,13 @@ module.exports.addComment = async (req, res) => {
 };
 
 module.exports.addArticle = async (req, res) => {
-  const isValid = storage.isValidArticle(req.body);
+  const isValid = storage.isArticleValid(req.body);
 
   if (!isValid) {
     return res.status(HttpCode.BAD_REQUEST).send(`Bad request. Not all data`);
   }
 
-  const article = storage.addNewArticle(req.body);
+  const article = storage.addNewArticle(data, req.body);
 
   return res.status(HttpCode.CREATED).json(article);
 };

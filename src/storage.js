@@ -1,51 +1,50 @@
 'use strict';
 
 const nanoid = require(`nanoid`);
-const mocks = require(`../mocks`);
 
 const INDEX_NOT_FOUND = -1;
 const ID_LENGTH = 6;
 
 module.exports.storage = {
-  getCategories: () => {
-    return mocks.map((it) => it.category)
+  getCategories: (data) => {
+    return data.map((it) => it.category)
     .flat()
     .reduce((acc, it) => !acc.includes(it) ? [...acc, it] : acc, []);
   },
-  getAllArticles: () => {
-    return mocks.map((it) => ({id: it.id, title: it.title}));
+  getAllArticles: (data) => {
+    return data.map((it) => ({id: it.id, title: it.title}));
   },
-  getArticleById: (articleId) => {
-    const index = mocks.map((it) => it.id).indexOf(articleId);
-    return index !== INDEX_NOT_FOUND ? mocks[index] : undefined;
+  getArticleById: (data, articleId) => {
+    const index = data.map((it) => it.id).indexOf(articleId);
+    return index !== INDEX_NOT_FOUND ? data[index] : undefined;
   },
-  getComments: (articleId) => {
-    const index = mocks.map((it) => it.id).indexOf(articleId);
-    return index !== INDEX_NOT_FOUND ? mocks[index].comments : undefined;
+  getComments: (data, articleId) => {
+    const index = data.map((it) => it.id).indexOf(articleId);
+    return index !== INDEX_NOT_FOUND ? data[index].comments : undefined;
   },
-  removeArticleById: (articleId) => {
-    const index = mocks.map((it) => it.id).indexOf(articleId);
-    return index !== INDEX_NOT_FOUND ? mocks.splice(index, 1) : undefined;
+  removeArticleById: (data, articleId) => {
+    const index = data.map((it) => it.id).indexOf(articleId);
+    return index !== INDEX_NOT_FOUND ? data.splice(index, 1) : undefined;
   },
-  removeCommentById: (articleId, commentId) => {
-    const index = mocks.map((it) => it.id).indexOf(articleId);
+  removeCommentById: (data, articleId, commentId) => {
+    const index = data.map((it) => it.id).indexOf(articleId);
 
     if (index === INDEX_NOT_FOUND) {
       return undefined;
     }
 
-    const commentIndex = mocks[index].comments.map((it) => it.id).indexOf(commentId);
+    const commentIndex = data[index].comments.map((it) => it.id).indexOf(commentId);
     return commentIndex !== INDEX_NOT_FOUND ?
-      mocks[index].comments.splice(commentIndex, 1) : undefined;
+      data[index].comments.splice(commentIndex, 1) : undefined;
   },
-  isValidArticle: (article) => {
+  isArticleValid: (article) => {
     const properties = [`title`, `createdDate`, `announce`, `fullText`, `category`];
     return properties.every((it) => article.hasOwnProperty(it));
   },
-  updateArticle: (articleId, newData) => {
-    const index = mocks.map((it) => it.id).indexOf(articleId);
+  updateArticle: (data, articleId, newData) => {
+    const index = data.map((it) => it.id).indexOf(articleId);
 
-    if (index === INDEX_NOT_FOUND) {
+    if (index === INDEX_NOT_FOUND || !newData) {
       return undefined;
     }
 
@@ -57,16 +56,16 @@ module.exports.storage = {
       fullText,
       category,
     };
-    mocks[index] = {...mocks[index], ...updatedArticle};
-    return mocks[index];
+    data[index] = {...data[index], ...updatedArticle};
+    return data[index];
   },
   isCommentValid: (comment) => {
     return comment && comment.text !== `` ? true : false;
   },
-  addNewComment: (articleId, comment) => {
-    const index = mocks.map((it) => it.id).indexOf(articleId);
+  addNewComment: (data, articleId, comment) => {
+    const index = data.map((it) => it.id).indexOf(articleId);
 
-    if (index === INDEX_NOT_FOUND) {
+    if (index === INDEX_NOT_FOUND || !comment) {
       return undefined;
     }
 
@@ -75,10 +74,15 @@ module.exports.storage = {
       id: nanoid(ID_LENGTH),
       text,
     };
-    mocks[index].comments.unshift(newComment);
+    data[index].comments.unshift(newComment);
     return newComment;
   },
-  addNewArticle: (articleData) => {
+  addNewArticle: (data, articleData) => {
+
+    if (!articleData) {
+      return undefined;
+    }
+
     const {title, createdDate, announce, fullText, category} = articleData;
     const newArticle = {
       id: nanoid(ID_LENGTH),
@@ -89,10 +93,10 @@ module.exports.storage = {
       category,
       comments: [],
     };
-    mocks.unshift(newArticle);
+    data.unshift(newArticle);
     return newArticle;
   },
-  getMatchedArticles: (searchString) => {
-    return mocks.filter((it) => it.title.includes(searchString));
+  getMatchedArticles: (data, searchString) => {
+    return data.filter((it) => it.title.includes(searchString));
   },
 };
