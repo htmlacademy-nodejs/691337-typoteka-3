@@ -1,8 +1,8 @@
 'use strict';
 
 const fs = require(`fs`).promises;
-const chalk = require(`chalk`);
 const nanoid = require(`nanoid`);
+const {getLogger} = require(`../../logger`);
 const {shuffle, getRandomInt} = require(`../../utils`);
 
 const FILE_PATH_TITLES = `./data/titles.txt`;
@@ -17,6 +17,7 @@ const MS_IN_MONTH = 30 * 24 * 60 * 60 * 1000;
 const MONTHS_AMOUNT = 3;
 const ID_LENGTH = 6;
 
+const logger = getLogger();
 
 const DateRange = {
   min: Date.now() - MONTHS_AMOUNT * MS_IN_MONTH,
@@ -28,7 +29,7 @@ const readContent = async (filepath) => {
     const content = await fs.readFile(filepath, `utf-8`);
     return content.trim().split(`\n`);
   } catch (err) {
-    console.error(chalk.red(err));
+    logger.error(err);
     return [];
   }
 };
@@ -65,7 +66,7 @@ module.exports = {
     const articleAmount = Number.parseInt(amount, 10) || DEFAULT_AMOUNT;
 
     if (articleAmount > MAX_AMOUNT) {
-      console.log(chalk.red(`Не больше 1000 публикаций`));
+      logger.info(`Не больше 1000 публикаций`);
       return;
     }
 
@@ -73,9 +74,9 @@ module.exports = {
 
     try {
       await fs.writeFile(FILE_NAME, content);
-      console.log(chalk.green(`Operation success. File created.`));
+      logger.info(`Operation success. File created.`);
     } catch (err) {
-      console.error(chalk.red(`Can't write data to file...`));
+      logger.error(`Can't write data to file...`);
     }
   },
 };

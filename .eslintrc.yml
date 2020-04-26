@@ -7,3 +7,6 @@ env:
   jest: true
 
 extends: 'htmlacademy/node'
+
+rules:
+  no-console: 2
