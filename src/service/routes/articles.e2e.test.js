@@ -53,7 +53,7 @@ describe(`PUT routes /api/articles`, () => {
     const res = await request(app).get(`/api/articles`);
     const article = res.body[0];
     const resArticle = await request(app).put(`/api/articles/${article.id}`)
-    .send({title: `New title`, announce: `New announce`});
+      .send({title: `New title`, announce: `New announce`});
     expect(resArticle.statusCode).toBe(HttpCode.BAD_REQUEST);
   });
 });
@@ -63,7 +63,7 @@ describe(`POST routes /api/articles`, () => {
     const res = await request(app).get(`/api/articles`);
     const article = res.body[0];
     const resComment = await request(app).post(`/api/articles/${article.id}/comments`)
-    .send(newComment);
+      .send(newComment);
     expect(resComment.statusCode).toBe(HttpCode.CREATED);
     expect(resComment.body.text).toEqual(newComment.text);
   });
@@ -75,19 +75,19 @@ describe(`POST routes /api/articles`, () => {
   });
   test(`When create comment to offer with wrong id`, async () => {
     const resComment = await request(app).post(`/api/articles/${WRONG_ID}/comments`)
-    .send(newComment);
+      .send(newComment);
     expect(resComment.statusCode).toBe(HttpCode.NOT_FOUND);
   });
   test(`When not valid article data sent`, async () => {
     const resArticle = await request(app).post(`/api/articles/`)
-    .send({title: `New title`, announce: `New announce`});
+      .send({title: `New title`, announce: `New announce`});
     expect(resArticle.statusCode).toBe(HttpCode.BAD_REQUEST);
   });
   test(`When not valid comment data sent`, async () => {
     const res = await request(app).get(`/api/articles`);
     const article = res.body[0];
     const resComment = await request(app).post(`/api/articles/${article.id}/comments`)
-    .send({});
+      .send({});
     expect(resComment.statusCode).toBe(HttpCode.BAD_REQUEST);
   });
 });
@@ -106,7 +106,7 @@ describe(`DELETE routes /api/articles`, () => {
     if (resComments.body.length > 0) {
       const comment = resComments.body[0];
       const resDeleteComment = await request(app)
-      .delete(`/api/articles/${article.id}/comments/${comment.id}`);
+        .delete(`/api/articles/${article.id}/comments/${comment.id}`);
       expect(resDeleteComment.statusCode).toBe(HttpCode.NO_CONTENT);
     }
   });
