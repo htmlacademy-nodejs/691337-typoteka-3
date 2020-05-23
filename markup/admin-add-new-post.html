@@ -69,23 +69,23 @@
       <section class="modal modal--flex">
         <div class="popup popup--new-publication popup--flex">
           <div class="new-publication">
-            <div class="new-publication__header">
-              <h1>Новая публикация</h1>
-              <div class="new-publication__date-form">
-                <h3>Дата публикации</h3>
-                <form action="#" method="POST">
-                  <div class="new-publication__date-block">
-                    <label for="new-publication-date" aria-label="Календарь"></label>
-                    <input type="text" name="login" id="new-publication-date" placeholder="21.03.2019">
+            <form action="#" method="POST">
+              <div class="new-publication__header">
+                <h1>Новая публикация</h1>
+                <div class="new-publication__date-form">
+                  <h3>Дата публикации</h3>
+                  <div class="new-publication__date-form-division">
+                    <div class="new-publication__date-block">
+                      <label for="new-publication-date" aria-label="Календарь"></label>
+                      <input type="text" name="login" id="new-publication-date" placeholder="21.03.2019">
+                    </div>
                   </div>
-                </form>
+                </div>
+                <button type="submit" class="new-publication__button button button--colored">Опубликовать</button>
               </div>
-              <button type="submit" class="new-publication__button button button--colored">Опубликовать</button>
-            </div>
-            <button type="button" class="popup__button button button--popup-close" aria-label="Закрыть окно">Закрыть
-              окно</button>
-            <div class="new-publication__form form">
-              <form action="#" method="get">
+              <button type="button" class="popup__button button button--popup-close" aria-label="Закрыть окно">Закрыть
+                окно</button>
+              <div class="new-publication__form form">
                 <div class="form__wrapper form__wrapper--intro">
                   <div class="form__field">
                     <label><input type="text" placeholder="Заголовок" value="Как правильно заводить машину" required=""></label>
@@ -113,8 +113,8 @@
 Alphabet возглавит гендиректор Google Сундар Пичаи, он также продолжит руководить Google. Должность президента холдинга будет упразднена.</textarea></label>
                   </div>
                 </div>
-              </form>
-            </div>
+              </div>
+            </form>
           </div>
         </div>
         <div class="modal__overlay"></div>

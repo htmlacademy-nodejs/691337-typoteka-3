@@ -1,6 +1,7 @@
 'use strict';
 const axios = require(`axios`);
 const {getLogger} = require(`./logger`);
+const {HttpCode} = require(`./constants`);
 
 const logger = getLogger();
 
@@ -26,5 +27,13 @@ module.exports.getData = async (path) => {
   } catch (err) {
     logger.error(`Error: ${err.message}`);
     throw err;
+  }
+};
+
+module.exports.renderError = (errStatus, res) => {
+  if (errStatus >= HttpCode.INTERNAL_SERVER_ERROR) {
+    res.status(errStatus).render(`errors/500`);
+  } else {
+    res.status(errStatus).render(`errors/400`);
   }
 };
