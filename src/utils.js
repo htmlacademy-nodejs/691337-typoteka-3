@@ -1,7 +1,7 @@
 'use strict';
 const axios = require(`axios`);
 const {getLogger} = require(`./logger`);
-const {HttpCode} = require(`./constants`);
+const {HttpCode, DEFAULT_TIME} = require(`./constants`);
 
 const logger = getLogger();
 
@@ -27,6 +27,14 @@ module.exports.getData = async (path) => {
   } catch (err) {
     logger.error(`Error: ${err.message}`);
     throw err;
+  }
+};
+
+module.exports.changeDateFormat = (date) => {
+  if (date.length > 0) {
+    return `${date.split(`.`).reverse().join(`-`)}T${DEFAULT_TIME}`;
+  } else {
+    return ``;
   }
 };
 
