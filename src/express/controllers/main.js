@@ -10,3 +10,12 @@ module.exports.getArticles = async (req, res) => {
     return renderError(err.response.status, res);
   }
 };
+
+module.exports.getMatchedArticles = async (req, res) => {
+  try {
+    const matchedArticles = await getData(`${URL}/search?query=${encodeURI(req.query.search)}`);
+    return res.render(`main/search`, {data: matchedArticles});
+  } catch (err) {
+    return renderError(err.response.status, res);
+  }
+};
