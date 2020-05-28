@@ -3,10 +3,7 @@
 const express = require(`express`);
 const {getLogger} = require(`../logger`);
 const mainRouter = require(`./routes/main`);
-//const registerRouter = require(`./routes/register`);
-//const loginRouter = require(`./routes/login`);
 const myRouter = require(`./routes/my`);
-//const searchRouter = require(`./routes/search`);
 const articlesRouter = require(`./routes/articles`);
 
 const PORT = 8080;

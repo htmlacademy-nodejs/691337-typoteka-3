@@ -31,11 +31,7 @@ module.exports.getData = async (path) => {
 };
 
 module.exports.changeDateFormat = (date) => {
-  if (date.length > 0) {
-    return `${date.split(`.`).reverse().join(`-`)}T${DEFAULT_TIME}`;
-  } else {
-    return ``;
-  }
+  return `${date.split(`.`).reverse().join(`-`)}T${DEFAULT_TIME}`;
 };
 
 module.exports.renderError = (errStatus, res) => {
