@@ -13,8 +13,9 @@ module.exports.getArticles = async (req, res) => {
 
 module.exports.getMatchedArticles = async (req, res) => {
   try {
-    const matchedArticles = await getData(`${URL}/search?query=${encodeURI(req.query.search)}`);
-    return res.render(`main/search`, {data: matchedArticles});
+    const searchString = req.query.search;
+    const matchedArticles = await getData(`${URL}/search?query=${encodeURI(searchString)}`);
+    return res.render(`main/search`, {data: matchedArticles, query: searchString});
   } catch (err) {
     return renderError(err.response.status, res);
   }

@@ -9,17 +9,39 @@ block wrapper
   block content
     main
       section.search-page
-        .search-page__wrapper
-          h1 Поиск
-          .search.search-page__form
-            form(action='' method='get')
-              label
-                input(type='text' placeholder='Что ищем?')
-              button.search__button.button.button--transparent(type='submit') Найти
-            each item in data
-              .search__result
-                time.search__date(datetime='2019-03-21T20:33') 21.03.2019, 20:33
-                a.search__link= item.title
-   
+        if data.length > 0
+          .search-page__wrapper
+            h1 Поиск
+            .search.search-page__form
+              form(action='' method='get')
+                label
+                  input(type='text' name='search' placeholder='Что ищем?' value= query)
+                button.search__button.button.button--transparent(type='submit') Найти
+              each item in data
+                .search__result
+                  - const dateComponents = new Date(item.createdDate).toISOString().split('T')
+                  - const itemDate = dateComponents[0].split('-').reverse().join('.')
+                  - const itemTime = dateComponents[1].split(':').slice(0, 2).join(':')
+                  time.search__date(datetime= item.createdDate)= itemDate + ', ' + itemTime
+                  a.search__link= item.title
+        else
+          if !query
+            .search-page__wrapper
+              h1 Поиск
+              .search.search-page__form
+                form(action='' method='get')
+                  label
+                    input(type='text' name='search' placeholder='Что ищем?')
+                  button.search__button.button.button--transparent(type='submit') Найти
+          else
+            .search-page__wrapper.search-page__wrapper--empty
+              h1 Поиск
+              .search.search-page__form
+                form(action='' method='get')
+                  label
+                    input(type='text' name='search' placeholder='Что ищем?' value= query)
+                  button.search__button.button.button--transparent(type='submit') Найти
+              p.search-page__empty Ничего не нашлось
+
   block footer
     include ../common/footer.pug
