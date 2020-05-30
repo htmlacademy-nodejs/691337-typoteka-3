@@ -1,4 +1,9 @@
 'use strict';
+const axios = require(`axios`);
+const {getLogger} = require(`./logger`);
+const {HttpCode, DEFAULT_TIME} = require(`./constants`);
+
+const logger = getLogger();
 
 module.exports.getRandomInt = (min, max) => {
   min = Math.ceil(min);
@@ -13,4 +18,26 @@ module.exports.shuffle = (someArray) => {
   }
 
   return someArray;
+};
+
+module.exports.getData = async (path) => {
+  try {
+    const content = await axios.get(path);
+    return content.data;
+  } catch (err) {
+    logger.error(`Error: ${err.message}`);
+    throw err;
+  }
+};
+
+module.exports.changeDateFormat = (date) => {
+  return `${date.split(`.`).reverse().join(`-`)}T${DEFAULT_TIME}`;
+};
+
+module.exports.renderError = (errStatus, res) => {
+  if (errStatus >= HttpCode.INTERNAL_SERVER_ERROR) {
+    res.status(errStatus).render(`errors/500`);
+  } else {
+    res.status(errStatus).render(`errors/400`);
+  }
 };
