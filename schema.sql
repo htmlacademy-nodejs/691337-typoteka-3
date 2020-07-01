@@ -12,7 +12,7 @@ DROP TABLE IF EXISTS articles_categories;
 
 CREATE TABLE readers
 (
-    id SERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     first_name TEXT NOT NULL,
     last_name TEXT NOT NULL,
     email TEXT NOT NULL UNIQUE,
@@ -22,7 +22,7 @@ CREATE TABLE readers
 
 CREATE TABLE articles
 (
-    id SERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     title TEXT NOT NULL,
     created_date DATE NOT NULL,
     announce TEXT NOT NULL,
@@ -32,11 +32,11 @@ CREATE TABLE articles
 
 CREATE TABLE comments
 (
-    id SERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     comment_text TEXT NOT NULL,
     created_date DATE NOT NULL,
-    article_id INTEGER,
-    reader_id INTEGER,
+    article_id BIGINT,
+    reader_id BIGINT,
 
     FOREIGN KEY (article_id) REFERENCES articles (id)
         ON DELETE CASCADE
@@ -48,14 +48,14 @@ CREATE TABLE comments
 
 CREATE TABLE categories
 (
-    id SERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     title TEXT NOT NULL
 );
 
 CREATE TABLE articles_categories
 (
-    article_id INTEGER NOT NULL,
-    category_id INTEGER NOT NULL,
+    article_id BIGINT NOT NULL,
+    category_id BIGINT NOT NULL,
 
     CONSTRAINT articles_categories_pk PRIMARY KEY (article_id, category_id),
 
