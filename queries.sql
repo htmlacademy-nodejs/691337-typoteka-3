@@ -14,10 +14,9 @@ SELECT
   categories.category_title
 FROM categories
 WHERE categories.category_id IN (
-    SELECT
-			articles_categories.category_id
-		FROM articles_categories
-    );
+  SELECT
+		articles_categories.category_id
+	FROM articles_categories);
 
 --
 -- Get a list of categories with the number of articles
@@ -38,19 +37,19 @@ SELECT
   articles.article_title,
   articles.announce,
   articles.created_date,
-    (SELECT concat(readers.first_name, ' ', readers.last_name) FROM readers
-    WHERE readers.reader_id = 1) AS author,
-    (SELECT readers.email FROM readers
-    WHERE readers.reader_id = 1),
-    (SELECT COUNT(*)
-    FROM comments
-    WHERE comments.article_id = articles.article_id) AS comments_amount,
+  (SELECT concat(readers.first_name, ' ', readers.last_name) FROM readers
+   WHERE readers.reader_id = 1) AS author,
+  (SELECT readers.email FROM readers
+   WHERE readers.reader_id = 1),
+  (SELECT COUNT(*)
+   FROM comments
+   WHERE comments.article_id = articles.article_id) AS comments_amount,
   string_agg(categories.category_title, ', ') AS categories
-  FROM articles_categories
-  LEFT JOIN articles USING(article_id)
-  LEFT JOIN categories USING(category_id)
-  GROUP BY articles.article_id
-  ORDER BY articles.created_date DESC;
+FROM articles_categories
+LEFT JOIN articles USING(article_id)
+LEFT JOIN categories USING(category_id)
+GROUP BY articles.article_id
+ORDER BY articles.created_date DESC;
 
 --
 -- Get full details of a specific article
@@ -62,18 +61,18 @@ SELECT
 	articles.full_text,
 	articles.created_date,
 	articles.picture_name,
-		(SELECT concat(readers.first_name, ' ', readers.last_name)
-		 FROM readers WHERE readers.reader_id = 1) AS author,
-		(SELECT readers.email
-		 FROM readers WHERE readers.reader_id = 1),
-		(SELECT COUNT(*)
-		 FROM comments WHERE comments.article_id = articles.article_id) AS comments_amount,
+	(SELECT concat(readers.first_name, ' ', readers.last_name)
+	 FROM readers WHERE readers.reader_id = 1) AS author,
+	(SELECT readers.email
+	 FROM readers WHERE readers.reader_id = 1),
+	(SELECT COUNT(*)
+	 FROM comments WHERE comments.article_id = articles.article_id) AS comments_amount,
 	string_agg(categories.category_title, ', ')	AS categories
-	FROM articles_categories
-	LEFT JOIN articles USING(article_id)
-	LEFT JOIN categories USING(category_id)
-	WHERE articles.article_id = 1
-	GROUP BY articles.article_id;
+FROM articles_categories
+LEFT JOIN articles USING(article_id)
+LEFT JOIN categories USING(category_id)
+WHERE articles.article_id = 1
+GROUP BY articles.article_id;
 
 --
 -- Get a list of five last comments
