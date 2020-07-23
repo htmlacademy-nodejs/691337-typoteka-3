@@ -12,7 +12,7 @@ DROP TABLE IF EXISTS articles_categories;
 
 CREATE TABLE readers
 (
-    id BIGSERIAL PRIMARY KEY,
+    reader_id BIGSERIAL PRIMARY KEY,
     first_name TEXT NOT NULL,
     last_name TEXT NOT NULL,
     email TEXT NOT NULL UNIQUE,
@@ -22,8 +22,8 @@ CREATE TABLE readers
 
 CREATE TABLE articles
 (
-    id BIGSERIAL PRIMARY KEY,
-    title TEXT NOT NULL,
+    article_id BIGSERIAL PRIMARY KEY,
+    article_title TEXT NOT NULL,
     created_date DATE NOT NULL,
     announce TEXT NOT NULL,
     picture_name TEXT,
@@ -32,24 +32,24 @@ CREATE TABLE articles
 
 CREATE TABLE comments
 (
-    id BIGSERIAL PRIMARY KEY,
+    comment_id BIGSERIAL PRIMARY KEY,
     comment_text TEXT NOT NULL,
     created_date DATE NOT NULL,
     article_id BIGINT,
     reader_id BIGINT,
 
-    FOREIGN KEY (article_id) REFERENCES articles (id)
+    FOREIGN KEY (article_id) REFERENCES articles (article_id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
-    FOREIGN KEY (reader_id) REFERENCES readers (id)
+    FOREIGN KEY (reader_id) REFERENCES readers (reader_id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
 
 CREATE TABLE categories
 (
-    id BIGSERIAL PRIMARY KEY,
-    title TEXT NOT NULL
+    category_id BIGSERIAL PRIMARY KEY,
+    category_title TEXT NOT NULL
 );
 
 CREATE TABLE articles_categories
@@ -59,12 +59,12 @@ CREATE TABLE articles_categories
 
     CONSTRAINT articles_categories_pk PRIMARY KEY (article_id, category_id),
 
-    FOREIGN KEY (article_id) REFERENCES articles (id)
+    FOREIGN KEY (article_id) REFERENCES articles (article_id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
-    FOREIGN KEY (category_id) REFERENCES categories (id)
+    FOREIGN KEY (category_id) REFERENCES categories (category_id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
 
-CREATE INDEX article_title ON articles (title);
+CREATE INDEX article_title ON articles (article_title);
