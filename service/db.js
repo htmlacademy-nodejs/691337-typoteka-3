@@ -20,13 +20,6 @@ const sequelize = new Sequelize(
     }
 );
 
-/*
-const Reader = getReader(sequelize, DataTypes, Model);
-const Article = getArticle(sequelize, DataTypes, Model);
-const Comment = getComment(sequelize, DataTypes, Model);
-const Category = getCategory(sequelize, DataTypes, Model);
-*/
-
 const Models = {
   Reader: getReader(sequelize, DataTypes, Model),
   Article: getArticle(sequelize, DataTypes, Model),
