@@ -1,12 +1,11 @@
 'use strict';
 const {getLogger} = require(`../../logger`);
-const {storage} = require(`../../storage`);
-const data = require(`../../../mocks`);
+const {storage} = require(`../../storage-db`);
 
 const logger = getLogger();
 
 module.exports.getCategories = async (req, res) => {
-  const categories = storage.getCategories(data);
+  const categories = await storage.getCategories();
   logger.info(`End request with status code ${res.statusCode}`);
   return res.json(categories);
 };

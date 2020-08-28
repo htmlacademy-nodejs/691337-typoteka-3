@@ -1,7 +1,7 @@
 'use strict';
 const app = require(`./app`);
 const {getLogger} = require(`../../logger`);
-const connectDb = require(`../../../service/db`);
+const {connectDb} = require(`../../../service/db`);
 
 const DEFAULT_PORT = 3000;
 
