@@ -1,19 +1,18 @@
 'use strict';
 const {getLogger} = require(`../../logger`);
-const {storage} = require(`../../storage`);
+const {storage} = require(`../../storage-db`);
 const {HttpCode} = require(`../../constants`);
-const data = require(`../../../mocks`);
 
 const logger = getLogger();
 
 module.exports.getAll = async (req, res) => {
-  const articles = storage.getAllArticles(data);
+  const articles = await storage.getAllArticles();
   logger.info(`End request with status code ${res.statusCode}`);
   return res.json(articles);
 };
 
 module.exports.getArticle = async (req, res) => {
-  const article = storage.getArticleById(data, req.params.articleId);
+  const article = await storage.getArticleById(req.params.articleId);
 
   if (!article) {
     logger.error(`End request with error ${HttpCode.NOT_FOUND}`);
@@ -25,7 +24,7 @@ module.exports.getArticle = async (req, res) => {
 };
 
 module.exports.getComments = async (req, res) => {
-  const comments = storage.getComments(data, req.params.articleId);
+  const comments = await storage.getComments(req.params.articleId);
 
   if (!comments) {
     logger.error(`End request with error ${HttpCode.NOT_FOUND}`);
@@ -37,7 +36,7 @@ module.exports.getComments = async (req, res) => {
 };
 
 module.exports.removeArticle = async (req, res) => {
-  const article = storage.removeArticleById(data, req.params.articleId);
+  const article = await storage.removeArticleById(req.params.articleId);
 
   if (!article) {
     logger.error(`End request with error ${HttpCode.NOT_FOUND}`);
@@ -49,7 +48,7 @@ module.exports.removeArticle = async (req, res) => {
 };
 
 module.exports.removeComment = async (req, res) => {
-  const comment = storage.removeCommentById(data, req.params.articleId, req.params.commentId);
+  const comment = await storage.removeCommentById(req.params.articleId, req.params.commentId);
 
   if (!comment) {
     logger.error(`End request with error ${HttpCode.NOT_FOUND}`);
@@ -68,7 +67,7 @@ module.exports.updateArticle = async (req, res) => {
     return res.status(HttpCode.BAD_REQUEST).send(`Bad request. Not all data`);
   }
 
-  const article = storage.updateArticle(data, req.params.articleId, req.body);
+  const article = await storage.updateArticle(req.params.articleId, req.body);
 
   if (!article) {
     logger.error(`End request with error ${HttpCode.NOT_FOUND}`);
@@ -87,7 +86,7 @@ module.exports.addComment = async (req, res) => {
     return res.status(HttpCode.BAD_REQUEST).send(`Bad request. No comment text`);
   }
 
-  const comment = storage.addNewComment(data, req.params.articleId, req.body);
+  const comment = await storage.addNewComment(req.params.articleId, req.body);
 
   if (!comment) {
     logger.error(`End request with error ${HttpCode.NOT_FOUND}`);
@@ -106,7 +105,7 @@ module.exports.addArticle = async (req, res) => {
     return res.status(HttpCode.BAD_REQUEST).send(`Bad request. Not all data`);
   }
 
-  const article = storage.addNewArticle(data, req.body);
+  const article = await storage.addNewArticle(req.body);
 
   logger.info(`End request with status code ${HttpCode.CREATED}`);
   return res.status(HttpCode.CREATED).json(article);
