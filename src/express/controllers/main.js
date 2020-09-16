@@ -4,8 +4,9 @@ const {URL} = require(`../../constants`);
 
 module.exports.getArticles = async (req, res) => {
   try {
-    const articles = await getData(`${URL}/articles`);
-    return res.render(`main/main`, {data: articles});
+    const currentPage = req.query.page;
+    const data = await getData(`${URL}/articles/?page=${currentPage}`);
+    return res.render(`main/main`, {data: data.articles});
   } catch (err) {
     return renderError(err.response.status, res);
   }

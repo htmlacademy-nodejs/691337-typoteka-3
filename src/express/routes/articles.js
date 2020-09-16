@@ -7,7 +7,7 @@ const articlesRouter = new express.Router();
 const upload = multer();
 
 
-articlesRouter.get(`/category/:id`, (req, res) => res.render(`articles/articles-by-category`));
+articlesRouter.get(`/category/:id`, controller.getArticlesByCategory);
 articlesRouter.get(`/add`, controller.getNewArticleForm);
 articlesRouter.get(`/edit/:id`, controller.getArticleById);
 articlesRouter.get(`/:id`, (req, res) => res.render(`articles/post`));

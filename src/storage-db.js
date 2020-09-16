@@ -3,6 +3,9 @@
 const {Op} = require(`sequelize`);
 const {Models} = require(`../service/db`);
 
+const ARTICLES_PER_PAGE = 8;
+const START_PAGE = 1;
+
 const articleAttributes = [
   [`article_id`, `id`],
   [`article_title`, `title`],
@@ -58,12 +61,20 @@ module.exports.storage = {
     return categories.map((it) => it.category_title);
   },
 
-  getAllArticles: async () => {
-    const allArticles = await Models.Article.findAll({
+  getArticles: async (page) => {
+    const articlesAmount = await Models.Article.count();
+    const pagesAmount = Math.ceil(articlesAmount / ARTICLES_PER_PAGE);
+    const currentPage = parseInt(page, 10) || START_PAGE;
+
+    const rawArticles = await Models.Article.findAll({
       attributes: articleAttributes,
-      include: tableJoinTemplate
+      include: tableJoinTemplate,
+      order: [[`created_date`, `DESC`]],
+      offset: ARTICLES_PER_PAGE * (currentPage - START_PAGE),
+      limit: ARTICLES_PER_PAGE
     });
-    return allArticles.map((it) => normalizeArticleData(it));
+    const articles = rawArticles.map((it) => normalizeArticleData(it));
+    return {articles, articlesAmount, pagesAmount};
   },
 
   getArticleById: async (articleId) => {
@@ -77,6 +88,9 @@ module.exports.storage = {
     return normalizeArticleData(article);
   },
 
+  getArticlesByCategoryId: async (categoryId, page) => {
+    return [];
+  },
   getComments: async (articleId) => {
     const article = await Models.Article.findByPk(articleId, {
       attributes: articleAttributes,

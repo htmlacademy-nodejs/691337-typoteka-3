@@ -15,6 +15,16 @@ module.exports.getArticleById = async (req, res) => {
   }
 };
 
+module.exports.getArticlesByCategory = async (req, res) => {
+  try {
+    const currentPage = req.query.page;
+    const data = await getData(`${URL}/articles/category/${req.params.id}/?page=${currentPage}`);
+    return res.render(`articles/articles-by-category`);
+  } catch (err) {
+    return renderError(err.response.status, res);
+  }
+};
+
 module.exports.getNewArticleForm = (req, res) => {
   try {
     return res.render(`articles/new-post`, {data: {}});

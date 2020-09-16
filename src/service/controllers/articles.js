@@ -5,13 +5,13 @@ const {HttpCode} = require(`../../constants`);
 
 const logger = getLogger();
 
-module.exports.getAll = async (req, res) => {
-  const articles = await storage.getAllArticles();
+module.exports.getArticles = async (req, res) => {
+  const articles = await storage.getArticles(req.query.page);
   logger.info(`End request with status code ${res.statusCode}`);
   return res.json(articles);
 };
 
-module.exports.getArticle = async (req, res) => {
+module.exports.getArticleById = async (req, res) => {
   const article = await storage.getArticleById(req.params.articleId);
 
   if (!article) {
@@ -21,6 +21,18 @@ module.exports.getArticle = async (req, res) => {
 
   logger.info(`End request with status code ${res.statusCode}`);
   return res.json(article);
+};
+
+module.exports.getArticlesByCategory = async (req, res) => {
+  const articles = await storage.getArticlesByCategoryId(req.params.categoryId, req.query.page);
+
+  if (!articles) {
+    logger.error(`End request with error ${HttpCode.NOT_FOUND}`);
+    return res.status(HttpCode.NOT_FOUND).end();
+  }
+
+  logger.info(`End request with status code ${res.statusCode}`);
+  return res.json(articles);
 };
 
 module.exports.getComments = async (req, res) => {
