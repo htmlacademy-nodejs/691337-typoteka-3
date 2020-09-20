@@ -5,6 +5,7 @@ const {Models} = require(`../service/db`);
 
 const ARTICLES_PER_PAGE = 8;
 const START_PAGE = 1;
+const PAGES_AMOUNT_MAX = 5;
 
 const articleAttributes = [
   [`article_id`, `id`],
@@ -18,6 +19,11 @@ const articleAttributes = [
 const commentAttributes = [
   [`comment_id`, `id`],
   [`comment_text`, `text`]
+];
+
+const categoryAttributes = [
+  [`category_id`, `id`],
+  [`category_title`, `title`]
 ];
 
 const tableJoinTemplate = [
@@ -53,6 +59,18 @@ const normalizeArticleData = (article) => {
   };
 };
 
+const getPagesToView = (pagesAmount, currentPage) => {
+  const offset = currentPage > PAGES_AMOUNT_MAX ? currentPage - PAGES_AMOUNT_MAX : 0;
+  const firstIndex = START_PAGE + offset;
+  const lastIndex = pagesAmount < PAGES_AMOUNT_MAX ? pagesAmount : PAGES_AMOUNT_MAX + offset;
+  return {
+    firstIndex,
+    lastIndex,
+    previous: offset > 0,
+    next: pagesAmount > PAGES_AMOUNT_MAX && pagesAmount > lastIndex
+  };
+};
+
 module.exports.storage = {
   getCategories: async () => {
     const categories = await Models.Category.findAll({
@@ -74,7 +92,8 @@ module.exports.storage = {
       limit: ARTICLES_PER_PAGE
     });
     const articles = rawArticles.map((it) => normalizeArticleData(it));
-    return {articles, articlesAmount, pagesAmount};
+    const pagesToView = getPagesToView(pagesAmount, currentPage);
+    return {articles, articlesAmount, pagesAmount, currentPage, pagesToView};
   },
 
   getArticleById: async (articleId) => {
@@ -89,7 +108,24 @@ module.exports.storage = {
   },
 
   getArticlesByCategoryId: async (categoryId, page) => {
-    return [];
+    const category = await Models.Category.findByPk(categoryId, {
+      attributes: [`category_id`]
+    });
+    const articlesAmount = await category.countArticles();
+    const pagesAmount = Math.ceil(articlesAmount / ARTICLES_PER_PAGE);
+    const currentPage = parseInt(page, 10) || START_PAGE;
+    const rawArticles = await category.getArticles({
+      attributes: articleAttributes,
+      include: [`categories`],
+      offset: ARTICLES_PER_PAGE * (currentPage - START_PAGE),
+      limit: ARTICLES_PER_PAGE
+    });
+    const articles = rawArticles.map((it) => normalizeArticleData(it));
+    const categoryData = await Models.Category.findByPk(categoryId, {
+      attributes: categoryAttributes
+    });
+    const pagesToView = getPagesToView(pagesAmount, currentPage);
+    return {articles, articlesAmount, pagesAmount, currentPage, categoryData, pagesToView};
   },
   getComments: async (articleId) => {
     const article = await Models.Article.findByPk(articleId, {
