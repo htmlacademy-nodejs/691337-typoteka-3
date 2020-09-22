@@ -88,14 +88,16 @@ block wrapper
       section.main-page__list.preview
         h2.visually-hidden Список превью статей
         ul.preview__list
-          each item in data
-            li.preview__item
+          each item in articles
+            - const hasPicture = item.picture !== null && item.picture !== ''
+            li.preview__item(class=hasPicture ? '' : 'preview__item--noimage')
               ul.preview__breadcrumbs
                 each el in item.category
                   li.preview__breadcrumbs-item
                     a.preview__breadcrumbs-link(href='#')= el
-              .preview__background
-                img.preview__background-image(src='/img/skyscraper@1x.jpg' width='460' height='240' srcset='/img/skyscraper@1x.jpg, img/skyscraper@2x.jpg 2x' alt='Фотография небоскреба')
+              if hasPicture
+                .preview__background
+                  img(src='/img/' + item.picture width='460' height='240' srcset='/img/' + item.picture alt='Фотография небоскреба')
               - const dateComponents = new Date(item.createdDate).toISOString().split('T')
               - const itemDate = dateComponents[0].split('-').reverse().join('.')
               - const itemTime = dateComponents[1].split(':').slice(0, 2).join(':')
@@ -111,18 +113,15 @@ block wrapper
         .preview__toggle-wrapper
           ul.preview__pagination.pagination
             li
-              a.pagination__button.button.button--backwards.button--disabled(href='#' aria-label='Страница назад') Назад
-            li.pagination__item.pagination__item--active
-              a(href='#') 1
-            li.pagination__item
-              a(href='#') 2
-            li.pagination__item
-              a(href='#') 3
-            li.pagination__item
-              a(href='#') 4
-            li.pagination__item
-              a(href='#') 5
+              a.pagination__button.button.button--backwards(class=view.previous ? '' : 'button--disabled' href='/?page=' + (view.firstIndex - 1) aria-label='Страница назад') Назад
+            - for (let i = view.firstIndex; i <= view.lastIndex; i+= 1)
+              - if (i === current)
+                li.pagination__item.pagination__item--active
+                  a(href='javascript:void(0)')= i
+              - else
+                li.pagination__item
+                  a(href='/?page=' + i)= i
             li
-              a.pagination__button.button.button--forward(href='#' aria-label='Страница вперед') Вперед
+              a.pagination__button.button.button--forward(class=view.next ? '' : 'button--disabled' href='/?page=' + (view.lastIndex + 1) aria-label='Страница вперед') Вперед
   block footer
     include ../common/footer.pug

@@ -11,6 +11,7 @@ const FILE_PATH_CATEGORIES = `./data/categories.txt`;
 const FILE_PATH_SENTENCES = `./data/sentences.txt`;
 const FILE_PATH_COMMENTS = `./data/comments.txt`;
 const FILE_PATH_READERS = `./data/readers.txt`;
+const FILE_PATH_PICTURES = `./data/pictures.txt`;
 
 const DEFAULT_AMOUNT = 3;
 const START_INDEX = 1;
@@ -26,9 +27,9 @@ const DateRange = {
   max: Date.now(),
 };
 
-const PictureRange = {
+const AvatarRange = {
   min: 1,
-  max: 16,
+  max: 5,
 };
 
 const readContent = async (filepath) => {
@@ -41,7 +42,7 @@ const readContent = async (filepath) => {
   }
 };
 
-const getImgFileName = (num) => num < 10 ? `item0${num}.jpg` : `item${num}.jpg`;
+const getAvatarFileName = (num) => `avatar-${num}.png`;
 
 const getRandomDate = () => new Date(getRandomInt(DateRange.min, DateRange.max))
   .toISOString().split(`T`)[0];
@@ -56,7 +57,7 @@ const getRandomCategories = (categories) => Array(getRandomInt(1, 3)).fill(``)
 const generateReadersData = (readers) => readers.map((it) => {
   const [firstName, lastName, email] = it.split(`, `);
   const pass = nanoid(PASS_LENGTH);
-  const avatar = getImgFileName(getRandomInt(PictureRange.min, PictureRange.max));
+  const avatar = getAvatarFileName(getRandomInt(AvatarRange.min, AvatarRange.max));
   return {
     'first_name': firstName,
     'last_name': lastName,
@@ -66,14 +67,14 @@ const generateReadersData = (readers) => readers.map((it) => {
   };
 });
 
-const generateArticlesData = (amount, titles, sentences) => Array(amount).fill(``).map(() => ({
+const generateArticlesData = (amount, titles, sentences, pictures) => Array(amount).fill(``).map(() => ({
   'article_title': titles[getRandomInt(0, titles.length - 1)],
   'created_date': getRandomDate(),
   'announce': Array(getRandomInt(1, 5)).fill(``)
     .map(() => sentences[getRandomInt(0, sentences.length - 1)])
     .reduce((acc, el) => !acc.includes(el) ? [...acc, el] : acc, [])
     .join(` `),
-  'picture_name': getImgFileName(getRandomInt(PictureRange.min, PictureRange.max)),
+  'picture_name': pictures[getRandomInt(0, pictures.length - 1)],
   'full_text': shuffle(sentences).slice(0, getRandomInt(0, sentences.length - 1)).join(` `),
 }));
 
@@ -101,12 +102,13 @@ const generateCategoriesData = (categories) => categories.map((it) => {
 module.exports = {
   name: `--filldb`,
   async run(args) {
-    const [titles, categories, sentences, comments, readers] = await Promise.all([
+    const [titles, categories, sentences, comments, readers, pictures] = await Promise.all([
       readContent(FILE_PATH_TITLES),
       readContent(FILE_PATH_CATEGORIES),
       readContent(FILE_PATH_SENTENCES),
       readContent(FILE_PATH_COMMENTS),
-      readContent(FILE_PATH_READERS)
+      readContent(FILE_PATH_READERS),
+      readContent(FILE_PATH_PICTURES),
     ]);
 
     const [amount] = args;
@@ -118,7 +120,7 @@ module.exports = {
     }
 
     const readersData = generateReadersData(readers);
-    const articlesData = generateArticlesData(articleAmount, titles, sentences);
+    const articlesData = generateArticlesData(articleAmount, titles, sentences, pictures);
     const commentsData = generateCommentsData(articleAmount, comments, readers);
     const categoriesData = generateCategoriesData(categories);
 
