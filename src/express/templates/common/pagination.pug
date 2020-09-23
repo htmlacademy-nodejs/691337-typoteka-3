@@ -1,0 +1,15 @@
+mixin pagination(route)
+
+  .preview__toggle-wrapper
+    ul.preview__pagination.pagination
+      li
+        a.pagination__button.button.button--backwards(class=view.previous ? '' : 'button--disabled' href=route + (view.firstIndex - 1) aria-label='Страница назад') Назад
+      - for (let i = view.firstIndex; i <= view.lastIndex; i+= 1)
+        - if (i === current)
+          li.pagination__item.pagination__item--active
+            a(href='javascript:void(0)')= i
+        - else
+          li.pagination__item
+            a(href=route + i)= i
+      li
+        a.pagination__button.button.button--forward(class=view.next ? '' : 'button--disabled' href=route + (view.lastIndex + 1) aria-label='Страница вперед') Вперед

@@ -1,4 +1,5 @@
 extends ../common/layout.pug
+include ../common/pagination.pug
 
 block wrapper
  .wrapper
@@ -97,7 +98,7 @@ block wrapper
                     a.preview__breadcrumbs-link(href='#')= el
               if hasPicture
                 .preview__background
-                  img(src='/img/' + item.picture width='460' height='240' srcset='/img/' + item.picture alt='Фотография небоскреба')
+                  img.preview__background-image(src='/img/' + item.picture width='460' height='240' srcset='/img/' + item.picture alt='Фотография' + item.picture)
               - const dateComponents = new Date(item.createdDate).toISOString().split('T')
               - const itemDate = dateComponents[0].split('-').reverse().join('.')
               - const itemTime = dateComponents[1].split(':').slice(0, 2).join(':')
@@ -110,18 +111,8 @@ block wrapper
                 span.preview__cloud
                 |
                 b.preview__comment-count= item.comments.length
-        .preview__toggle-wrapper
-          ul.preview__pagination.pagination
-            li
-              a.pagination__button.button.button--backwards(class=view.previous ? '' : 'button--disabled' href='/?page=' + (view.firstIndex - 1) aria-label='Страница назад') Назад
-            - for (let i = view.firstIndex; i <= view.lastIndex; i+= 1)
-              - if (i === current)
-                li.pagination__item.pagination__item--active
-                  a(href='javascript:void(0)')= i
-              - else
-                li.pagination__item
-                  a(href='/?page=' + i)= i
-            li
-              a.pagination__button.button.button--forward(class=view.next ? '' : 'button--disabled' href='/?page=' + (view.lastIndex + 1) aria-label='Страница вперед') Вперед
+        - const route = '/?page='
+        +pagination(route)
+
   block footer
     include ../common/footer.pug

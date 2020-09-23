@@ -116,7 +116,8 @@ module.exports.storage = {
     const currentPage = parseInt(page, 10) || START_PAGE;
     const rawArticles = await category.getArticles({
       attributes: articleAttributes,
-      include: [`categories`],
+      include: tableJoinTemplate,
+      //include: [`categories`],
       offset: ARTICLES_PER_PAGE * (currentPage - START_PAGE),
       limit: ARTICLES_PER_PAGE
     });

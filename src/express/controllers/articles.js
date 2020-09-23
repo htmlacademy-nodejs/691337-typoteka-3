@@ -19,7 +19,12 @@ module.exports.getArticlesByCategory = async (req, res) => {
   try {
     const currentPage = req.query.page;
     const data = await getData(`${URL}/articles/category/${req.params.id}/?page=${currentPage}`);
-    return res.render(`articles/articles-by-category`);
+    return res.render(`articles/articles-by-category`, {
+      articles: data.articles,
+      view: data.pagesToView,
+      current: data.currentPage,
+      category: data.categoryData
+    });
   } catch (err) {
     return renderError(err.response.status, res);
   }
@@ -36,6 +41,7 @@ module.exports.getNewArticleForm = (req, res) => {
 module.exports.addArticle = async (req, res) => {
   const article = {
     title: req.body.title,
+    //createdDate: req.body.createdDate,
     createdDate: changeDateFormat(req.body.createdDate),
     category: req.body.category || [],
     announce: req.body.announce,

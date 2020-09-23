@@ -6,7 +6,11 @@ module.exports.getArticles = async (req, res) => {
   try {
     const currentPage = req.query.page;
     const data = await getData(`${URL}/articles/?page=${currentPage}`);
-    return res.render(`main/main`, {data: data.articles});
+    return res.render(`main/main`, {
+      articles: data.articles,
+      view: data.pagesToView,
+      current: data.currentPage
+    });
   } catch (err) {
     return renderError(err.response.status, res);
   }
