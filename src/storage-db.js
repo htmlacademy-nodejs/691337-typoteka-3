@@ -73,10 +73,18 @@ const getPagesToView = (pagesAmount, currentPage) => {
 
 module.exports.storage = {
   getCategories: async () => {
-    const categories = await Models.Category.findAll({
-      attributes: [`category_title`]
+    const rawCategories = await Models.Category.findAll({
+      attributes: categoryAttributes
     });
-    return categories.map((it) => it.category_title);
+    const categories = await Promise.all(Array(rawCategories.length)
+    .fill({})
+    .map(async (it, index) => {
+      const {id, title} = rawCategories[index].dataValues;
+      const currentCategory = await Models.Category.findByPk(id);
+      const articlesAmount = await currentCategory.countArticles();
+      return {id, title, articlesAmount};
+    }));
+    return categories.filter((it) => it.articlesAmount > 0);
   },
 
   getArticles: async (page) => {
@@ -117,7 +125,6 @@ module.exports.storage = {
     const rawArticles = await category.getArticles({
       attributes: articleAttributes,
       include: tableJoinTemplate,
-      //include: [`categories`],
       offset: ARTICLES_PER_PAGE * (currentPage - START_PAGE),
       limit: ARTICLES_PER_PAGE
     });

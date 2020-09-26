@@ -5,11 +5,13 @@ const {URL} = require(`../../constants`);
 module.exports.getArticles = async (req, res) => {
   try {
     const currentPage = req.query.page;
+    const categories = await getData(`${URL}/categories`);
     const data = await getData(`${URL}/articles/?page=${currentPage}`);
     return res.render(`main/main`, {
       articles: data.articles,
       view: data.pagesToView,
-      current: data.currentPage
+      current: data.currentPage,
+      categories
     });
   } catch (err) {
     return renderError(err.response.status, res);

@@ -1,73 +1,25 @@
 extends ../common/layout.pug
-include ../common/pagination.pug
+include ../common/mixins/pagination.pug
+include ../common/mixins/articles-list.pug
+include ../common/mixins/categories-list.pug
 
 block wrapper
- .wrapper
+  .wrapper
 
-  block header
-    include ../common/header.pug
+    block header
+      include ../common/header.pug
 
-  block content
-    main.articles-category
-      h1 Бизнес
-      section.articles-category__theme-list
-        h2.visually-hidden Список тем
-        ul.themes
-          li.themes__item
-            a.themes__item-link(href='#')
-              | Автомобили
-              sup 88
-          li.themes__item
-            a.themes__item-link(href='#')
-              | Удаленная работа
-              sup 13
-          li.themes__item
-            a.themes__item-link.themes__item-link--active
-              | Бизнес
-              sup 13
-          li.themes__item
-            a.themes__item-link(href='#')
-              | Путешествия
-              sup 13
-          li.themes__item
-            a.themes__item-link.themes__item-link--padding(href='#')
-              | Дизайн и обустройство
-              sup 13
-          li.themes__item
-            a.themes__item-link(href='#')
-              | Производство игрушек
-              sup 22
-          li.themes__item
-            a.themes__item-link(href='#')
-              | UX & UI
-              sup 22
-      section.articles-category__list.preview
-        h2.visually-hidden Список превью статей
-        ul.preview__list
-          each item in articles
-            - const hasPicture = item.picture !== null && item.picture !== ''
-            li.preview__item(class=hasPicture ? '' : 'preview__item--noimage')
-              ul.preview__breadcrumbs
-                each el in item.category
-                  li.preview__breadcrumbs-item
-                    a.preview__breadcrumbs-link(href='#')= el
-              if hasPicture
-                .preview__background
-                  img.preview__background-image(src='/img/' + item.picture width='460' height='240' srcset='/img/' + item.picture alt= 'Фотография ' + item.picture)
-              - const dateComponents = new Date(item.createdDate).toISOString().split('T')
-              - const itemDate = dateComponents[0].split('-').reverse().join('.')
-              - const itemTime = dateComponents[1].split(':').slice(0, 2).join(':')
-              time.preview__time(datetime= item.createdDate)= itemDate + ', ' + itemTime
-              h3.preview__name
-                a.preview__name-link(href='#')= item.title
-              p.preview__text= item.announce
-              a.preview__comment(href='#')
-                | Комментарии
-                span.preview__cloud
-                |
-                b.preview__comment-count= item.comments.length
-        - const route = '/articles/category/' + category.id + '/?page='
-        +pagination(route)
+    block content
+      main.articles-category
+        h1= category.title
+        section.articles-category__theme-list
+          h2.visually-hidden Список тем
+          +categoriesList(category.id)
+        section.articles-category__list.preview
+          h2.visually-hidden Список превью статей
+          +articlesList()
+          - const route = '/articles/category/' + category.id + '/?page='
+          +pagination(route)
 
-  block footer
-    include ../common/footer.pug
+    block footer
+      include ../common/footer.pug
