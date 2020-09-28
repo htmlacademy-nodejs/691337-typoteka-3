@@ -1,0 +1,13 @@
+mixin categoriesList(activeCategory)
+
+  ul.themes
+    each item in categories
+      - const active = item.id === activeCategory;
+      if active
+        li.themes__item
+          a.themes__item-link.themes__item-link--active= item.title
+            sup= item.articlesAmount
+      else
+        li.themes__item
+          a.themes__item-link(href='/articles/category/' + item.id)= item.title
+            sup= item.articlesAmount

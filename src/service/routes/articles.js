@@ -5,8 +5,9 @@ const controller = require(`../controllers/articles`);
 const articlesRouter = new express.Router();
 articlesRouter.use(express.json());
 
-articlesRouter.get(`/`, controller.getAll);
-articlesRouter.get(`/:articleId`, controller.getArticle);
+articlesRouter.get(`/`, controller.getArticles);
+articlesRouter.get(`/:articleId`, controller.getArticleById);
+articlesRouter.get(`/category/:categoryId`, controller.getArticlesByCategory);
 articlesRouter.get(`/:articleId/comments`, controller.getComments);
 articlesRouter.delete(`/:articleId`, controller.removeArticle);
 articlesRouter.delete(`/:articleId/comments/:commentId`, controller.removeComment);

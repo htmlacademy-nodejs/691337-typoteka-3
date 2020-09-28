@@ -1,0 +1,25 @@
+mixin articlesList()
+
+  ul.preview__list
+    each item in articles
+      - const hasPicture = item.picture !== null && item.picture !== ''
+      li.preview__item(class=hasPicture ? '' : 'preview__item--noimage')
+        ul.preview__breadcrumbs
+          each el in item.category
+            li.preview__breadcrumbs-item
+              a.preview__breadcrumbs-link(href='#')= el
+        if hasPicture
+          .preview__background
+            img.preview__background-image(src='/img/' + item.picture width='460' height='240' srcset='/img/' + item.picture alt='Фотография' + item.picture)
+        - const dateComponents = new Date(item.createdDate).toISOString().split('T')
+        - const itemDate = dateComponents[0].split('-').reverse().join('.')
+        - const itemTime = dateComponents[1].split(':').slice(0, 2).join(':')
+        time.preview__time(datetime= item.createdDate)= itemDate + ', ' + itemTime
+        h3.preview__name
+          a.preview__name-link(href='#')= item.title
+        p.preview__text= item.announce
+        a.preview__comment(href='#')
+          | Комментарии
+          span.preview__cloud
+          |
+          b.preview__comment-count= item.comments.length

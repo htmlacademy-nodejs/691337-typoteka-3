@@ -8,8 +8,8 @@ const ARTICLES_AMOUNT = 3;
 
 module.exports.getArticles = async (req, res) => {
   try {
-    const articles = await getData(`${URL}/articles`);
-    return res.render(`articles/my`, {data: articles});
+    const data = await getData(`${URL}/articles`);
+    return res.render(`articles/my`, {articles: data.articles});
   } catch (err) {
     return renderError(err.response.status, res);
   }
