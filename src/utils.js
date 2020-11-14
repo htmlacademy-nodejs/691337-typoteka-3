@@ -1,5 +1,6 @@
 'use strict';
 const axios = require(`axios`);
+const moment = require(`moment`);
 const {getLogger} = require(`./logger`);
 const {HttpCode, DEFAULT_TIME} = require(`./constants`);
 
