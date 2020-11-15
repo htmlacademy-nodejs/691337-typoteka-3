@@ -11,10 +11,7 @@ mixin articlesList()
         if hasPicture
           .preview__background
             img.preview__background-image(src='/img/' + item.picture width='460' height='240' srcset='/img/' + item.picture alt='Фотография' + item.picture)
-        - const dateComponents = new Date(item.createdDate).toISOString().split('T')
-        - const itemDate = dateComponents[0].split('-').reverse().join('.')
-        - const itemTime = dateComponents[1].split(':').slice(0, 2).join(':')
-        time.preview__time(datetime= item.createdDate)= itemDate + ', ' + itemTime
+        time.preview__time(datetime= item.createdDate)= item.createdDate
         h3.preview__name
           a.preview__name-link(href='#')= item.title
         p.preview__text= item.announce

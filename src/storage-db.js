@@ -18,6 +18,7 @@ const articleAttributes = [
 
 const commentAttributes = [
   [`comment_id`, `id`],
+  [`created_date`, `createdDate`],
   [`comment_text`, `text`]
 ];
 

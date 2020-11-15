@@ -13,10 +13,7 @@ block wrapper
         ul.notes__list
           each item in articles
             li.notes__list-item
-              - const dateComponents = new Date(item.createdDate).toISOString().split('T')
-              - const itemDate = dateComponents[0].split('-').reverse().join('.')
-              - const itemTime = dateComponents[1].split(':').slice(0, 2).join(':')
-              time.notes__item-time(datetime= item.createdDate)= itemDate + ', ' + itemTime
+              time.notes__item-time(datetime= item.createdDate)= item.createdDate
               a.notes__item-text(href='/articles/edit/' + item.id)= item.title
               button.notes__button.button.button--close-item(type='button')
                 span.visually-hidden Закрыть строку списка

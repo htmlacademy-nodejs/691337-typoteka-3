@@ -2,7 +2,7 @@
 const axios = require(`axios`);
 const moment = require(`moment`);
 const {getLogger} = require(`./logger`);
-const {HttpCode, DEFAULT_TIME} = require(`./constants`);
+const {HttpCode} = require(`./constants`);
 
 const logger = getLogger();
 
@@ -31,8 +31,17 @@ module.exports.getData = async (path) => {
   }
 };
 
-module.exports.changeDateFormat = (date) => {
-  return `${date.split(`.`).reverse().join(`-`)}T${DEFAULT_TIME}`;
+module.exports.normalizeDateFormat = (date) => {
+  const dateString = date.split(`.`).reverse().join(`-`);
+  return moment(dateString).format();
+};
+
+module.exports.changeDateView = (date) => {
+  return moment(date).format(`DD.MM.YYYY, HH:mm`);
+};
+
+module.exports.changeDateViewOnlyDate = (date) => {
+  return moment(date).format(`DD.MM.YYYY`);
 };
 
 module.exports.renderError = (errStatus, res) => {

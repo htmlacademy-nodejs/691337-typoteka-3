@@ -19,10 +19,7 @@ block wrapper
                 button.search__button.button.button--transparent(type='submit') Найти
               each item in data
                 .search__result
-                  - const dateComponents = new Date(item.createdDate).toISOString().split('T')
-                  - const itemDate = dateComponents[0].split('-').reverse().join('.')
-                  - const itemTime = dateComponents[1].split(':').slice(0, 2).join(':')
-                  time.search__date(datetime= item.createdDate)= itemDate + ', ' + itemTime
+                  time.search__date(datetime= item.createdDate)= item.createdDate
                   a.search__link= item.title
         else
           if !query
