@@ -48,7 +48,6 @@ module.exports.getNewArticleForm = async (req, res) => {
 
 module.exports.addArticle = async (req, res) => {
   const categories = await getData(`${URL}/categories`);
-  console.log(req.body.createdDate);
   const categoriesTitles = categories.map((it) => it.title);
   const article = {
     title: req.body.title,
@@ -57,7 +56,6 @@ module.exports.addArticle = async (req, res) => {
     announce: req.body.announce,
     fullText: req.body.fullText,
   };
-  console.log(article.createdDate);
 
   try {
     await axios.post(`${URL}/articles`, article);
