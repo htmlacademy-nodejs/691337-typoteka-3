@@ -1,19 +1,50 @@
 'use strict';
 process.argv.push(`--server`);
 
-const nanoid = require(`nanoid`);
 const request = require(`supertest`);
 const app = require(`../cli/app`);
 const {HttpCode} = require(`../../constants`);
-const newArticle = require(`../../../__fixtures__/article-id`);
-const newComment = require(`../../../__fixtures__/comment`);
 
-const WRONG_ID = nanoid(50);
+const WRONG_ID = `dZuF7ilQ61Dl`;
+
+const newArticle = {
+  valid: {
+    title: `Структуры мозга подобны сети галактик`,
+    createdDate: `2020-11-14T22:00:00.000Z`,
+    announce: `Специалисты установили, что человеческий мозг и Вселенная имеют структуры с одинаковыми уровнями сложности.`,
+    picture: `item05.jpg`,
+    fullText: `Человеческий мозг функционирует благодаря наличию обширной нейронной сети, насчитывающей около 69 миллиардов нейронов. Наблюдаемая Вселенная, в свою очередь, состоит минимум из 100 миллиардов галактик.`,
+    category: [`Деревья`, `Программирование`]
+  },
+  notValid: {
+    title: `Структуры`,
+    createdDate: ``,
+    announce: 2345,
+    picture: `item05.jpg`,
+    category: []
+  }
+};
+
+const newComment = {
+  valid: {
+    text: `Предложенный метод найдет применение как в космологии, так и в нейрохирургии.`
+  },
+  notValid: {
+    text: ``
+  }
+};
+
+const errorsList = [
+  `"title" length must be at least 30 characters long`,
+  `"createdDate" is not allowed to be empty`,
+  `"category" does not contain 1 required value(s)`,
+  `"announce" must be a string`
+];
 
 describe(`GET routes /api/articles`, () => {
   test(`When get article status code should be 200, check properties`, async () => {
     const res = await request(app).get(`/api/articles`);
-    const id = res.body[0].id;
+    const id = res.body.articles[0].id;
     const resArticle = await request(app).get(`/api/articles/${id}`);
     expect(res.statusCode).toBe(HttpCode.OK);
     expect(resArticle.statusCode).toBe(HttpCode.OK);
@@ -22,7 +53,7 @@ describe(`GET routes /api/articles`, () => {
   });
   test(`When get comments status code should be 200`, async () => {
     const res = await request(app).get(`/api/articles`);
-    const id = res.body[0].id;
+    const id = res.body.articles[0].id;
     const resComments = await request(app).get(`/api/articles/${id}/comments`);
     expect(resComments.statusCode).toBe(HttpCode.OK);
   });
@@ -39,55 +70,56 @@ describe(`GET routes /api/articles`, () => {
 describe(`PUT routes /api/articles`, () => {
   test(`When update article status code should be 200, check properties`, async () => {
     const res = await request(app).get(`/api/articles`);
-    const article = res.body[0];
-    const resArticle = await request(app).put(`/api/articles/${article.id}`).send(newArticle);
+    const article = res.body.articles[0];
+    const resArticle = await request(app).put(`/api/articles/${article.id}`).send(newArticle.valid);
     expect(resArticle.statusCode).toBe(HttpCode.OK);
     expect(resArticle.body.id).toEqual(article.id);
-    expect(resArticle.body.title).toEqual(newArticle.title);
+    expect(resArticle.body.title).toEqual(newArticle.valid.title);
   });
   test(`When update article with wrong id`, async () => {
-    const resArticle = await request(app).put(`/api/articles/${WRONG_ID}`).send(newArticle);
+    const resArticle = await request(app).put(`/api/articles/${WRONG_ID}`).send(newArticle.valid);
     expect(resArticle.statusCode).toBe(HttpCode.NOT_FOUND);
   });
   test(`When not valid data sent`, async () => {
     const res = await request(app).get(`/api/articles`);
-    const article = res.body[0];
+    const article = res.body.articles[0];
     const resArticle = await request(app).put(`/api/articles/${article.id}`)
-      .send({title: `New title`, announce: `New announce`});
+      .send(newArticle.notValid);
     expect(resArticle.statusCode).toBe(HttpCode.BAD_REQUEST);
+    expect(resArticle.body.notValid).toEqual(errorsList);
   });
 });
 
 describe(`POST routes /api/articles`, () => {
   test(`When create comment status code should be 201, check properties`, async () => {
     const res = await request(app).get(`/api/articles`);
-    const article = res.body[0];
+    const article = res.body.articles[0];
     const resComment = await request(app).post(`/api/articles/${article.id}/comments`)
-      .send(newComment);
+      .send(newComment.valid);
     expect(resComment.statusCode).toBe(HttpCode.CREATED);
     expect(resComment.body.text).toEqual(newComment.text);
   });
   test(`When create article status code should be 201, check properties`, async () => {
-    const resArticle = await request(app).post(`/api/articles`).send(newArticle);
+    const resArticle = await request(app).post(`/api/articles`).send(newArticle.valid);
     expect(resArticle.statusCode).toBe(HttpCode.CREATED);
-    expect(resArticle.body.title).toEqual(newArticle.title);
-    expect(resArticle.body.id).not.toEqual(newArticle.id);
+    expect(resArticle.body.title).toEqual(newArticle.valid.title);
   });
   test(`When create comment to offer with wrong id`, async () => {
     const resComment = await request(app).post(`/api/articles/${WRONG_ID}/comments`)
-      .send(newComment);
+      .send(newComment.valid);
     expect(resComment.statusCode).toBe(HttpCode.NOT_FOUND);
   });
   test(`When not valid article data sent`, async () => {
     const resArticle = await request(app).post(`/api/articles/`)
-      .send({title: `New title`, announce: `New announce`});
+      .send(newArticle.notValid);
     expect(resArticle.statusCode).toBe(HttpCode.BAD_REQUEST);
+    expect(resArticle.body.notValid).toEqual(errorsList);
   });
   test(`When not valid comment data sent`, async () => {
     const res = await request(app).get(`/api/articles`);
-    const article = res.body[0];
+    const article = res.body.articles[0];
     const resComment = await request(app).post(`/api/articles/${article.id}/comments`)
-      .send({});
+      .send(newComment.notValid);
     expect(resComment.statusCode).toBe(HttpCode.BAD_REQUEST);
   });
 });
@@ -95,13 +127,13 @@ describe(`POST routes /api/articles`, () => {
 describe(`DELETE routes /api/articles`, () => {
   test(`When delete article status code should be 204`, async () => {
     const res = await request(app).get(`/api/articles`);
-    const article = res.body[0];
+    const article = res.body.articles[0];
     const resArticle = await request(app).delete(`/api/articles/${article.id}`);
     expect(resArticle.statusCode).toBe(HttpCode.NO_CONTENT);
   });
   test(`When delete comment status code should be 204`, async () => {
     const res = await request(app).get(`/api/articles`);
-    const article = res.body[0];
+    const article = res.body.articles[0];
     const resComments = await request(app).get(`/api/articles/${article.id}/comments`);
     if (resComments.body.length > 0) {
       const comment = resComments.body[0];
@@ -120,7 +152,7 @@ describe(`DELETE routes /api/articles`, () => {
   });
   test(`When delete comment with wrong commentId`, async () => {
     const res = await request(app).get(`/api/articles`);
-    const article = res.body[0];
+    const article = res.body.articles[0];
     const resComment = await request(app).delete(`/api/articles/${article.id}/comments/${WRONG_ID}`);
     expect(resComment.statusCode).toBe(HttpCode.NOT_FOUND);
   });

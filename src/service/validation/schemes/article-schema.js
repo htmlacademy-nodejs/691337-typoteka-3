@@ -7,8 +7,10 @@ module.exports = Joi.object({
     .min(30)
     .max(250)
     .required(),
+  picture: Joi.string(),
   createdDate: Joi.string()
-    .isoDate(),
+    .isoDate()
+    .required(),
   category: Joi.array()
     .items(Joi.string()
     .required()),
@@ -17,5 +19,6 @@ module.exports = Joi.object({
     .max(250)
     .required(),
   fullText: Joi.string()
+    .min(0)
     .max(1000)
 });

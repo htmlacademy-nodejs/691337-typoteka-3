@@ -184,7 +184,7 @@ module.exports.storage = {
 
     await currentArticle.update(updatedArticle, {});
     await currentArticle.addCategories(categories);
-    return currentArticle;
+    return currentArticle.article_id;
   },
 
   isCommentValid: (comment) => {
@@ -223,7 +223,7 @@ module.exports.storage = {
     });
 
     await newArticle.addCategories(categories);
-    return newArticle;
+    return newArticle.article_id;
   },
 
   getMatchedArticles: (searchString) => {

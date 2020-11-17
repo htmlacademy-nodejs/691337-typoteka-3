@@ -79,7 +79,8 @@ module.exports.updateArticle = async (req, res) => {
     return res.status(HttpCode.BAD_REQUEST).send(`Bad request. Not all data`);
   }
 
-  const article = await storage.updateArticle(req.params.articleId, req.body);
+  const articleId = await storage.updateArticle(req.params.articleId, req.body);
+  const article = await storage.getArticleById(articleId);
 
   if (!article) {
     logger.error(`End request with error ${HttpCode.NOT_FOUND}`);
@@ -117,7 +118,8 @@ module.exports.addArticle = async (req, res) => {
     return res.status(HttpCode.BAD_REQUEST).send(`Bad request. Not all data`);
   }
 
-  const article = await storage.addNewArticle(req.body);
+  const articleId = await storage.addNewArticle(req.body);
+  const article = await storage.getArticleById(articleId);
 
   logger.info(`End request with status code ${HttpCode.CREATED}`);
   return res.status(HttpCode.CREATED).json(article);
