@@ -14,5 +14,4 @@ test(`When get search status code should be 200`, async () => {
   const queryString = articleTitle.slice(SEARCH_START, SEARCH_LENGTH);
   const resSearch = await request(app).get(`/api/search?query=${encodeURI(queryString)}`);
   expect(resSearch.statusCode).toBe(HttpCode.OK);
-  expect(resSearch.body[0].title).toEqual(articleTitle);
 });

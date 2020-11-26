@@ -72,13 +72,6 @@ module.exports.removeComment = async (req, res) => {
 };
 
 module.exports.updateArticle = async (req, res) => {
-  const isValid = storage.isArticleValid(req.body);
-
-  if (!isValid) {
-    logger.error(`End request with error ${HttpCode.BAD_REQUEST}`);
-    return res.status(HttpCode.BAD_REQUEST).send(`Bad request. Not all data`);
-  }
-
   const articleId = await storage.updateArticle(req.params.articleId, req.body);
   const article = await storage.getArticleById(articleId);
 
@@ -92,13 +85,6 @@ module.exports.updateArticle = async (req, res) => {
 };
 
 module.exports.addComment = async (req, res) => {
-  const isCommentValid = storage.isCommentValid(req.body.text);
-
-  if (!isCommentValid) {
-    logger.error(`End request with error ${HttpCode.BAD_REQUEST}`);
-    return res.status(HttpCode.BAD_REQUEST).send(`Bad request. No comment text`);
-  }
-
   const comment = await storage.addNewComment(req.params.articleId, req.body);
 
   if (!comment) {
@@ -111,13 +97,6 @@ module.exports.addComment = async (req, res) => {
 };
 
 module.exports.addArticle = async (req, res) => {
-  const isValid = storage.isArticleValid(req.body);
-
-  if (!isValid) {
-    logger.error(`End request with error ${HttpCode.BAD_REQUEST}`);
-    return res.status(HttpCode.BAD_REQUEST).send(`Bad request. Not all data`);
-  }
-
   const articleId = await storage.addNewArticle(req.body);
   const article = await storage.getArticleById(articleId);
 

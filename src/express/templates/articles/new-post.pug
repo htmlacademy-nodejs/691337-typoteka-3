@@ -11,7 +11,7 @@ block wrapper
       section.modal.modal--flex
         .popup.popup--new-publication.popup--flex
           .new-publication
-            form(action='/articles/add' method='POST' enctype='multipart/form-data')
+            form(action='/articles/add' method='POST' enctype='multipart/form-data' autocomplete='off')
               .new-publication__header
                 h1 Новая публикация
                 .new-publication__date-form
@@ -42,9 +42,9 @@ block wrapper
                   each item, index in categoriesTitles
                     - const idName = 'category-' + index
                     .new-publication__checkbox.new-publication__checkbox--auto
-                        input(type='checkbox' name= item id= idName)
+                        input(type='checkbox' name= item id= idName value= item)
                         label(for= idName)= item
-                  a.new-publication__form-link.button.button--transparent(href='#') Добавить категорию
+                  a.new-publication__form-link.button.button--transparent(href='/categories') Добавить категорию
                 .form__wrapper.form__wrapper--text
                   .form__field.form__field--publication-text
                     label
@@ -52,6 +52,12 @@ block wrapper
                   .form__field.form__field--publication-text
                     label
                       textarea(name='fullText' rows='1' placeholder='Полный текст публикации')= data.fullText
+                  if errorsList
+                    .form__validation-error
+                      p.form__error-message В статье допущены следующие ошибки:
+                      ul.form__errors
+                        each item in errorsList
+                          li.form__error= item
         .modal__overlay
 
 block script

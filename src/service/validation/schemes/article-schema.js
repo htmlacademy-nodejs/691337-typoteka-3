@@ -19,6 +19,6 @@ module.exports = Joi.object({
     .max(250)
     .required(),
   fullText: Joi.string()
-    .min(0)
+    .allow(``)
     .max(1000)
 });

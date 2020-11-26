@@ -9,8 +9,9 @@ const upload = multer();
 
 articlesRouter.get(`/category/:id`, controller.getArticlesByCategory);
 articlesRouter.get(`/add`, controller.getNewArticleForm);
-articlesRouter.get(`/edit/:id`, controller.getArticleById);
-articlesRouter.get(`/:id`, (req, res) => res.render(`articles/post`));
 articlesRouter.post(`/add`, upload.any(), controller.addArticle);
+articlesRouter.get(`/edit/:id`, controller.getArticleById);
+articlesRouter.post(`/edit/:id`, upload.any(), controller.updateArticle);
+articlesRouter.get(`/:id`, (req, res) => res.render(`articles/post`));
 
 module.exports = articlesRouter;

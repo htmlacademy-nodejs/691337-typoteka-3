@@ -8,9 +8,14 @@ const logger = getLogger();
 
 module.exports.getArticleById = async (req, res) => {
   try {
+    const categories = await getData(`${URL}/categories`);
+    const categoriesTitles = categories.map((it) => it.title);
     const article = await getData(`${URL}/articles/${req.params.id}`);
     article.createdDate = changeDateViewOnlyDate(article.createdDate);
-    return res.render(`articles/edit-post`, {data: article});
+    return res.render(`articles/edit-post`, {
+      data: article,
+      categoriesTitles
+    });
   } catch (err) {
     return renderError(err.response.status, res);
   }
@@ -62,7 +67,34 @@ module.exports.addArticle = async (req, res) => {
     return res.redirect(`/my`);
   } catch (err) {
     logger.error(`Error: ${err.message}`);
+    const errorsList = err.response.data.notValid;
     return res.render(`articles/new-post`, {
+      errorsList,
+      data: article,
+      categoriesTitles});
+  }
+};
+
+module.exports.updateArticle = async (req, res) => {
+  const categories = await getData(`${URL}/categories`);
+  const categoriesTitles = categories.map((it) => it.title);
+  const article = {
+    title: req.body.title,
+    createdDate: normalizeDateFormat(req.body.createdDate),
+    category: categoriesTitles.filter((it) => Object.keys(req.body).includes(it)),
+    announce: req.body.announce,
+    fullText: req.body.fullText,
+  };
+
+  try {
+    await axios.put(`${URL}/articles/${req.params.id}`, article);
+    return res.redirect(`/my`);
+  } catch (err) {
+    logger.error(`Error: ${err.message}`);
+    const errorsList = err.response.data.notValid;
+    article.createdDate = changeDateViewOnlyDate(article.createdDate);
+    return res.render(`articles/edit-post`, {
+      errorsList,
       data: article,
       categoriesTitles});
   }
