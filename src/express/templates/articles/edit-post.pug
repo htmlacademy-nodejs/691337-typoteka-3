@@ -11,7 +11,7 @@ block wrapper
       section.modal.modal--flex
         .popup.popup--new-publication.popup--flex
           .new-publication
-            form(action='#' method='POST')
+            form(action='' method='POST' enctype='multipart/form-data' autocomplete='off')
               .new-publication__header
                 h1 Новая публикация
                 .new-publication__date-form
@@ -19,36 +19,42 @@ block wrapper
                   .new-publication__date-form-division
                     .new-publication__date-block
                       label(for='new-publication-date' aria-label='Календарь')
-                      - const dateComponents = new Date(data.createdDate).toISOString().split('T')
-                      - const articleDate = dateComponents[0].split('-').reverse().join('.')
-                      input#new-publication-date(type='text' name='login' placeholder= articleDate)
+                      input#new-publication-date(type='text' name='createdDate' placeholder= data.createdDate value= data.createdDate)
                 button.new-publication__button.button.button--colored(type='submit') Опубликовать
               button.popup__button.button.button--popup-close(type='button' aria-label='Закрыть окно') Закрыть окно
               .new-publication__form.form
                 .form__wrapper.form__wrapper--intro
                   .form__field
                     label
-                      input(type='text' placeholder='Заголовок' value= data.title required)
+                      input(type='text' placeholder='Заголовок' name='title' value= data.title required)
                   .form__field.form__field--post-image
                     label
-                      input#image-name-field(type='text' value='moya_mashinka.jpg' placeholder='Фотография' readonly)
+                      input#image-name-field(type='text' name='picture' value='moya_mashinka.jpg' placeholder='Фотография' readonly)
                     .form__image-loader.form__image-loader--publication
                       label
                         input.visually-hidden(type='file')
                         | Обзор
                     button.button.button--transparent Удалить
-                  .new-publication__checkbox.new-publication__checkbox--auto
-                    each item in data.category
-                      input#checkbox-auto(type='checkbox' name='checkbox-auto')
-                      label(for='checkbox-auto')= item
-                  a.new-publication__form-link.button.button--transparent(href='#') Добавить категорию
+                  each item, index in categoriesTitles
+                    - const idName = 'category-' + index
+                    - const isChecked = data.category.includes(item)
+                    .new-publication__checkbox.new-publication__checkbox--auto
+                        input(type='checkbox' name= item id= idName checked= isChecked)
+                        label(for= idName)= item
+                  a.new-publication__form-link.button.button--transparent(href='/categories') Добавить категорию
                 .form__wrapper.form__wrapper--text
                   .form__field.form__field--publication-text
                     label
-                      textarea(rows='2' placeholder='Анонс публикации')= data.announce
+                      textarea(name='announce' rows='2' placeholder='Анонс публикации')= data.announce
                   .form__field.form__field--publication-text
                     label
-                      textarea(rows='5' placeholder='Полный текст публикации')= data.fullText
+                      textarea(name='fullText' rows='5' placeholder='Полный текст публикации')= data.fullText
+                  if errorsList
+                    .form__validation-error
+                      p.form__error-message В статье допущены следующие ошибки:
+                      ul.form__errors
+                        each item in errorsList
+                          li.form__error= item
         .modal__overlay
 
 block script

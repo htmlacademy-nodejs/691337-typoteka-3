@@ -3,7 +3,6 @@
 module.exports.USER_ARGV_INDEX = 2;
 module.exports.DEFAULT_COMMAND = `--help`;
 module.exports.URL = `http://localhost:3000/api`;
-module.exports.DEFAULT_TIME = `00:00:00.000Z`;
 module.exports.ExitCode = {
   success: 0,
   error: 1,

@@ -5,7 +5,7 @@
   "main": "./src/service/service.js",
   "scripts": {
     "test": "npm run eslint",
-    "test::rest": "jest .test.js .e2e.test.js --coverage",
+    "test::rest": "jest .e2e.test.js --coverage",
     "eslint": "eslint --ext .js src/",
     "start": "cross-env NODE_ENV=production LOG_LEVEL=error node ./src/service/service.js --server > ./service/logs/error.log",
     "start::debug": "cross-env NODE_ENV=development LOG_LEVEL=debug nodemon ./src/service/service.js --server || pino-pretty",
@@ -36,6 +36,8 @@
     "cross-env": "7.0.2",
     "dotenv": "8.2.0",
     "express": "4.17.1",
+    "joi": "17.3.0",
+    "moment": "2.29.1",
     "multer": "1.4.2",
     "nanoid": "2.1.11",
     "pg": "8.3.0",

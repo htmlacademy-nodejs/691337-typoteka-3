@@ -18,6 +18,7 @@ const articleAttributes = [
 
 const commentAttributes = [
   [`comment_id`, `id`],
+  [`created_date`, `createdDate`],
   [`comment_text`, `text`]
 ];
 
@@ -119,6 +120,9 @@ module.exports.storage = {
     const category = await Models.Category.findByPk(categoryId, {
       attributes: [`category_id`]
     });
+    if (category === null) {
+      return undefined;
+    }
     const articlesAmount = await category.countArticles();
     const pagesAmount = Math.ceil(articlesAmount / ARTICLES_PER_PAGE);
     const currentPage = parseInt(page, 10) || START_PAGE;
@@ -156,11 +160,6 @@ module.exports.storage = {
     });
   },
 
-  isArticleValid: (article) => {
-    const properties = [`title`, `createdDate`, `announce`, `fullText`, `category`];
-    return properties.every((it) => article.hasOwnProperty(it));
-  },
-
   updateArticle: async (articleId, newData) => {
     const {title, createdDate, announce, fullText, category, picture} = newData;
     const updatedArticle = {
@@ -183,11 +182,7 @@ module.exports.storage = {
 
     await currentArticle.update(updatedArticle, {});
     await currentArticle.addCategories(categories);
-    return currentArticle;
-  },
-
-  isCommentValid: (comment) => {
-    return comment && comment.text !== `` ? true : false;
+    return currentArticle.article_id;
   },
 
   addNewComment: async (articleId, comment) => {
@@ -222,7 +217,7 @@ module.exports.storage = {
     });
 
     await newArticle.addCategories(categories);
-    return newArticle;
+    return newArticle.article_id;
   },
 
   getMatchedArticles: (searchString) => {
