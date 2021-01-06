@@ -42,8 +42,12 @@ module.exports.getNewArticleForm = async (req, res) => {
   try {
     const categories = await getData(`${URL}/categories`);
     const categoriesTitles = categories.map((it) => it.title);
+    const date = changeDateViewOnlyDate(Date.now());
+
     return res.render(`articles/new-post`, {
-      data: {},
+      data: {
+        createdDate: date
+      },
       categoriesTitles
     });
   } catch (err) {
@@ -57,7 +61,7 @@ module.exports.addArticle = async (req, res) => {
   const article = {
     title: req.body.title,
     createdDate: normalizeDateFormat(req.body.createdDate),
-    category: categoriesTitles.filter((it) => Object.keys(req.body).includes(it)),
+    category: req.body.category || [],
     announce: req.body.announce,
     fullText: req.body.fullText,
   };
@@ -81,7 +85,7 @@ module.exports.updateArticle = async (req, res) => {
   const article = {
     title: req.body.title,
     createdDate: normalizeDateFormat(req.body.createdDate),
-    category: categoriesTitles.filter((it) => Object.keys(req.body).includes(it)),
+    category: req.body.category || [],
     announce: req.body.announce,
     fullText: req.body.fullText,
   };

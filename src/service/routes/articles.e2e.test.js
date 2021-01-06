@@ -3,7 +3,7 @@ process.argv.push(`--server`);
 
 const request = require(`supertest`);
 const app = require(`../cli/app`);
-const {HttpCode} = require(`../../constants`);
+const {HttpCode, ArticleMessage} = require(`../../constants`);
 
 const WRONG_ID = `dZuF7ilQ61Dl`;
 
@@ -18,8 +18,8 @@ const newArticle = {
   },
   notValid: {
     title: `Структуры`,
-    createdDate: ``,
-    announce: 2345,
+    createdDate: `2020-11-11T17:47:06.555Z`,
+    announce: `2345`,
     picture: `item05.jpg`,
     category: []
   }
@@ -35,10 +35,9 @@ const newComment = {
 };
 
 const errorsList = [
-  `"title" length must be at least 30 characters long`,
-  `"createdDate" is not allowed to be empty`,
-  `"category" does not contain 1 required value(s)`,
-  `"announce" must be a string`
+  ArticleMessage.MIN_TITLE_LENGTH,
+  ArticleMessage.CATEGORY_REQUIRED,
+  ArticleMessage.MIN_ANNOUNCE_LENGTH
 ];
 
 describe(`GET routes /api/articles`, () => {
