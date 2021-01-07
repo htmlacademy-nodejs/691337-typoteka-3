@@ -8,30 +8,30 @@ const START_PAGE = 1;
 const PAGES_AMOUNT_MAX = 5;
 
 const articleAttributes = [
-  [`article_id`, `id`],
-  [`article_title`, `title`],
-  [`created_date`, `createdDate`],
-  [`picture_name`, `picture`],
-  [`full_text`, `fullText`],
+  `id`,
+  `title`,
+  `createdDate`,
+  `picture`,
+  `fullText`,
   `announce`
 ];
 
 const commentAttributes = [
-  [`comment_id`, `id`],
-  [`created_date`, `createdDate`],
-  [`comment_text`, `text`]
+  `id`,
+  `createdDate`,
+  `text`
 ];
 
 const categoryAttributes = [
-  [`category_id`, `id`],
-  [`category_title`, `title`]
+  `id`,
+  `title`
 ];
 
 const tableJoinTemplate = [
   {
     model: Models.Category,
     as: `categories`,
-    attributes: [`category_title`],
+    attributes: [`title`],
     through: {
       attributes: []
     }
@@ -44,7 +44,7 @@ const tableJoinTemplate = [
 ];
 
 const getCategoryTitle = (categories) => {
-  return categories.map((it) => it.category_title);
+  return categories.map((it) => it.title);
 };
 const normalizeArticleData = (article) => {
   const {id, title, createdDate, picture, announce, fullText, categories, comments} = article.dataValues;
@@ -96,7 +96,7 @@ module.exports.storage = {
     const rawArticles = await Models.Article.findAll({
       attributes: articleAttributes,
       include: tableJoinTemplate,
-      order: [[`created_date`, `DESC`]],
+      order: [[`createdDate`, `DESC`]],
       offset: ARTICLES_PER_PAGE * (currentPage - START_PAGE),
       limit: ARTICLES_PER_PAGE
     });
@@ -118,7 +118,7 @@ module.exports.storage = {
 
   getArticlesByCategoryId: async (categoryId, page) => {
     const category = await Models.Category.findByPk(categoryId, {
-      attributes: [`category_id`]
+      attributes: [`id`]
     });
     if (category === null) {
       return undefined;
@@ -151,23 +151,23 @@ module.exports.storage = {
   },
 
   removeArticleById: (articleId) => {
-    return Models.Article.destroy({where: {'article_id': articleId}});
+    return Models.Article.destroy({where: {id: articleId}});
   },
 
   removeCommentById: (articleId, commentId) => {
     return Models.Comment.destroy({
-      where: {[Op.and]: [{'article_id': articleId}, {'comment_id': commentId}]}
+      where: {[Op.and]: [{articleId}, {id: commentId}]}
     });
   },
 
   updateArticle: async (articleId, newData) => {
     const {title, createdDate, announce, fullText, category, picture} = newData;
     const updatedArticle = {
-      'article_title': title,
-      'created_date': createdDate,
+      title,
+      createdDate,
       announce,
-      'full_text': fullText,
-      'picture_name': picture,
+      fullText,
+      picture,
     };
 
     const currentArticle = await Models.Article.findByPk(articleId);
@@ -177,12 +177,12 @@ module.exports.storage = {
     const currentCategories = await currentArticle.getCategories();
     currentCategories.forEach(async (it) => await currentArticle.removeCategories(it));
     const categories = await Models.Category.findAll({
-      where: {'category_title': {[Op.in]: [category].flat()}}
+      where: {'title': {[Op.in]: [category].flat()}}
     });
 
     await currentArticle.update(updatedArticle, {});
     await currentArticle.addCategories(categories);
-    return currentArticle.article_id;
+    return currentArticle;
   },
 
   addNewComment: async (articleId, comment) => {
@@ -192,9 +192,9 @@ module.exports.storage = {
     }
     const {text} = comment;
     const newComment = await Models.Comment.create({
-      'comment_text': text,
-      'created_date': Date.now(),
-      'article_id': articleId,
+      text,
+      'createdDate': Date.now(),
+      articleId,
     });
     return newComment;
   },
@@ -205,25 +205,25 @@ module.exports.storage = {
     }
     const {title, createdDate, announce, picture, fullText, category} = articleData;
     const newArticle = await Models.Article.create({
-      'article_title': title,
-      'created_date': createdDate,
-      'picture_name': picture,
-      'full_text': fullText,
+      title,
+      createdDate,
+      picture,
+      fullText,
       announce,
     });
 
     const categories = await Models.Category.findAll({
-      where: {'category_title': {[Op.in]: [category].flat()}}
+      where: {'title': {[Op.in]: [category].flat()}}
     });
 
     await newArticle.addCategories(categories);
-    return newArticle.article_id;
+    return newArticle;
   },
 
   getMatchedArticles: (searchString) => {
     return Models.Article.findAll({
       attributes: articleAttributes,
-      where: {'article_title': {[Op.substring]: searchString}}
+      where: {'title': {[Op.substring]: searchString}}
     });
   },
 };

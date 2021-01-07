@@ -3,17 +3,11 @@
 module.exports = (sequelize, DataTypes, Model) => {
   class Article extends Model {}
   Article.init({
-    'article_id': {
-      type: DataTypes.BIGINT,
-      autoIncrement: true,
-      primaryKey: true,
-      allowNull: false,
-    },
-    'article_title': {
+    'title': {
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    'created_date': {
+    'createdDate': {
       type: DataTypes.DATE,
       allowNull: false,
     },
@@ -21,10 +15,10 @@ module.exports = (sequelize, DataTypes, Model) => {
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    'picture_name': {
+    'picture': {
       type: DataTypes.TEXT,
     },
-    'full_text': {
+    'fullText': {
       type: DataTypes.TEXT,
     },
   }, {

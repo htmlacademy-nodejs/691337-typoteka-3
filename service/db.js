@@ -29,28 +29,28 @@ const Models = {
 
 Models.Reader.hasMany(Models.Comment, {
   as: `comments`,
-  foreignKey: `reader_id`,
+  foreignKey: `readerId`,
 });
 
 Models.Article.hasMany(Models.Comment, {
   as: `comments`,
-  foreignKey: `article_id`,
+  foreignKey: `articleId`,
 });
 
 Models.Comment.belongsTo(Models.Reader, {
   as: `reader`,
-  foreignKey: `reader_id`,
+  foreignKey: `readerId`,
 });
 
 Models.Comment.belongsTo(Models.Article, {
   as: `article`,
-  foreignKey: `article_id`,
+  foreignKey: `articleId`,
 });
 
 Models.Article.belongsToMany(Models.Category, {
   through: `article_category`,
   as: `categories`,
-  foreignKey: `article_id`,
+  foreignKey: `articleId`,
   timestamps: false,
   paranoid: false,
 });
@@ -58,7 +58,7 @@ Models.Article.belongsToMany(Models.Category, {
 Models.Category.belongsToMany(Models.Article, {
   through: `article_category`,
   as: `articles`,
-  foreignKey: `category_id`,
+  foreignKey: `categoryId`,
 });
 
 const connectDb = async () => {
@@ -85,7 +85,7 @@ const initDb = async (readers, articles, comments, categories, fn) => {
     const getRandomCategories = async (array) => {
       const randomCategories = await Models.Category.findAll({
         where: {
-          'category_id': {
+          'id': {
             [Op.in]: array
           }
         }
