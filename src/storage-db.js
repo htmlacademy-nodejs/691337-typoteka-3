@@ -2,30 +2,12 @@
 
 const {Op} = require(`sequelize`);
 const {Models} = require(`../service/db`);
+const {getPassHashSum} = require(`./utils`);
+const {UserRole} = require(`./constants`);
 
 const ARTICLES_PER_PAGE = 8;
 const START_PAGE = 1;
 const PAGES_AMOUNT_MAX = 5;
-
-const articleAttributes = [
-  `id`,
-  `title`,
-  `createdDate`,
-  `picture`,
-  `fullText`,
-  `announce`
-];
-
-const commentAttributes = [
-  `id`,
-  `createdDate`,
-  `text`
-];
-
-const categoryAttributes = [
-  `id`,
-  `title`
-];
 
 const tableJoinTemplate = [
   {
@@ -38,8 +20,7 @@ const tableJoinTemplate = [
   },
   {
     model: Models.Comment,
-    as: `comments`,
-    attributes: commentAttributes
+    as: `comments`
   }
 ];
 
@@ -74,9 +55,7 @@ const getPagesToView = (pagesAmount, currentPage) => {
 
 module.exports.storage = {
   getCategories: async () => {
-    const rawCategories = await Models.Category.findAll({
-      attributes: categoryAttributes
-    });
+    const rawCategories = await Models.Category.findAll({});
     const categories = await Promise.all(Array(rawCategories.length)
     .fill({})
     .map(async (it, index) => {
@@ -94,7 +73,6 @@ module.exports.storage = {
     const currentPage = parseInt(page, 10) || START_PAGE;
 
     const rawArticles = await Models.Article.findAll({
-      attributes: articleAttributes,
       include: tableJoinTemplate,
       order: [[`createdDate`, `DESC`]],
       offset: ARTICLES_PER_PAGE * (currentPage - START_PAGE),
@@ -107,7 +85,6 @@ module.exports.storage = {
 
   getArticleById: async (articleId) => {
     const article = await Models.Article.findByPk(articleId, {
-      attributes: articleAttributes,
       include: tableJoinTemplate
     });
     if (article === null) {
@@ -127,21 +104,17 @@ module.exports.storage = {
     const pagesAmount = Math.ceil(articlesAmount / ARTICLES_PER_PAGE);
     const currentPage = parseInt(page, 10) || START_PAGE;
     const rawArticles = await category.getArticles({
-      attributes: articleAttributes,
       include: tableJoinTemplate,
       offset: ARTICLES_PER_PAGE * (currentPage - START_PAGE),
       limit: ARTICLES_PER_PAGE
     });
     const articles = rawArticles.map((it) => normalizeArticleData(it));
-    const categoryData = await Models.Category.findByPk(categoryId, {
-      attributes: categoryAttributes
-    });
+    const categoryData = await Models.Category.findByPk(categoryId);
     const pagesToView = getPagesToView(pagesAmount, currentPage);
     return {articles, articlesAmount, pagesAmount, currentPage, categoryData, pagesToView};
   },
   getComments: async (articleId) => {
     const article = await Models.Article.findByPk(articleId, {
-      attributes: articleAttributes,
       include: tableJoinTemplate
     });
     if (article === null) {
@@ -215,14 +188,32 @@ module.exports.storage = {
     const categories = await Models.Category.findAll({
       where: {'title': {[Op.in]: [category].flat()}}
     });
-
     await newArticle.addCategories(categories);
     return newArticle;
   },
 
+  checkEmail: async (userData) => {
+    const {email} = userData;
+    const user = await Models.Reader.findOne({where: {email}});
+    return user !== null;
+  },
+
+  addNewReader: async (userData) => {
+    const {firstname, lastname, email, pass, avatar} = userData;
+    const usersAmount = await Models.Reader.count();
+    const newReader = await Models.Reader.create({
+      firstname,
+      lastname,
+      email,
+      password: await getPassHashSum(pass),
+      avatar,
+      role: usersAmount > 0 ? UserRole.READER : UserRole.AUTHOR,
+    });
+    return newReader;
+  },
+
   getMatchedArticles: (searchString) => {
     return Models.Article.findAll({
-      attributes: articleAttributes,
       where: {'title': {[Op.substring]: searchString}}
     });
   },

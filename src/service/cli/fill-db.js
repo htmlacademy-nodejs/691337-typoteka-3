@@ -55,15 +55,16 @@ const getRandomCategories = (categories) => Array(getRandomInt(1, 3)).fill(``)
   .reduce((acc, it) => !acc.includes(it) ? [...acc, it] : acc, []);
 
 const generateReadersData = (readers) => readers.map((it) => {
-  const [firstname, lastname, email] = it.split(`, `);
-  const pass = nanoid(PASS_LENGTH);
+  const [firstname, lastname, email, role] = it.split(`, `);
+  const password = nanoid(PASS_LENGTH);
   const avatar = getAvatarFileName(getRandomInt(AvatarRange.min, AvatarRange.max));
   return {
     firstname,
     lastname,
     email,
-    pass,
+    password,
     avatar,
+    role
   };
 });
 

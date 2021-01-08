@@ -1,9 +1,11 @@
 'use strict';
 const axios = require(`axios`);
 const moment = require(`moment`);
+const bcrypt = require(`bcrypt`);
 const {getLogger} = require(`./logger`);
 const {HttpCode} = require(`./constants`);
 
+const saltRounds = 10;
 const logger = getLogger();
 
 module.exports.getRandomInt = (min, max) => {
@@ -50,4 +52,9 @@ module.exports.renderError = (errStatus, res) => {
   } else {
     res.status(errStatus).render(`errors/400`);
   }
+};
+
+module.exports.getPassHashSum = async (pass) => {
+  const hash = await bcrypt.hash(pass, saltRounds);
+  return hash;
 };

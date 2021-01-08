@@ -29,11 +29,17 @@ module.exports.ArticleMessage = {
 };
 
 module.exports.RegisterMessage = {
-  USER_ALREADY_REGISTER: `Пользователь с таким email уже зарегистрирован`,
+  READER_ALREADY_REGISTER: `Пользователь с таким email уже зарегистрирован`,
   REQUIRED_FIELD: `Поле обязательно для заполнения`,
   WRONG_EMAIL: `Некорректный email`,
-  WRONG_USERNAME: `Имя не должно содержать цифр и специальных символов`,
+  WRONG_READER_FIRSTNAME: `Имя не должно содержать цифр и специальных символов`,
+  WRONG_READER_LASTNAME: `Фамилия не должна содержать цифр и специальных символов`,
   MIN_PASSWORD_LENGTH: `Пароль должен быть не меньше 6 символов`,
   PASSWORDS_NOT_EQUAL: `Пароли не совпадают`,
   AVATAR_EMPTY_VALUE: `Отсутствует аватар`
+};
+
+module.exports.UserRole = {
+  READER: `reader`,
+  AUTHOR: `author`
 };
