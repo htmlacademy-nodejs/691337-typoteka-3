@@ -14,7 +14,7 @@ block wrapper
           a.popup__button.button.button--popup-close(aria-label='Закрыть окно') Закрыть окно
           h2.popup__title Регистрация
           .popup__form.popup__form--active.form.form--register
-            form(action='#' method='get')
+            form(action='/register' method='POST' enctype='multipart/form-data' autocomplete='off')
               .form__field
                 label
                   input(type='email' name='email' placeholder='Электронная почта' required)
@@ -30,11 +30,12 @@ block wrapper
               .form__field
                 label
                   input(type='password' name='repeat-password' placeholder='Повтор пароля' required)
-              .form__validation-error
-                p.form__error-message При регистрации произошли ошибки:
-                ul.form__errors
-                  li.form__error Пароль не может состоять из двух букв
-                  li.form__error Фамилия не должна быть смешной
+              if errorsList
+                .form__validation-error
+                  p.form__error-message При регистрации произошли ошибки:
+                  ul.form__errors
+                    each item in errorsList
+                      li.form__error= item
               .form__image-loader
                 a.form__avatar.avatar
                   img(src='img/icons/smile.svg' alt='аватар пользователя')
@@ -47,4 +48,5 @@ block wrapper
     include ../common/footer.pug
 
 block script
+  script(src='js/vendor.js')
   script(src='/js/main.js')

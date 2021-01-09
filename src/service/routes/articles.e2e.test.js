@@ -96,7 +96,7 @@ describe(`POST routes /api/articles`, () => {
     const resComment = await request(app).post(`/api/articles/${article.id}/comments`)
       .send(newComment.valid);
     expect(resComment.statusCode).toBe(HttpCode.CREATED);
-    expect(resComment.body.text).toEqual(newComment.text);
+    expect(resComment.body.text).toEqual(newComment.valid.text);
   });
   test(`When create article status code should be 201, check properties`, async () => {
     const resArticle = await request(app).post(`/api/articles`).send(newArticle.valid);
