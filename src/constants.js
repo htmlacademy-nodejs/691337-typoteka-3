@@ -34,9 +34,10 @@ module.exports.RegisterMessage = {
   WRONG_EMAIL: `Некорректный email`,
   WRONG_READER_FIRSTNAME: `Имя не должно содержать цифр и специальных символов`,
   WRONG_READER_LASTNAME: `Фамилия не должна содержать цифр и специальных символов`,
+  LASTNAME_EMPTY_VALUE: `Поле 'Фамилия' не должно быть пустым`,
   MIN_PASSWORD_LENGTH: `Пароль должен быть не меньше 6 символов`,
   PASSWORDS_NOT_EQUAL: `Пароли не совпадают`,
-  AVATAR_EMPTY_VALUE: `Отсутствует аватар`
+  AVATAR_EMPTY_VALUE: `Аватар отсутствует или имеет недопустимый формат файла`
 };
 
 module.exports.UserRole = {

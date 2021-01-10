@@ -85,7 +85,7 @@ describe(`PUT routes /api/articles`, () => {
     const resArticle = await request(app).put(`/api/articles/${article.id}`)
       .send(newArticle.notValid);
     expect(resArticle.statusCode).toBe(HttpCode.BAD_REQUEST);
-    expect(resArticle.body.notValid).toEqual(errorsList);
+    expect(resArticle.body).toEqual(errorsList);
   });
 });
 
@@ -112,7 +112,7 @@ describe(`POST routes /api/articles`, () => {
     const resArticle = await request(app).post(`/api/articles/`)
       .send(newArticle.notValid);
     expect(resArticle.statusCode).toBe(HttpCode.BAD_REQUEST);
-    expect(resArticle.body.notValid).toEqual(errorsList);
+    expect(resArticle.body).toEqual(errorsList);
   });
   test(`When not valid comment data sent`, async () => {
     const res = await request(app).get(`/api/articles`);

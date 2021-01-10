@@ -5,18 +5,19 @@ const {RegisterMessage} = require(`../../../constants`);
 
 module.exports = Joi.object({
   firstname: Joi.string()
-    .pattern(/^[a-zA-Zа-яА-Я]{2,50}$/)
+    .pattern(/^[a-zA-Zа-яА-Я]{1,50}$/)
     .required()
     .messages({
       'any.required': RegisterMessage.REQUIRED_FIELD,
       'string.pattern.base': RegisterMessage.WRONG_READER_FIRSTNAME
     }),
   lastname: Joi.string()
-    .pattern(/^[a-zA-Zа-яА-Я]{2,50}$/)
+    .pattern(/^[a-zA-Zа-яА-Я]{1,50}$/)
     .required()
     .messages({
       'any.required': RegisterMessage.REQUIRED_FIELD,
-      'string.pattern.base': RegisterMessage.WRONG_READER_LASTNAME
+      'string.pattern.base': RegisterMessage.WRONG_READER_LASTNAME,
+      'string.empty': RegisterMessage.LASTNAME_EMPTY_VALUE
     }),
   email: Joi.string()
     .email({

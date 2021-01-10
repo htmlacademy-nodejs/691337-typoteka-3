@@ -8,8 +8,8 @@ const logger = getLogger();
 module.exports.checkReaderExists = async (req, res, next) => {
   const existsReader = await storage.checkEmail(req.body);
   if (existsReader) {
-    logger.info(`End request with status code ${res.statusCode}`);
-    return res.status(HttpCode.OK).json(RegisterMessage.READER_ALREADY_REGISTER);
+    logger.error(`End request with error ${HttpCode.BAD_REQUEST}`);
+    return res.status(HttpCode.BAD_REQUEST).json([RegisterMessage.READER_ALREADY_REGISTER]);
   }
 
   return next();

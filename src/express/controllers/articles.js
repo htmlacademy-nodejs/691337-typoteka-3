@@ -64,6 +64,7 @@ module.exports.addArticle = async (req, res) => {
     category: req.body.category || [],
     announce: req.body.announce,
     fullText: req.body.fullText,
+    picture: req.file ? req.file.filename : ``
   };
 
   try {
@@ -71,7 +72,7 @@ module.exports.addArticle = async (req, res) => {
     return res.redirect(`/my`);
   } catch (err) {
     logger.error(`Error: ${err.message}`);
-    const errorsList = err.response.data.notValid;
+    const errorsList = err.response.data;
     return res.render(`articles/new-post`, {
       errorsList,
       data: article,
@@ -88,6 +89,7 @@ module.exports.updateArticle = async (req, res) => {
     category: req.body.category || [],
     announce: req.body.announce,
     fullText: req.body.fullText,
+    picture: req.file ? req.file.filename : ``
   };
 
   try {
@@ -95,7 +97,7 @@ module.exports.updateArticle = async (req, res) => {
     return res.redirect(`/my`);
   } catch (err) {
     logger.error(`Error: ${err.message}`);
-    const errorsList = err.response.data.notValid;
+    const errorsList = err.response.data;
     article.createdDate = changeDateViewOnlyDate(article.createdDate);
     return res.render(`articles/edit-post`, {
       errorsList,

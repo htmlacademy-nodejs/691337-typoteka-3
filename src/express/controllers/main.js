@@ -56,7 +56,7 @@ module.exports.addNewReader = async (req, res) => {
     lastname: req.body.surname,
     pass: req.body.password,
     repeatPass: req.body[`repeat-password`],
-    avatar: req.body.upload || `avatar-1.jpg`
+    avatar: req.file ? req.file.filename : ``
   };
 
   try {
@@ -64,7 +64,7 @@ module.exports.addNewReader = async (req, res) => {
     return res.redirect(`/login`);
   } catch (err) {
     logger.error(`Error: ${err}`);
-    const errorsList = err.response.data.notValid;
+    const errorsList = err.response.data;
     return res.render(`main/sign-up`, {
       errorsList,
       data: reader

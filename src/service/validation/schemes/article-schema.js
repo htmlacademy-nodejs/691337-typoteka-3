@@ -13,7 +13,8 @@ module.exports = Joi.object({
       'string.min': ArticleMessage.MIN_TITLE_LENGTH,
       'string.max': ArticleMessage.MAX_TITLE_LENGTH
     }),
-  picture: Joi.string(),
+  picture: Joi.string()
+    .empty(``),
   createdDate: Joi.string()
     .isoDate()
     .required(),
