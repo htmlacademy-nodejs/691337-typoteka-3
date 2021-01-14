@@ -3,17 +3,11 @@
 module.exports = (sequelize, DataTypes, Model) => {
   class Reader extends Model {}
   Reader.init({
-    'reader_id': {
-      type: DataTypes.BIGINT,
-      autoIncrement: true,
-      primaryKey: true,
-      allowNull: false,
-    },
-    'first_name': {
+    'firstname': {
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    'last_name': {
+    'lastname': {
       type: DataTypes.TEXT,
       allowNull: false,
     },
@@ -22,14 +16,18 @@ module.exports = (sequelize, DataTypes, Model) => {
       allowNull: false,
       unique: true,
     },
-    'pass': {
+    'password': {
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    'avatar_name': {
+    'avatar': {
       type: DataTypes.TEXT,
       allowNull: false,
     },
+    'role': {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    }
   }, {
     sequelize,
     timestamps: true,

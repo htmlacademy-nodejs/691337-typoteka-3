@@ -55,27 +55,28 @@ const getRandomCategories = (categories) => Array(getRandomInt(1, 3)).fill(``)
   .reduce((acc, it) => !acc.includes(it) ? [...acc, it] : acc, []);
 
 const generateReadersData = (readers) => readers.map((it) => {
-  const [firstName, lastName, email] = it.split(`, `);
-  const pass = nanoid(PASS_LENGTH);
+  const [firstname, lastname, email, role] = it.split(`, `);
+  const password = nanoid(PASS_LENGTH);
   const avatar = getAvatarFileName(getRandomInt(AvatarRange.min, AvatarRange.max));
   return {
-    'first_name': firstName,
-    'last_name': lastName,
-    'email': email,
-    'pass': pass,
-    'avatar_name': avatar,
+    firstname,
+    lastname,
+    email,
+    password,
+    avatar,
+    role
   };
 });
 
 const generateArticlesData = (amount, titles, sentences, pictures) => Array(amount).fill(``).map(() => ({
-  'article_title': titles[getRandomInt(0, titles.length - 1)],
-  'created_date': getRandomDate(),
+  'title': titles[getRandomInt(0, titles.length - 1)],
+  'createdDate': getRandomDate(),
   'announce': Array(getRandomInt(1, 5)).fill(``)
     .map(() => sentences[getRandomInt(0, sentences.length - 1)])
     .reduce((acc, el) => !acc.includes(el) ? [...acc, el] : acc, [])
     .join(` `),
-  'picture_name': pictures[getRandomInt(0, pictures.length - 1)],
-  'full_text': shuffle(sentences).slice(0, getRandomInt(0, sentences.length - 1)).join(` `),
+  'picture': pictures[getRandomInt(0, pictures.length - 1)],
+  'fullText': shuffle(sentences).slice(0, getRandomInt(0, sentences.length - 1)).join(` `),
 }));
 
 const generateCommentsData = (amount, comments, readers) => Array(amount).fill(START_INDEX)
@@ -85,17 +86,17 @@ const generateCommentsData = (amount, comments, readers) => Array(amount).fill(S
 
     return articleComments
       .map((el) => ({
-        'comment_text': el,
-        'created_date': getRandomDate(),
-        'article_id': articleId,
-        'reader_id': getRandomInt(START_INDEX, readers.length),
+        'text': el,
+        'createdDate': getRandomDate(),
+        articleId,
+        'readerId': getRandomInt(START_INDEX, readers.length),
       }));
   })
   .flat();
 
 const generateCategoriesData = (categories) => categories.map((it) => {
   return {
-    'category_title': it
+    'title': it
   };
 });
 

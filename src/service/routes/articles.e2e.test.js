@@ -3,7 +3,7 @@ process.argv.push(`--server`);
 
 const request = require(`supertest`);
 const app = require(`../cli/app`);
-const {HttpCode} = require(`../../constants`);
+const {HttpCode, ArticleMessage} = require(`../../constants`);
 
 const WRONG_ID = `dZuF7ilQ61Dl`;
 
@@ -18,8 +18,8 @@ const newArticle = {
   },
   notValid: {
     title: `Структуры`,
-    createdDate: ``,
-    announce: 2345,
+    createdDate: `2020-11-11T17:47:06.555Z`,
+    announce: `2345`,
     picture: `item05.jpg`,
     category: []
   }
@@ -35,10 +35,9 @@ const newComment = {
 };
 
 const errorsList = [
-  `"title" length must be at least 30 characters long`,
-  `"createdDate" is not allowed to be empty`,
-  `"category" does not contain 1 required value(s)`,
-  `"announce" must be a string`
+  ArticleMessage.MIN_TITLE_LENGTH,
+  ArticleMessage.CATEGORY_REQUIRED,
+  ArticleMessage.MIN_ANNOUNCE_LENGTH
 ];
 
 describe(`GET routes /api/articles`, () => {
@@ -86,7 +85,7 @@ describe(`PUT routes /api/articles`, () => {
     const resArticle = await request(app).put(`/api/articles/${article.id}`)
       .send(newArticle.notValid);
     expect(resArticle.statusCode).toBe(HttpCode.BAD_REQUEST);
-    expect(resArticle.body.notValid).toEqual(errorsList);
+    expect(resArticle.body).toEqual(errorsList);
   });
 });
 
@@ -97,7 +96,7 @@ describe(`POST routes /api/articles`, () => {
     const resComment = await request(app).post(`/api/articles/${article.id}/comments`)
       .send(newComment.valid);
     expect(resComment.statusCode).toBe(HttpCode.CREATED);
-    expect(resComment.body.text).toEqual(newComment.text);
+    expect(resComment.body.text).toEqual(newComment.valid.text);
   });
   test(`When create article status code should be 201, check properties`, async () => {
     const resArticle = await request(app).post(`/api/articles`).send(newArticle.valid);
@@ -113,7 +112,7 @@ describe(`POST routes /api/articles`, () => {
     const resArticle = await request(app).post(`/api/articles/`)
       .send(newArticle.notValid);
     expect(resArticle.statusCode).toBe(HttpCode.BAD_REQUEST);
-    expect(resArticle.body.notValid).toEqual(errorsList);
+    expect(resArticle.body).toEqual(errorsList);
   });
   test(`When not valid comment data sent`, async () => {
     const res = await request(app).get(`/api/articles`);

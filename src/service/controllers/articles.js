@@ -72,8 +72,7 @@ module.exports.removeComment = async (req, res) => {
 };
 
 module.exports.updateArticle = async (req, res) => {
-  const articleId = await storage.updateArticle(req.params.articleId, req.body);
-  const article = await storage.getArticleById(articleId);
+  const article = await storage.updateArticle(req.params.articleId, req.body);
 
   if (!article) {
     logger.error(`End request with error ${HttpCode.NOT_FOUND}`);
@@ -97,8 +96,7 @@ module.exports.addComment = async (req, res) => {
 };
 
 module.exports.addArticle = async (req, res) => {
-  const articleId = await storage.addNewArticle(req.body);
-  const article = await storage.getArticleById(articleId);
+  const article = await storage.addNewArticle(req.body);
 
   logger.info(`End request with status code ${HttpCode.CREATED}`);
   return res.status(HttpCode.CREATED).json(article);

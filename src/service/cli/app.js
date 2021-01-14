@@ -4,6 +4,7 @@ const {getLogger} = require(`../../logger`);
 const articlesRouter = require(`../routes/articles`);
 const categoriesRouter = require(`../routes/categories`);
 const searchRouter = require(`../routes/search`);
+const userRouter = require(`../routes/user`);
 
 const app = express();
 const logger = getLogger();
@@ -16,5 +17,6 @@ app.use(express.json());
 app.use(`/api/articles`, articlesRouter);
 app.use(`/api/categories`, categoriesRouter);
 app.use(`/api/search`, searchRouter);
+app.use(`/api/user`, userRouter);
 
 module.exports = app;

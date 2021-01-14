@@ -42,8 +42,12 @@ module.exports.getNewArticleForm = async (req, res) => {
   try {
     const categories = await getData(`${URL}/categories`);
     const categoriesTitles = categories.map((it) => it.title);
+    const date = changeDateViewOnlyDate(Date.now());
+
     return res.render(`articles/new-post`, {
-      data: {},
+      data: {
+        createdDate: date
+      },
       categoriesTitles
     });
   } catch (err) {
@@ -57,9 +61,10 @@ module.exports.addArticle = async (req, res) => {
   const article = {
     title: req.body.title,
     createdDate: normalizeDateFormat(req.body.createdDate),
-    category: categoriesTitles.filter((it) => Object.keys(req.body).includes(it)),
+    category: req.body.category || [],
     announce: req.body.announce,
     fullText: req.body.fullText,
+    picture: req.file ? req.file.filename : ``
   };
 
   try {
@@ -67,7 +72,7 @@ module.exports.addArticle = async (req, res) => {
     return res.redirect(`/my`);
   } catch (err) {
     logger.error(`Error: ${err.message}`);
-    const errorsList = err.response.data.notValid;
+    const errorsList = err.response.data;
     return res.render(`articles/new-post`, {
       errorsList,
       data: article,
@@ -81,9 +86,10 @@ module.exports.updateArticle = async (req, res) => {
   const article = {
     title: req.body.title,
     createdDate: normalizeDateFormat(req.body.createdDate),
-    category: categoriesTitles.filter((it) => Object.keys(req.body).includes(it)),
+    category: req.body.category || [],
     announce: req.body.announce,
     fullText: req.body.fullText,
+    picture: req.file ? req.file.filename : ``
   };
 
   try {
@@ -91,7 +97,7 @@ module.exports.updateArticle = async (req, res) => {
     return res.redirect(`/my`);
   } catch (err) {
     logger.error(`Error: ${err.message}`);
-    const errorsList = err.response.data.notValid;
+    const errorsList = err.response.data;
     article.createdDate = changeDateViewOnlyDate(article.createdDate);
     return res.render(`articles/edit-post`, {
       errorsList,
