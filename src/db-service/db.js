@@ -6,7 +6,7 @@ const getReader = require(`./models/reader`);
 const getArticle = require(`./models/article`);
 const getComment = require(`./models/comment`);
 const getCategory = require(`./models/category`);
-const {getLogger} = require(`../src/logger`);
+const {getLogger} = require(`../logger`);
 
 const logger = getLogger();
 

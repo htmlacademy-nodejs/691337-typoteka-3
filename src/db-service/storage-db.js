@@ -1,9 +1,9 @@
 'use strict';
 
 const {Op} = require(`sequelize`);
-const {Models} = require(`../service/db`);
-const {getPassHashSum} = require(`./utils`);
-const {UserRole} = require(`./constants`);
+const {Models} = require(`./db`);
+const {getPassHashSum} = require(`../utils`);
+const {UserRole} = require(`../constants`);
 
 const ARTICLES_PER_PAGE = 8;
 const START_PAGE = 1;

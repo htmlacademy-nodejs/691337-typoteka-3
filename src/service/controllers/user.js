@@ -1,6 +1,6 @@
 'use strict';
 const {getLogger} = require(`../../logger`);
-const {storage} = require(`../../storage-db`);
+const {storage} = require(`../../db-service/storage-db`);
 const {HttpCode, RegisterMessage} = require(`../../constants`);
 
 const logger = getLogger();
