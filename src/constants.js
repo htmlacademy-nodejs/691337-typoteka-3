@@ -40,6 +40,11 @@ module.exports.RegisterMessage = {
   AVATAR_EMPTY_VALUE: `Аватар отсутствует или имеет недопустимый формат файла`
 };
 
+module.exports.LoginMessage = {
+  READER_NOT_EXISTS: `Пользователь с таким email не зарегистрирован`,
+  WRONG_PASSWORD: `Неверный логин или пароль`
+};
+
 module.exports.UserRole = {
   READER: `reader`,
   AUTHOR: `author`

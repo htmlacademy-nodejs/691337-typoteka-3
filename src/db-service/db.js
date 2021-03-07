@@ -6,6 +6,7 @@ const getReader = require(`./models/reader`);
 const getArticle = require(`./models/article`);
 const getComment = require(`./models/comment`);
 const getCategory = require(`./models/category`);
+const getToken = require(`./models/token`);
 const {getLogger} = require(`../logger`);
 
 const logger = getLogger();
@@ -25,6 +26,7 @@ const Models = {
   Article: getArticle(sequelize, DataTypes, Model),
   Comment: getComment(sequelize, DataTypes, Model),
   Category: getCategory(sequelize, DataTypes, Model),
+  Token: getToken(sequelize, DataTypes, Model),
 };
 
 Models.Reader.hasMany(Models.Comment, {

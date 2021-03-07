@@ -34,9 +34,11 @@ const upload = multer({
 });
 
 mainRouter.get(`/`, controller.getArticles);
-mainRouter.get(`/login`, (req, res) => res.render(`main/login`));
+//mainRouter.get(`/login`, (req, res) => res.render(`main/login`));
 mainRouter.get(`/register`, controller.getRegisterForm);
+mainRouter.get(`/login`, controller.getLoginForm);
 mainRouter.post(`/register`, upload.single(`upload`), controller.addNewReader);
+mainRouter.post(`/login`, upload.any(), controller.authenticateReader);
 mainRouter.get(`/categories`, (req, res) => res.render(`main/all-categories`));
 mainRouter.get(`/search`, controller.getMatchedArticles);
 

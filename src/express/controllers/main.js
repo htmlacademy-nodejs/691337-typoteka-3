@@ -6,6 +6,7 @@ const {URL} = require(`../../constants`);
 const {getLogger} = require(`../../logger`);
 
 const logger = getLogger();
+let isLogged = false;
 
 module.exports.getArticles = async (req, res) => {
   try {
@@ -49,6 +50,16 @@ module.exports.getRegisterForm = async (req, res) => {
   }
 };
 
+module.exports.getLoginForm = async (req, res) => {
+  try {
+    return res.render(`main/login`, {
+      data: {}
+    });
+  } catch (err) {
+    return renderError(err.response.status, res);
+  }
+};
+
 module.exports.addNewReader = async (req, res) => {
   const reader = {
     email: req.body.email,
@@ -66,6 +77,29 @@ module.exports.addNewReader = async (req, res) => {
     logger.error(`Error: ${err}`);
     const errorsList = err.response.data;
     return res.render(`main/sign-up`, {
+      errorsList,
+      data: reader
+    });
+  }
+};
+
+module.exports.authenticateReader = async (req, res) => {
+  const reader = {
+    email: req.body.email,
+    pass: req.body.password
+  };
+
+  try {
+    const response = await axios.post(`${URL}/user/login`, reader);
+    isLogged = true;
+    await res.cookie(`accessToken`, `${response.data.accessToken}`);
+    await res.cookie(`refreshToken`, `${response.data.refreshToken}`);
+    //await res.cookie(`avatar`, `${response.data.avatar}`);
+    return res.redirect(`/`);
+  } catch (err) {
+    logger.error(`Error: ${err}`);
+    const errorsList = err.response.data;
+    return res.render(`auth/login`, {
       errorsList,
       data: reader
     });

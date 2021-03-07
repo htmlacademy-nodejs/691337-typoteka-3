@@ -195,7 +195,7 @@ module.exports.storage = {
   checkEmail: async (userData) => {
     const {email} = userData;
     const user = await Models.Reader.findOne({where: {email}});
-    return user !== null;
+    return user;
   },
 
   addNewReader: async (userData) => {
@@ -211,7 +211,19 @@ module.exports.storage = {
     });
     return newReader;
   },
-
+  addRefreshToken: async (refresh) => {
+    const newToken = await Models.Token.create({
+      refresh
+    });
+    return newToken;
+  },
+  findRefreshToken: async (refresh) => {
+    const refreshToken = await Models.Token.findOne({where: {refresh}});
+    return refreshToken;
+  },
+  deleteRefreshToken: async (token) => {
+    return Models.Token.destroy({where: {refresh: token.refresh}});
+  },
   getMatchedArticles: (searchString) => {
     return Models.Article.findAll({
       where: {'title': {[Op.substring]: searchString}}

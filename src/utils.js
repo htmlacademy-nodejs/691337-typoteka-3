@@ -2,8 +2,10 @@
 const axios = require(`axios`);
 const moment = require(`moment`);
 const bcrypt = require(`bcrypt`);
+const jwt = require(`jsonwebtoken`);
 const {getLogger} = require(`./logger`);
 const {HttpCode} = require(`./constants`);
+const {JWT_ACCESS_SECRET, JWT_REFRESH_SECRET} = require(`./db-service/config`);
 
 const saltRounds = 10;
 const logger = getLogger();
@@ -57,4 +59,15 @@ module.exports.renderError = (errStatus, res) => {
 module.exports.getPassHashSum = async (pass) => {
   const hash = await bcrypt.hash(pass, saltRounds);
   return hash;
+};
+
+module.exports.makeTokens = (tokenData) => {
+  const accessToken = jwt.sign(tokenData, JWT_ACCESS_SECRET, {expiresIn: `50s`});
+  const refreshToken = jwt.sign(tokenData, JWT_REFRESH_SECRET);
+  return {accessToken, refreshToken};
+};
+
+module.exports.comparePassHashSum = async (user, pass) => {
+  const match = await bcrypt.compare(pass, user.password);
+  return match;
 };
