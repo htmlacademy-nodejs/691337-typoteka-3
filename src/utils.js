@@ -62,7 +62,7 @@ module.exports.getPassHashSum = async (pass) => {
 };
 
 module.exports.makeTokens = (tokenData) => {
-  const accessToken = jwt.sign(tokenData, JWT_ACCESS_SECRET, {expiresIn: `50s`});
+  const accessToken = jwt.sign(tokenData, JWT_ACCESS_SECRET, {expiresIn: `20m`});
   const refreshToken = jwt.sign(tokenData, JWT_REFRESH_SECRET);
   return {accessToken, refreshToken};
 };

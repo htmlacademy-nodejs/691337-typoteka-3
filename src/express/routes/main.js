@@ -39,6 +39,7 @@ mainRouter.get(`/register`, controller.getRegisterForm);
 mainRouter.get(`/login`, controller.getLoginForm);
 mainRouter.post(`/register`, upload.single(`upload`), controller.addNewReader);
 mainRouter.post(`/login`, upload.any(), controller.authenticateReader);
+mainRouter.get(`/logout`, controller.logout);
 mainRouter.get(`/categories`, (req, res) => res.render(`main/all-categories`));
 mainRouter.get(`/search`, controller.getMatchedArticles);
 

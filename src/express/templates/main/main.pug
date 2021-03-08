@@ -7,7 +7,12 @@ block wrapper
   .wrapper
 
     block header
-      include ../common/header.pug
+      if !user.isLogged
+        include ../common/header.pug
+      else if user.isLogged && user.isAuthor
+        include ../common/header-admin.pug
+      else
+        include ../common/header-logged.pug
 
     block content
       main.main-page

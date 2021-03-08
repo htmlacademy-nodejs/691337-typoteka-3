@@ -46,11 +46,11 @@ module.exports.createReader = async (req, res) => {
 
 module.exports.makeTokens = async (req, res) => {
   const reader = res.locals.user;
-  const {id, avatar} = reader;
+  const {id} = reader;
 
   const {accessToken, refreshToken} = makeTokens({id});
   await storage.addRefreshToken(refreshToken);
-  return res.json({accessToken, refreshToken});
+  return res.json({accessToken, refreshToken, reader});
 };
 
 module.exports.refreshToken = async (req, res) => {
