@@ -7,12 +7,14 @@ block wrapper
   .wrapper
 
     block header
-      if !user.isLogged
-        include ../common/header.pug
-      else if user.isLogged && user.isAuthor
-        include ../common/header-admin.pug
-      else
-        include ../common/header-logged.pug
+      - const status = user.role
+      case status
+        when 'author'
+          include ../common/header-admin.pug
+        when 'reader'
+           include ../common/header-logged.pug
+        default
+          include ../common/header.pug
 
     block content
       main.main-page

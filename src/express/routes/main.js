@@ -1,11 +1,15 @@
 'use strict';
 
 const express = require(`express`);
-const mainRouter = new express.Router();
 const multer = require(`multer`);
+const csrf = require(`csurf`);
 const path = require(`path`);
 const nanoid = require(`nanoid`);
 const controller = require(`../controllers/main`);
+const {authAdmin} = require(`../jwt-auth`);
+const mainRouter = new express.Router();
+
+const csrfProtection = csrf({cookie: true});
 
 const UPLOAD_DIR = `../upload/img/`;
 const uploadDirAbsolute = path.resolve(__dirname, UPLOAD_DIR);
@@ -34,13 +38,12 @@ const upload = multer({
 });
 
 mainRouter.get(`/`, controller.getArticles);
-//mainRouter.get(`/login`, (req, res) => res.render(`main/login`));
-mainRouter.get(`/register`, controller.getRegisterForm);
-mainRouter.get(`/login`, controller.getLoginForm);
-mainRouter.post(`/register`, upload.single(`upload`), controller.addNewReader);
-mainRouter.post(`/login`, upload.any(), controller.authenticateReader);
+mainRouter.get(`/register`, csrfProtection, controller.getRegisterForm);
+mainRouter.get(`/login`, csrfProtection, controller.getLoginForm);
+mainRouter.post(`/register`, upload.single(`upload`), csrfProtection, controller.addNewReader);
+mainRouter.post(`/login`, upload.any(), csrfProtection, controller.authenticateReader);
 mainRouter.get(`/logout`, controller.logout);
-mainRouter.get(`/categories`, (req, res) => res.render(`main/all-categories`));
-mainRouter.get(`/search`, controller.getMatchedArticles);
+mainRouter.get(`/categories`, authAdmin, (req, res) => res.render(`main/all-categories`));
+mainRouter.get(`/search`, csrfProtection, controller.getMatchedArticles);
 
 module.exports = mainRouter;

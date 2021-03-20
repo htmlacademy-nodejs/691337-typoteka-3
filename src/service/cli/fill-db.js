@@ -1,7 +1,6 @@
 'use strict';
 
 const fs = require(`fs`).promises;
-const nanoid = require(`nanoid`);
 const {getLogger} = require(`../../logger`);
 const {shuffle, getRandomInt} = require(`../../utils`);
 const {sequelize, initDb} = require(`../../db-service/db`);
@@ -10,7 +9,6 @@ const FILE_PATH_TITLES = `./data/titles.txt`;
 const FILE_PATH_CATEGORIES = `./data/categories.txt`;
 const FILE_PATH_SENTENCES = `./data/sentences.txt`;
 const FILE_PATH_COMMENTS = `./data/comments.txt`;
-const FILE_PATH_READERS = `./data/readers.txt`;
 const FILE_PATH_PICTURES = `./data/pictures.txt`;
 
 const DEFAULT_AMOUNT = 3;
@@ -18,18 +16,12 @@ const START_INDEX = 1;
 const MAX_AMOUNT = 1000;
 const MS_IN_MONTH = 30 * 24 * 60 * 60 * 1000;
 const MONTHS_AMOUNT = 3;
-const PASS_LENGTH = 6;
 
 const logger = getLogger();
 
 const DateRange = {
   min: Date.now() - MONTHS_AMOUNT * MS_IN_MONTH,
   max: Date.now(),
-};
-
-const AvatarRange = {
-  min: 1,
-  max: 5,
 };
 
 const readContent = async (filepath) => {
@@ -42,8 +34,6 @@ const readContent = async (filepath) => {
   }
 };
 
-const getAvatarFileName = (num) => `avatar-${num}.png`;
-
 const getRandomDate = () => new Date(getRandomInt(DateRange.min, DateRange.max))
   .toISOString().split(`T`)[0];
 
@@ -53,20 +43,6 @@ const getRandomComments = (comments) => Array(getRandomInt(2, 5)).fill(``)
 const getRandomCategories = (categories) => Array(getRandomInt(1, 3)).fill(``)
   .map(() => getRandomInt(START_INDEX, categories.length))
   .reduce((acc, it) => !acc.includes(it) ? [...acc, it] : acc, []);
-
-const generateReadersData = (readers) => readers.map((it) => {
-  const [firstname, lastname, email, role] = it.split(`, `);
-  const password = nanoid(PASS_LENGTH);
-  const avatar = getAvatarFileName(getRandomInt(AvatarRange.min, AvatarRange.max));
-  return {
-    firstname,
-    lastname,
-    email,
-    password,
-    avatar,
-    role
-  };
-});
 
 const generateArticlesData = (amount, titles, sentences, pictures) => Array(amount).fill(``).map(() => ({
   'title': titles[getRandomInt(0, titles.length - 1)],
@@ -79,7 +55,7 @@ const generateArticlesData = (amount, titles, sentences, pictures) => Array(amou
   'fullText': shuffle(sentences).slice(0, getRandomInt(0, sentences.length - 1)).join(` `),
 }));
 
-const generateCommentsData = (amount, comments, readers) => Array(amount).fill(START_INDEX)
+const generateCommentsData = (amount, comments) => Array(amount).fill(START_INDEX)
   .map((it, index) => {
     const articleId = it + index;
     const articleComments = getRandomComments(comments);
@@ -88,8 +64,7 @@ const generateCommentsData = (amount, comments, readers) => Array(amount).fill(S
       .map((el) => ({
         'text': el,
         'createdDate': getRandomDate(),
-        articleId,
-        'readerId': getRandomInt(START_INDEX, readers.length),
+        articleId
       }));
   })
   .flat();
@@ -103,12 +78,11 @@ const generateCategoriesData = (categories) => categories.map((it) => {
 module.exports = {
   name: `--filldb`,
   async run(args) {
-    const [titles, categories, sentences, comments, readers, pictures] = await Promise.all([
+    const [titles, categories, sentences, comments, pictures] = await Promise.all([
       readContent(FILE_PATH_TITLES),
       readContent(FILE_PATH_CATEGORIES),
       readContent(FILE_PATH_SENTENCES),
       readContent(FILE_PATH_COMMENTS),
-      readContent(FILE_PATH_READERS),
       readContent(FILE_PATH_PICTURES),
     ]);
 
@@ -120,12 +94,11 @@ module.exports = {
       return;
     }
 
-    const readersData = generateReadersData(readers);
     const articlesData = generateArticlesData(articleAmount, titles, sentences, pictures);
-    const commentsData = generateCommentsData(articleAmount, comments, readers);
+    const commentsData = generateCommentsData(articleAmount, comments);
     const categoriesData = generateCategoriesData(categories);
 
-    await initDb(readersData, articlesData, commentsData, categoriesData, getRandomCategories);
+    await initDb(articlesData, commentsData, categoriesData, getRandomCategories);
     await sequelize.close();
   },
 };
