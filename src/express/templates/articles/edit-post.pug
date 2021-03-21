@@ -12,6 +12,7 @@ block wrapper
         .popup.popup--new-publication.popup--anti
           .new-publication
             form(action='' method='POST' enctype='multipart/form-data' autocomplete='off')
+              input(type='hidden' name='_csrf' value= csrf)
               .new-publication__header
                 h1 Новая публикация
                 .new-publication__date-form
@@ -19,7 +20,7 @@ block wrapper
                   .new-publication__date-form-division
                     .new-publication__date-block
                       label(for='new-publication-date' aria-label='Календарь')
-                      input#new-publication-date(type='text' name='createdDate' placeholder= '2019-03-21' value= data.createdDate)
+                      input#new-publication-date(type='text' name='date' placeholder= '2019-03-21' value= data.createdDate)
                 button.new-publication__button.button.button--colored(type='submit') Опубликовать
               a.popup__button.button.button--popup-close(type='button' aria-label='Закрыть окно') Закрыть окно
               .new-publication__form.form

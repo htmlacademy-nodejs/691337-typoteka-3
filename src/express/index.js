@@ -12,7 +12,6 @@ const PORT = 8080;
 const PUBLIC_DIR = `../../public`;
 const UPLOAD_DIR = `upload`;
 
-
 const app = express();
 const logger = getLogger();
 

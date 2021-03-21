@@ -15,6 +15,7 @@ block wrapper
           h2.popup__title Войти
           .popup__form.form.form--log-in
             form(action='/login' method='post' enctype='multipart/form-data')
+              input(type='hidden' name='_csrf' value= csrf)
               .form__field
                 label
                   input(type='email' name='email' value= data.email placeholder='Электронная почта' required)

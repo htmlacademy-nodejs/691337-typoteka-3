@@ -48,7 +48,8 @@ module.exports.getMatchedArticles = async (req, res) => {
 module.exports.getRegisterForm = async (req, res) => {
   try {
     return res.render(`main/sign-up`, {
-      data: {}
+      data: {},
+      csrf: req.csrfToken(),
     });
   } catch (err) {
     return renderError(err.response.status, res);
@@ -58,7 +59,8 @@ module.exports.getRegisterForm = async (req, res) => {
 module.exports.getLoginForm = async (req, res) => {
   try {
     return res.render(`main/login`, {
-      data: {}
+      data: {},
+      csrf: req.csrfToken(),
     });
   } catch (err) {
     return renderError(err.response.status, res);
