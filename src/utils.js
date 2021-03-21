@@ -1,12 +1,37 @@
 'use strict';
 const axios = require(`axios`);
 const moment = require(`moment`);
+const path = require(`path`);
+const multer = require(`multer`);
+const nanoid = require(`nanoid`);
 const bcrypt = require(`bcrypt`);
+const jwt = require(`jsonwebtoken`);
 const {getLogger} = require(`./logger`);
 const {HttpCode} = require(`./constants`);
+const {JWT_ACCESS_SECRET, JWT_REFRESH_SECRET} = require(`./db-service/config`);
 
 const saltRounds = 10;
 const logger = getLogger();
+
+const UPLOAD_DIR = `./express/upload/img`;
+const uploadDirAbsolute = path.resolve(__dirname, UPLOAD_DIR);
+const FileType = [`image/png`, `image/jpg`, `image/jpeg`];
+
+const storage = multer.diskStorage({
+  destination: uploadDirAbsolute,
+  filename: (req, file, cb) => {
+    const uniqueName = nanoid(10);
+    const extension = file.originalname.split(`.`).pop();
+    cb(null, `${uniqueName}.${extension}`);
+  }
+});
+const fileFilter = (req, file, cb) => {
+  if (FileType.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
 
 module.exports.getRandomInt = (min, max) => {
   min = Math.ceil(min);
@@ -23,9 +48,9 @@ module.exports.shuffle = (someArray) => {
   return someArray;
 };
 
-module.exports.getData = async (path) => {
+module.exports.getData = async (routePath) => {
   try {
-    const content = await axios.get(path);
+    const content = await axios.get(routePath);
     return content.data;
   } catch (err) {
     logger.error(`Error: ${err.message}`);
@@ -58,3 +83,19 @@ module.exports.getPassHashSum = async (pass) => {
   const hash = await bcrypt.hash(pass, saltRounds);
   return hash;
 };
+
+module.exports.makeTokens = (tokenData) => {
+  const accessToken = jwt.sign(tokenData, JWT_ACCESS_SECRET, {expiresIn: `20m`});
+  const refreshToken = jwt.sign(tokenData, JWT_REFRESH_SECRET);
+  return {accessToken, refreshToken};
+};
+
+module.exports.comparePassHashSum = async (user, pass) => {
+  const match = await bcrypt.compare(pass, user.password);
+  return match;
+};
+
+module.exports.upload = multer({
+  storage,
+  fileFilter
+});

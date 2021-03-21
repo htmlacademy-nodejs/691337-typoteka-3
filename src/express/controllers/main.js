@@ -15,11 +15,17 @@ module.exports.getArticles = async (req, res) => {
     data.articles.forEach((it) => {
       it.createdDate = changeDateView(it.createdDate);
     });
+    const {avatar, userName, role} = req.cookies;
     return res.render(`main/main`, {
       articles: data.articles,
       view: data.pagesToView,
       current: data.currentPage,
-      categories
+      categories,
+      user: {
+        avatar,
+        userName,
+        role
+      },
     });
   } catch (err) {
     return renderError(err.response.status, res);
@@ -42,7 +48,19 @@ module.exports.getMatchedArticles = async (req, res) => {
 module.exports.getRegisterForm = async (req, res) => {
   try {
     return res.render(`main/sign-up`, {
-      data: {}
+      data: {},
+      csrf: req.csrfToken(),
+    });
+  } catch (err) {
+    return renderError(err.response.status, res);
+  }
+};
+
+module.exports.getLoginForm = async (req, res) => {
+  try {
+    return res.render(`main/login`, {
+      data: {},
+      csrf: req.csrfToken(),
     });
   } catch (err) {
     return renderError(err.response.status, res);
@@ -69,5 +87,53 @@ module.exports.addNewReader = async (req, res) => {
       errorsList,
       data: reader
     });
+  }
+};
+
+module.exports.authenticateReader = async (req, res) => {
+  const reader = {
+    email: req.body.email,
+    pass: req.body.password
+  };
+
+  try {
+    const response = await axios.post(`${URL}/user/login`, reader);
+    const {accessToken, refreshToken} = response.data;
+    const {role, firstname, lastname, avatar} = response.data.reader;
+    await res.cookie(`accessToken`, `${accessToken}`);
+    await res.cookie(`refreshToken`, `${refreshToken}`);
+    await res.cookie(`role`, `${role}`);
+
+    if (role === `reader`) {
+      await res.cookie(`userName`, `${firstname} ${lastname}`);
+      await res.cookie(`avatar`, `${avatar}`);
+    }
+
+    return res.redirect(`/`);
+  } catch (err) {
+    logger.error(`Error: ${err}`);
+    const loginError = err.response.data[0].loginError;
+    const passError = err.response.data[0].passError;
+    return res.render(`main/login`, {
+      loginError,
+      passError,
+      data: reader
+    });
+  }
+};
+
+module.exports.logout = async (req, res) => {
+  const {refreshToken} = req.cookies;
+
+  try {
+    await axios.post(`${URL}/user/logout`, {refreshToken});
+    await res.clearCookie(`accessToken`);
+    await res.clearCookie(`refreshToken`);
+    await res.clearCookie(`role`);
+    await res.clearCookie(`avatar`);
+    await res.clearCookie(`userName`);
+    return res.redirect(`/login`);
+  } catch (err) {
+    return renderError(err.response.status, res);
   }
 };

@@ -1,43 +1,21 @@
 'use strict';
 
 const express = require(`express`);
-const mainRouter = new express.Router();
-const multer = require(`multer`);
-const path = require(`path`);
-const nanoid = require(`nanoid`);
+const csrf = require(`csurf`);
 const controller = require(`../controllers/main`);
+const {upload} = require(`../../utils`);
+const {authAdmin} = require(`../jwt-auth`);
+const mainRouter = new express.Router();
 
-const UPLOAD_DIR = `../upload/img/`;
-const uploadDirAbsolute = path.resolve(__dirname, UPLOAD_DIR);
-const FileType = [`image/png`, `image/jpg`, `image/jpeg`];
-
-const storage = multer.diskStorage({
-  destination: uploadDirAbsolute,
-  filename: (req, file, cb) => {
-    const uniqueName = nanoid(10);
-    const extension = file.originalname.split(`.`).pop();
-    cb(null, `${uniqueName}.${extension}`);
-  }
-});
-
-const fileFilter = (req, file, cb) => {
-  if (FileType.includes(file.mimetype)) {
-    cb(null, true);
-  } else {
-    cb(null, false);
-  }
-};
-
-const upload = multer({
-  storage,
-  fileFilter
-});
+const csrfProtection = csrf({cookie: true});
 
 mainRouter.get(`/`, controller.getArticles);
-mainRouter.get(`/login`, (req, res) => res.render(`main/login`));
-mainRouter.get(`/register`, controller.getRegisterForm);
-mainRouter.post(`/register`, upload.single(`upload`), controller.addNewReader);
-mainRouter.get(`/categories`, (req, res) => res.render(`main/all-categories`));
+mainRouter.get(`/register`, csrfProtection, controller.getRegisterForm);
+mainRouter.get(`/login`, csrfProtection, controller.getLoginForm);
+mainRouter.post(`/register`, upload.single(`upload`), csrfProtection, controller.addNewReader);
+mainRouter.post(`/login`, upload.single(`upload`), csrfProtection, controller.authenticateReader);
+mainRouter.get(`/logout`, controller.logout);
+mainRouter.get(`/categories`, authAdmin, (req, res) => res.render(`main/all-categories`));
 mainRouter.get(`/search`, controller.getMatchedArticles);
 
 module.exports = mainRouter;

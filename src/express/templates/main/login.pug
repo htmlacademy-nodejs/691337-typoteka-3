@@ -14,15 +14,18 @@ block wrapper
           a.popup__button.button.button--popup-close(aria-label='Закрыть окно') Закрыть окно
           h2.popup__title Войти
           .popup__form.form.form--log-in
-            form(action='#' method='get')
+            form(action='/login' method='post' enctype='multipart/form-data')
+              input(type='hidden' name='_csrf' value= csrf)
               .form__field
                 label
-                  input(type='email' name='email' placeholder='Электронная почта' required)
+                  input(type='email' name='email' value= data.email placeholder='Электронная почта' required)
+              if loginError
+                p.form__error-message= loginError
               .form__field
                 label
                   input(type='password' name='password' placeholder='Пароль' required)
-              if error
-                p.form__error-message Некоторая ошибка произошла, беда!
+              if passError
+                p.form__error-message= passError
               button.form__submit-btn.form__submit-btn--log-in.button.button--colored(type='submit') Войти
 
   block footer
@@ -30,3 +33,4 @@ block wrapper
 
 block script
   script(src='/js/main.js')
+

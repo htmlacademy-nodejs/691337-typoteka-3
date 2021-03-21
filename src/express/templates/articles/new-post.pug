@@ -4,7 +4,7 @@ block wrapper
  .wrapper
 
   block header
-    include ../common/header-nav.pug
+    include ../common/header-admin.pug
 
   block content
     main
@@ -12,6 +12,7 @@ block wrapper
         .popup.popup--new-publication.popup--anti
           .new-publication
             form(action='/articles/add' method='POST' enctype='multipart/form-data' autocomplete='off')
+              input(type='hidden' name='_csrf' value= csrf)
               .new-publication__header
                 h1 Новая публикация
                 .new-publication__date-form
@@ -19,7 +20,7 @@ block wrapper
                   .new-publication__date-form-division
                     .new-publication__date-block
                       label(for='new-publication-date' aria-label='Календарь')
-                      input#new-publication-date(type='text' name='createdDate' value= data.createdDate placeholder='21.03.2019')
+                      input#new-publication-date(type='text' name='date' value= new Date() placeholder='21.03.2019')
                 button.new-publication__button.button.button--colored(type='submit') Опубликовать
               a.popup__button.button.button--popup-close(aria-label='Закрыть окно') Закрыть окно
               .new-publication__form.form
@@ -56,6 +57,7 @@ block wrapper
                           li.form__error= item
   block footer
   include ../common/footer.pug
+
 block script
   script(src='/js/vendor.js')
   script(src='/js/main.js')

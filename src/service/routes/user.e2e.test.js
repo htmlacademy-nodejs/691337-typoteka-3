@@ -4,7 +4,7 @@ process.argv.push(`--server`);
 const request = require(`supertest`);
 const nanoid = require(`nanoid`);
 const app = require(`../cli/app`);
-const {HttpCode, RegisterMessage} = require(`../../constants`);
+const {HttpCode, RegisterMessage, LoginMessage} = require(`../../constants`);
 
 const newEmail = nanoid(6);
 
@@ -50,4 +50,18 @@ test(`When not valid data sent`, async () => {
   .send(newReader.notValid);
   expect(res.statusCode).toBe(HttpCode.BAD_REQUEST);
   expect(res.body).toEqual(errorsList);
+});
+test(`When not correct login data sent`, async () => {
+  const res = await request(app).post(`/api/user/login`).send({
+    email: newReader.notValid.email,
+    pass: newReader.notValid.pass
+  });
+  expect(res.body).toEqual([{loginError: LoginMessage.READER_NOT_EXISTS}]);
+});
+test(`When not correct password sent`, async () => {
+  const res = await request(app).post(`/api/user/login`).send({
+    email: newReader.valid.email,
+    pass: newReader.notValid.pass
+  });
+  expect(res.body).toEqual([{passError: LoginMessage.WRONG_PASSWORD}]);
 });

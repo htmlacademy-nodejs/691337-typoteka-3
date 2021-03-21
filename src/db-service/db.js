@@ -6,7 +6,8 @@ const getReader = require(`./models/reader`);
 const getArticle = require(`./models/article`);
 const getComment = require(`./models/comment`);
 const getCategory = require(`./models/category`);
-const {getLogger} = require(`../src/logger`);
+const getToken = require(`./models/token`);
+const {getLogger} = require(`../logger`);
 
 const logger = getLogger();
 
@@ -25,6 +26,7 @@ const Models = {
   Article: getArticle(sequelize, DataTypes, Model),
   Comment: getComment(sequelize, DataTypes, Model),
   Category: getCategory(sequelize, DataTypes, Model),
+  Token: getToken(sequelize, DataTypes, Model),
 };
 
 Models.Reader.hasMany(Models.Comment, {
@@ -71,12 +73,11 @@ const connectDb = async () => {
   }
 };
 
-const initDb = async (readers, articles, comments, categories, fn) => {
+const initDb = async (articles, comments, categories, fn) => {
   try {
     await sequelize.sync({force: true});
     logger.info(`Database structure created successful`);
 
-    await Models.Reader.bulkCreate(readers);
     await Models.Article.bulkCreate(articles);
     await Models.Comment.bulkCreate(comments);
     await Models.Category.bulkCreate(categories);

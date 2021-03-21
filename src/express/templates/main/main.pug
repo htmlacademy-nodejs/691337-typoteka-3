@@ -7,7 +7,14 @@ block wrapper
   .wrapper
 
     block header
-      include ../common/header.pug
+      - const status = user.role
+      case status
+        when 'author'
+          include ../common/header-admin.pug
+        when 'reader'
+           include ../common/header-logged.pug
+        default
+          include ../common/header.pug
 
     block content
       main.main-page

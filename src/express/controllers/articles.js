@@ -14,7 +14,8 @@ module.exports.getArticleById = async (req, res) => {
     article.createdDate = changeDateViewOnlyDate(article.createdDate);
     return res.render(`articles/edit-post`, {
       data: article,
-      categoriesTitles
+      categoriesTitles,
+      csrf: req.csrfToken(),
     });
   } catch (err) {
     return renderError(err.response.status, res);
@@ -48,7 +49,8 @@ module.exports.getNewArticleForm = async (req, res) => {
       data: {
         createdDate: date
       },
-      categoriesTitles
+      categoriesTitles,
+      csrf: req.csrfToken(),
     });
   } catch (err) {
     return renderError(err.response.status, res);
@@ -60,7 +62,7 @@ module.exports.addArticle = async (req, res) => {
   const categoriesTitles = categories.map((it) => it.title);
   const article = {
     title: req.body.title,
-    createdDate: normalizeDateFormat(req.body.createdDate),
+    createdDate: normalizeDateFormat(req.body.date),
     category: req.body.category || [],
     announce: req.body.announce,
     fullText: req.body.fullText,
@@ -85,7 +87,7 @@ module.exports.updateArticle = async (req, res) => {
   const categoriesTitles = categories.map((it) => it.title);
   const article = {
     title: req.body.title,
-    createdDate: normalizeDateFormat(req.body.createdDate),
+    createdDate: normalizeDateFormat(req.body.date),
     category: req.body.category || [],
     announce: req.body.announce,
     fullText: req.body.fullText,
