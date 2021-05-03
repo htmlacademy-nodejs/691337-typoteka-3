@@ -13,8 +13,8 @@ articlesRouter.get(`/category/:id`, controller.getArticlesByCategory);
 articlesRouter.get(`/add`, [csrfProtection, authAdmin], controller.getNewArticleForm);
 articlesRouter.post(`/add`, upload.single(`upload`), [csrfProtection, authAdmin], controller.addArticle);
 articlesRouter.post(`/add`, upload.any(), [csrfProtection, authAdmin], controller.addArticle);
-articlesRouter.get(`/edit/:id`, [csrfProtection, authAdmin], controller.getArticleById);
+articlesRouter.get(`/edit/:id`, [csrfProtection, authAdmin], controller.getArticleByIdToEdit);
 articlesRouter.post(`/edit/:id`, upload.single(`upload`), [csrfProtection, authAdmin], controller.updateArticle);
-articlesRouter.get(`/:id`, (req, res) => res.render(`articles/post`));
+articlesRouter.get(`/:id`, controller.getArticleById);
 
 module.exports = articlesRouter;

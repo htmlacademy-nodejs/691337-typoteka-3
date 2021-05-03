@@ -27,7 +27,25 @@ const tableJoinTemplate = [
 const getCategoryTitle = (categories) => {
   return categories.map((it) => it.title);
 };
-const normalizeArticleData = (article) => {
+
+const getReaderData = async (id) => {
+  const reader = await Models.Reader.findOne({where: {id}});
+  const {firstname, lastname, avatar} = reader;
+  return {firstname, lastname, avatar};
+};
+
+const normalizeCommentsData = async (comments) => {
+  const commentsData = await Promise.all(Array(comments.length)
+    .fill({})
+    .map(async (it, index) => {
+      const {id, text, createdDate, articleId} = comments[index].dataValues;
+      const readerId = await getReaderData(comments[index].dataValues.readerId);
+      return {id, text, createdDate, readerId, articleId};
+    }));
+  return commentsData;
+};
+
+const normalizeArticleData = async (article) => {
   const {id, title, createdDate, picture, announce, fullText, categories, comments} = article.dataValues;
   return {
     id,
@@ -37,7 +55,7 @@ const normalizeArticleData = (article) => {
     announce,
     fullText,
     category: getCategoryTitle(categories),
-    comments,
+    comments: await normalizeCommentsData(comments),
   };
 };
 
@@ -90,7 +108,7 @@ module.exports.storage = {
     if (article === null) {
       return undefined;
     }
-    return normalizeArticleData(article);
+    return await normalizeArticleData(article);
   },
 
   getArticlesByCategoryId: async (categoryId, page) => {

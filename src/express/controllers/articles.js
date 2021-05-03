@@ -1,12 +1,12 @@
 'use strict';
 const axios = require(`axios`);
-const {getData, normalizeDateFormat, changeDateViewOnlyDate, renderError} = require(`../../utils`);
+const {getData, normalizeDateFormat, changeDateViewOnlyDate, changeDateView, renderError} = require(`../../utils`);
 const {URL} = require(`../../constants`);
 const {getLogger} = require(`../../logger`);
 
 const logger = getLogger();
 
-module.exports.getArticleById = async (req, res) => {
+module.exports.getArticleByIdToEdit = async (req, res) => {
   try {
     const categories = await getData(`${URL}/categories`);
     const categoriesTitles = categories.map((it) => it.title);
@@ -16,6 +16,33 @@ module.exports.getArticleById = async (req, res) => {
       data: article,
       categoriesTitles,
       csrf: req.csrfToken(),
+    });
+  } catch (err) {
+    return renderError(err.response.status, res);
+  }
+};
+
+module.exports.getArticleById = async (req, res) => {
+  try {
+    const article = await getData(`${URL}/articles/${req.params.id}`);
+    const categories = await getData(`${URL}/categories`);
+    const articleCategories = categories.filter((it) => article.category.includes(it.title));
+    const {avatar, userName, role} = req.cookies;
+    article.createdDate = changeDateView(article.createdDate);
+    const commentsData = article.comments;
+    commentsData.forEach((it) => {
+      it.createdDate = changeDateView(it.createdDate);
+    });
+    return res.render(`articles/post`, {
+      data: article,
+      categories: articleCategories,
+      comments: commentsData,
+      user: {
+        avatar,
+        userName,
+        role
+      },
+      //csrf: req.csrfToken(),
     });
   } catch (err) {
     return renderError(err.response.status, res);
