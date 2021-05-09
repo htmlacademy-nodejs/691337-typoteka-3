@@ -20,7 +20,8 @@ const tableJoinTemplate = [
   },
   {
     model: Models.Comment,
-    as: `comments`
+    as: `comments`,
+    //order: [{model: Models.Comment, as: `comments`}, `createdAt`, `DESC`]
   }
 ];
 
@@ -96,7 +97,7 @@ module.exports.storage = {
       offset: ARTICLES_PER_PAGE * (currentPage - START_PAGE),
       limit: ARTICLES_PER_PAGE
     });
-    const articles = rawArticles.map((it) => normalizeArticleData(it));
+    const articles = await Promise.all(rawArticles.map((it) => normalizeArticleData(it)));
     const pagesToView = getPagesToView(pagesAmount, currentPage);
     return {articles, articlesAmount, pagesAmount, currentPage, pagesToView};
   },
@@ -126,7 +127,7 @@ module.exports.storage = {
       offset: ARTICLES_PER_PAGE * (currentPage - START_PAGE),
       limit: ARTICLES_PER_PAGE
     });
-    const articles = rawArticles.map((it) => normalizeArticleData(it));
+    const articles = await Promise.all(rawArticles.map((it) => normalizeArticleData(it)));
     const categoryData = await Models.Category.findByPk(categoryId);
     const pagesToView = getPagesToView(pagesAmount, currentPage);
     return {articles, articlesAmount, pagesAmount, currentPage, categoryData, pagesToView};
@@ -181,11 +182,12 @@ module.exports.storage = {
     if (article === null) {
       return undefined;
     }
-    const {text} = comment;
+    const {readerId, text} = comment;
     const newComment = await Models.Comment.create({
       text,
       'createdDate': Date.now(),
       articleId,
+      readerId,
     });
     return newComment;
   },

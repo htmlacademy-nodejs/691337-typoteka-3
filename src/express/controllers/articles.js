@@ -6,6 +6,12 @@ const {getLogger} = require(`../../logger`);
 
 const logger = getLogger();
 
+const currentArticle = {
+  article: {},
+  articleCategories: [],
+  commentsData: []
+};
+
 module.exports.getArticleByIdToEdit = async (req, res) => {
   try {
     const categories = await getData(`${URL}/categories`);
@@ -33,6 +39,10 @@ module.exports.getArticleById = async (req, res) => {
     commentsData.forEach((it) => {
       it.createdDate = changeDateView(it.createdDate);
     });
+
+    currentArticle.article = article;
+    currentArticle.articleCategories = articleCategories;
+    currentArticle.commentsData = commentsData;
     return res.render(`articles/post`, {
       data: article,
       categories: articleCategories,
@@ -42,7 +52,7 @@ module.exports.getArticleById = async (req, res) => {
         userName,
         role
       },
-      //csrf: req.csrfToken(),
+      csrf: req.csrfToken(),
     });
   } catch (err) {
     return renderError(err.response.status, res);
@@ -135,3 +145,30 @@ module.exports.updateArticle = async (req, res) => {
   }
 };
 
+module.exports.addComment = async (req, res) => {
+  const {readerId, avatar, userName, role} = req.cookies;
+  const comment = {
+    readerId,
+    text: req.body.text
+  };
+
+  try {
+    await axios.post(`${URL}/articles/${req.params.id}/comments`, comment);
+    return res.redirect(`/articles/${req.params.id}`);
+  } catch (err) {
+    logger.error(`Error: ${err.message}`);
+    const errorsList = err.response.data;
+    return res.render(`articles/post`, {
+      errorsList,
+      data: currentArticle.article,
+      categories: currentArticle.articleCategories,
+      comments: currentArticle.commentsData,
+      user: {
+        avatar,
+        userName,
+        role
+      },
+      csrf: req.csrfToken(),
+    });
+  }
+};

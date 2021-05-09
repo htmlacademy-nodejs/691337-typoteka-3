@@ -99,10 +99,11 @@ module.exports.authenticateReader = async (req, res) => {
   try {
     const response = await axios.post(`${URL}/user/login`, reader);
     const {accessToken, refreshToken} = response.data;
-    const {role, firstname, lastname, avatar} = response.data.reader;
+    const {id, role, firstname, lastname, avatar} = response.data.reader;
     await res.cookie(`accessToken`, `${accessToken}`);
     await res.cookie(`refreshToken`, `${refreshToken}`);
     await res.cookie(`role`, `${role}`);
+    await res.cookie(`readerId`, `${id}`);
 
     if (role === `reader`) {
       await res.cookie(`userName`, `${firstname} ${lastname}`);
@@ -130,6 +131,7 @@ module.exports.logout = async (req, res) => {
     await res.clearCookie(`accessToken`);
     await res.clearCookie(`refreshToken`);
     await res.clearCookie(`role`);
+    await res.clearCookie(`id`);
     await res.clearCookie(`avatar`);
     await res.clearCookie(`userName`);
     return res.redirect(`/login`);

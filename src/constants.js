@@ -40,6 +40,11 @@ module.exports.RegisterMessage = {
   AVATAR_EMPTY_VALUE: `Аватар отсутствует или имеет недопустимый формат файла`
 };
 
+module.exports.CommentMessage = {
+  EMPTY_COMMENT: `Сообщение не может быть пустым, напишите что-нибудь!`,
+  MIN_COMMENT_LENGTH: `Комментарий должен быть не меньше 20 символов`
+};
+
 module.exports.LoginMessage = {
   READER_NOT_EXISTS: `Пользователь с таким email не зарегистрирован`,
   WRONG_PASSWORD: `Неверный логин или пароль`
