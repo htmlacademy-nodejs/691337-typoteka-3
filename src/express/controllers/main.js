@@ -21,6 +21,8 @@ module.exports.getArticles = async (req, res) => {
       view: data.pagesToView,
       current: data.currentPage,
       categories,
+      discussed: data.mostDiscussedArticles,
+      comments: data.lastComments,
       user: {
         avatar,
         userName,

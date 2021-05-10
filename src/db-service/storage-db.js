@@ -6,6 +6,7 @@ const {getPassHashSum} = require(`../utils`);
 const {UserRole} = require(`../constants`);
 
 const ARTICLES_PER_PAGE = 8;
+const ADV_PER_PAGE = 4;
 const START_PAGE = 1;
 const PAGES_AMOUNT_MAX = 5;
 
@@ -20,10 +21,37 @@ const tableJoinTemplate = [
   },
   {
     model: Models.Comment,
-    as: `comments`,
-    //order: [{model: Models.Comment, as: `comments`}, `createdAt`, `DESC`]
+    as: `comments`
   }
 ];
+
+const getMostDiscussedArticles = async () => {
+  const rawArticles = await Models.Article.findAll({
+    include: tableJoinTemplate
+  });
+  const articlesData = await Promise.all(Array(rawArticles.length)
+    .fill({})
+    .map(async (it, index) => {
+      const {id, announce} = rawArticles[index].dataValues;
+      const currentArticle = await Models.Article.findByPk(id);
+      const commentsAmount = await currentArticle.countComments();
+      return {id, announce, commentsAmount};
+    }));
+
+  const articlesWithComments = articlesData
+    .filter((it) => it.commentsAmount > 0);
+  articlesWithComments.sort((a, b) => b.commentsAmount - a.commentsAmount);
+  return articlesWithComments.length > ADV_PER_PAGE ? articlesWithComments.slice(0, ADV_PER_PAGE) : articlesWithComments;
+};
+
+const getLastComments = async () => {
+  const lastComments = await Models.Comment.findAll({
+    attributes: [`id`, `text`, `createdDate`, `articleId`, `readerId`],
+    order: [[`createdDate`, `DESC`]],
+    limit: ADV_PER_PAGE
+  });
+  return lastComments;
+};
 
 const getCategoryTitle = (categories) => {
   return categories.map((it) => it.title);
@@ -43,6 +71,7 @@ const normalizeCommentsData = async (comments) => {
       const readerId = await getReaderData(comments[index].dataValues.readerId);
       return {id, text, createdDate, readerId, articleId};
     }));
+  commentsData.sort((a, b) => b.createdDate - a.createdDate);
   return commentsData;
 };
 
@@ -88,6 +117,8 @@ module.exports.storage = {
 
   getArticles: async (page) => {
     const articlesAmount = await Models.Article.count();
+    const mostDiscussedArticles = await getMostDiscussedArticles();
+    getLastComments();
     const pagesAmount = Math.ceil(articlesAmount / ARTICLES_PER_PAGE);
     const currentPage = parseInt(page, 10) || START_PAGE;
 
@@ -97,9 +128,11 @@ module.exports.storage = {
       offset: ARTICLES_PER_PAGE * (currentPage - START_PAGE),
       limit: ARTICLES_PER_PAGE
     });
+    const rawLastComments = await getLastComments();
     const articles = await Promise.all(rawArticles.map((it) => normalizeArticleData(it)));
+    const lastComments = await normalizeCommentsData(rawLastComments);
     const pagesToView = getPagesToView(pagesAmount, currentPage);
-    return {articles, articlesAmount, pagesAmount, currentPage, pagesToView};
+    return {articles, articlesAmount, pagesAmount, currentPage, pagesToView, mostDiscussedArticles, lastComments};
   },
 
   getArticleById: async (articleId) => {
