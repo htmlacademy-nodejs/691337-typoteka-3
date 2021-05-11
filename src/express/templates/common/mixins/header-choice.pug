@@ -1,0 +1,11 @@
+mixin headerChoice()
+
+  - const status = user.role
+  case status
+    when 'author'
+      include ../header-admin.pug
+    when 'reader'
+      include ../header-logged.pug
+    default
+      include ../header.pug
+

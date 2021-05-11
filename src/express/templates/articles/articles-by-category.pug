@@ -2,12 +2,13 @@ extends ../common/layout.pug
 include ../common/mixins/pagination.pug
 include ../common/mixins/articles-list.pug
 include ../common/mixins/categories-list.pug
+include ../common/mixins/header-choice.pug
 
 block wrapper
   .wrapper
 
     block header
-      include ../common/header.pug
+      +headerChoice()
 
     block content
       main.articles-category

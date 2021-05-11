@@ -2,19 +2,13 @@ extends ../common/layout.pug
 include ../common/mixins/pagination.pug
 include ../common/mixins/articles-list.pug
 include ../common/mixins/categories-list.pug
+include ../common/mixins/header-choice.pug
 
 block wrapper
   .wrapper
 
     block header
-      - const status = user.role
-      case status
-        when 'author'
-          include ../common/header-admin.pug
-        when 'reader'
-           include ../common/header-logged.pug
-        default
-          include ../common/header.pug
+      +headerChoice()
 
     block content
       main.main-page
@@ -22,43 +16,46 @@ block wrapper
         p.
 
           Это приветственный текст, который владелец блога может выбрать, чтобы описать себя 👏
-
-        section.main-page__theme-list
-          h2.visually-hidden Список тем
-          +categoriesList()
-        .main-page__section-flex
-          section.main-page__hot.hot
-            h2.hot__name
-              | Самое обсуждаемое
-              span.hot__icon.hot__icon--fire
-            if discussed.length > 0
-              ul.hot__list
-                each item in discussed
-                  - const announce = item.announce.length > 100 ? item.announce.slice(0, 100) + '...' : item.announce
-                  li.hot__list-item
-                    a.hot__list-link(href='/articles/' + item.id)= announce
-                      sup.hot__link-sup= item.commentsAmount
-            else
-              p.hot__empty Здесь пока ничего нет...
-          section.main-page__last.last
-            h2.last__name
-              | Последние комментарии
-              span.last__icon.last__icon--cloud
-            if comments.length > 0
-              ul.last__list
-                each item in comments
-                  - const text = item.text.length > 100 ? item.text.slice(0, 100) + '...' : item.text
-                  li.last__list-item
-                    img.last__list-image(src='/img/' + item.readerId.avatar width='20' height='20' alt='Аватар пользователя')
-                    b.last__list-name= item.readerId.firstname + ' ' + item.readerId.lastname
-                    a.last__list-link(href='/articles/' + item.articleId)= text
-            else
-              p.last__empty Здесь пока ничего нет...
-        section.main-page__list.preview
-          h2.visually-hidden Список превью статей
-          +articlesList()
-          - const route = '/?page='
-          +pagination(route)
+        if articles.length > 0
+          section.main-page__theme-list
+            h2.visually-hidden Список тем
+            +categoriesList()
+          .main-page__section-flex
+            section.main-page__hot.hot
+              h2.hot__name
+                | Самое обсуждаемое
+                span.hot__icon.hot__icon--fire
+              if discussed.length > 0
+                ul.hot__list
+                  each item in discussed
+                    - const announce = item.announce.length > 100 ? item.announce.slice(0, 100) + '...' : item.announce
+                    li.hot__list-item
+                      a.hot__list-link(href='/articles/' + item.id)= announce
+                        sup.hot__link-sup= item.commentsAmount
+              else
+                p.hot__empty Здесь пока ничего нет...
+            section.main-page__last.last
+              h2.last__name
+                | Последние комментарии
+                span.last__icon.last__icon--cloud
+              if comments.length > 0
+                ul.last__list
+                  each item in comments
+                    - const text = item.text.length > 100 ? item.text.slice(0, 100) + '...' : item.text
+                    li.last__list-item
+                      img.last__list-image(src='/img/' + item.readerId.avatar width='20' height='20' alt='Аватар пользователя')
+                      b.last__list-name= item.readerId.firstname + ' ' + item.readerId.lastname
+                      a.last__list-link(href='/articles/' + item.articleId)= text
+              else
+                p.last__empty Здесь пока ничего нет...
+          section.main-page__list.preview
+            h2.visually-hidden Список превью статей
+            +articlesList()
+            - const route = '/?page='
+            +pagination(route)
+        else
+          .main-page__empty-wrapper
+            p.main-page__empty-text Здесь пока пусто!
 
     block footer
       include ../common/footer.pug

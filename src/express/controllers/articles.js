@@ -64,12 +64,18 @@ module.exports.getArticlesByCategory = async (req, res) => {
     const currentPage = req.query.page;
     const categories = await getData(`${URL}/categories`);
     const data = await getData(`${URL}/articles/category/${req.params.id}/?page=${currentPage}`);
+    const {avatar, userName, role} = req.cookies;
     return res.render(`articles/articles-by-category`, {
       articles: data.articles,
       view: data.pagesToView,
       current: data.currentPage,
       category: data.categoryData,
-      categories
+      categories,
+      user: {
+        avatar,
+        userName,
+        role
+      },
     });
   } catch (err) {
     return renderError(err.response.status, res);
