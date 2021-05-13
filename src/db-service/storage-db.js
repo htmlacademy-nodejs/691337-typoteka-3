@@ -157,6 +157,7 @@ module.exports.storage = {
     const currentPage = parseInt(page, 10) || START_PAGE;
     const rawArticles = await category.getArticles({
       include: tableJoinTemplate,
+      order: [[`createdDate`, `DESC`]],
       offset: ARTICLES_PER_PAGE * (currentPage - START_PAGE),
       limit: ARTICLES_PER_PAGE
     });
@@ -279,7 +280,8 @@ module.exports.storage = {
   },
   getMatchedArticles: (searchString) => {
     return Models.Article.findAll({
-      where: {'title': {[Op.substring]: searchString}}
+      where: {'title': {[Op.substring]: searchString}},
+      order: [[`createdDate`, `DESC`]]
     });
   },
 };

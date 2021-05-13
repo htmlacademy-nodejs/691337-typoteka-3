@@ -64,6 +64,9 @@ module.exports.getArticlesByCategory = async (req, res) => {
     const currentPage = req.query.page;
     const categories = await getData(`${URL}/categories`);
     const data = await getData(`${URL}/articles/category/${req.params.id}/?page=${currentPage}`);
+    data.articles.forEach((it) => {
+      it.createdDate = changeDateViewOnlyDate(it.createdDate);
+    });
     const {avatar, userName, role} = req.cookies;
     return res.render(`articles/articles-by-category`, {
       articles: data.articles,

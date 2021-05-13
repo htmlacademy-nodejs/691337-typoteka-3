@@ -1,7 +1,7 @@
 'use strict';
 
 const axios = require(`axios`);
-const {getData, renderError, changeDateView} = require(`../../utils`);
+const {getData, renderError, changeDateViewOnlyDate} = require(`../../utils`);
 const {URL} = require(`../../constants`);
 const {getLogger} = require(`../../logger`);
 
@@ -13,7 +13,7 @@ module.exports.getArticles = async (req, res) => {
     const categories = await getData(`${URL}/categories`);
     const data = await getData(`${URL}/articles/?page=${currentPage}`);
     data.articles.forEach((it) => {
-      it.createdDate = changeDateView(it.createdDate);
+      it.createdDate = changeDateViewOnlyDate(it.createdDate);
     });
     const {avatar, userName, role} = req.cookies;
     return res.render(`main/main`, {
@@ -39,9 +39,18 @@ module.exports.getMatchedArticles = async (req, res) => {
     const searchString = req.query.search;
     const matchedArticles = await getData(`${URL}/search?query=${encodeURI(searchString)}`);
     matchedArticles.forEach((it) => {
-      it.createdDate = changeDateView(it.createdDate);
+      it.createdDate = changeDateViewOnlyDate(it.createdDate);
     });
-    return res.render(`main/search`, {data: matchedArticles, query: searchString});
+    const {avatar, userName, role} = req.cookies;
+    return res.render(`main/search`, {
+      data: matchedArticles,
+      user: {
+        avatar,
+        userName,
+        role
+      },
+      query: searchString
+    });
   } catch (err) {
     return renderError(err.response.status, res);
   }
@@ -87,7 +96,8 @@ module.exports.addNewReader = async (req, res) => {
     const errorsList = err.response.data;
     return res.render(`main/sign-up`, {
       errorsList,
-      data: reader
+      data: reader,
+      csrf: req.csrfToken()
     });
   }
 };
@@ -120,7 +130,8 @@ module.exports.authenticateReader = async (req, res) => {
     return res.render(`main/login`, {
       loginError,
       passError,
-      data: reader
+      data: reader,
+      csrf: req.csrfToken()
     });
   }
 };

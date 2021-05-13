@@ -44,9 +44,5 @@ module.exports = Joi.object({
       'any.only': RegisterMessage.PASSWORDS_NOT_EQUAL
     }),
   avatar: Joi.string()
-    .required()
-    .messages({
-      'any.required': RegisterMessage.REQUIRED_FIELD,
-      'string.empty': RegisterMessage.AVATAR_EMPTY_VALUE
-    })
+    .allow(``),
 });
