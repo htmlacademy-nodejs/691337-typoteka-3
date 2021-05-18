@@ -11,47 +11,25 @@ block wrapper
     section.main-page__category.category
       h1.category__title Категории
       .category__add-form
-        form(action='#' method='POST')
-          input#add-form-add-category(type='text' name='add-category' placeholder='Новая категория')
+        form(action='' method='POST' enctype='multipart/form-data' autocomplete='off')
+          input(type='hidden' name='_csrf' value= csrf)
+          input#add-form-add-category(type='text' name='add-category' placeholder='Новая категория' value= data.title)
           label(for='add-form-add-category')
             span.visually-hidden Добавить категорию
           button.category__button.button.button--category(type='submit') Добавить
-      ul.category__list
-        li.category__list-item
-          form(action='#' method='POST')
-            input#modify-form-category-1(type='text' name='category-1' value='Жизнь и путешествия')
-            label(for='modify-form-category-1')
-              span.visually-hidden Редактировать категорию
-            button.category__button.button.button--category(type='submit') Сохранить
-            button.category__button.button.button--category(type='button') Удалить
-        li.category__list-item
-          form(action='#' method='POST')
-            input#modify-form-category-2(type='text' name='category-2' value='Путешествия')
-            label(for='modify-form-category-2')
-              span.visually-hidden Редактировать категорию
-            button.category__button.button.button--category(type='submit') Сохранить
-            button.category__button.button.button--category(type='button') Удалить
-        li.category__list-item
-          form(action='#' method='POST')
-            input#modify-form-category-3(type='text' name='category-3' value='Дизайн и программирование')
-            label(for='modify-form-category-3')
-              span.visually-hidden Редактировать категорию
-            button.category__button.button.button--category(type='submit') Сохранить
-            button.category__button.button.button--category(type='button') Удалить
-        li.category__list-item
-          form(action='#' method='POST')
-            input#modify-form-category-4(type='text' name='category-4' value='Другое')
-            label(for='modify-form-category-4')
-              span.visually-hidden Редактировать категорию
-            button.category__button.button.button--category(type='submit') Сохранить
-            button.category__button.button.button--category(type='button') Удалить
-        li.category__list-item.category__list-item--last
-          form(action='#' method='POST')
-            input#modify-form-category-5(type='text' name='category-5' value='Личное')
-            label(for='modify-form-category-5')
-              span.visually-hidden Редактировать категорию
-            button.category__button.button.button--category(type='submit') Сохранить
-            button.category__button.button.button--category(type='button') Удалить
+      if errorMessage
+        p.form__error-message(style= {'padding-left': '40px'})= errorMessage
+      if categories.length > 0
+        ul.category__list
+          each item in categories
+            - const idName = 'modify-form-category-' + item.id
+            li.category__list-item
+              form(action='#' method='POST')
+                input(type='text' name='category[]' id= idName value= item.title)
+                label(for= idName)
+                  span.visually-hidden Редактировать категорию
+                button.category__button.button.button--category(type='submit') Сохранить
+                button.category__button.button.button--category(type='button') Удалить
 
   block footer
     include ../common/footer.pug

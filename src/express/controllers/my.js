@@ -1,6 +1,6 @@
 'use strict';
 const axios = require(`axios`);
-const {getData, renderError, changeDateView} = require(`../../utils`);
+const {getData, renderError, changeDateView, changeDateViewOnlyDate} = require(`../../utils`);
 const {URL} = require(`../../constants`);
 
 const ARTICLES_AMOUNT = 3;
@@ -10,7 +10,7 @@ module.exports.getArticles = async (req, res) => {
   try {
     const data = await getData(`${URL}/articles`);
     data.articles.forEach((it) => {
-      it.createdDate = changeDateView(it.createdDate);
+      it.createdDate = changeDateViewOnlyDate(it.createdDate);
     });
     return res.render(`articles/my`, {articles: data.articles});
   } catch (err) {

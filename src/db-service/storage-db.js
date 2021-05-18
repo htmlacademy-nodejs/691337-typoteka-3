@@ -112,7 +112,7 @@ module.exports.storage = {
       const articlesAmount = await currentCategory.countArticles();
       return {id, title, articlesAmount};
     }));
-    return categories.filter((it) => it.articlesAmount > 0);
+    return categories;
   },
 
   getArticles: async (page) => {
@@ -244,6 +244,17 @@ module.exports.storage = {
     });
     await newArticle.addCategories(categories);
     return newArticle;
+  },
+
+  addNewCategory: async (categoryData) => {
+    if (!categoryData) {
+      return undefined;
+    }
+    const {title} = categoryData;
+    const newCategory = await Models.Category.create({
+      title,
+    });
+    return newCategory;
   },
 
   checkEmail: async (userData) => {

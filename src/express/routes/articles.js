@@ -18,4 +18,5 @@ articlesRouter.post(`/edit/:id`, upload.single(`upload`), [csrfProtection, authA
 articlesRouter.get(`/:id`, csrfProtection, controller.getArticleById);
 articlesRouter.post(`/:id`, upload.any(), csrfProtection, controller.addComment);
 
+
 module.exports = articlesRouter;

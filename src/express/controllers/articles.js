@@ -73,7 +73,7 @@ module.exports.getArticlesByCategory = async (req, res) => {
       view: data.pagesToView,
       current: data.currentPage,
       category: data.categoryData,
-      categories,
+      categories: categories.filter((it) => it.articlesAmount > 0),
       user: {
         avatar,
         userName,
@@ -124,7 +124,9 @@ module.exports.addArticle = async (req, res) => {
     return res.render(`articles/new-post`, {
       errorsList,
       data: article,
-      categoriesTitles});
+      categoriesTitles,
+      csrf: req.csrfToken(),
+    });
   }
 };
 
@@ -150,7 +152,9 @@ module.exports.updateArticle = async (req, res) => {
     return res.render(`articles/edit-post`, {
       errorsList,
       data: article,
-      categoriesTitles});
+      categoriesTitles,
+      csrf: req.csrfToken()
+    });
   }
 };
 

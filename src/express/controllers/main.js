@@ -7,6 +7,19 @@ const {getLogger} = require(`../../logger`);
 
 const logger = getLogger();
 
+module.exports.getCategories = async (req, res) => {
+  try {
+    const categories = await getData(`${URL}/categories`);
+    return res.render(`main/all-categories`, {
+      data: {},
+      categories,
+      csrf: req.csrfToken(),
+    });
+  } catch (err) {
+    return renderError(err.response.status, res);
+  }
+};
+
 module.exports.getArticles = async (req, res) => {
   try {
     const currentPage = req.query.page;
@@ -20,7 +33,7 @@ module.exports.getArticles = async (req, res) => {
       articles: data.articles,
       view: data.pagesToView,
       current: data.currentPage,
-      categories,
+      categories: categories.filter((it) => it.articlesAmount > 0),
       discussed: data.mostDiscussedArticles,
       comments: data.lastComments,
       user: {
@@ -75,6 +88,27 @@ module.exports.getLoginForm = async (req, res) => {
     });
   } catch (err) {
     return renderError(err.response.status, res);
+  }
+};
+
+module.exports.addCategory = async (req, res) => {
+  const category = {
+    title: req.body[`add-category`],
+  };
+
+  try {
+    await axios.post(`${URL}/categories`, category);
+    return res.redirect(`/categories`);
+  } catch (err) {
+    logger.error(`Error: ${err.message}`);
+    const errorsList = err.response.data;
+    const categories = await getData(`${URL}/categories`);
+    return res.render(`main/all-categories`, {
+      errorMessage: errorsList[0],
+      data: category,
+      categories,
+      csrf: req.csrfToken(),
+    });
   }
 };
 
