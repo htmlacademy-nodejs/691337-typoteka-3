@@ -37,6 +37,8 @@ Models.Reader.hasMany(Models.Comment, {
 Models.Article.hasMany(Models.Comment, {
   as: `comments`,
   foreignKey: `articleId`,
+  onDelete: `cascade`,
+  hooks: true
 });
 
 Models.Comment.belongsTo(Models.Reader, {
@@ -47,6 +49,7 @@ Models.Comment.belongsTo(Models.Reader, {
 Models.Comment.belongsTo(Models.Article, {
   as: `article`,
   foreignKey: `articleId`,
+  onDelete: `cascade`
 });
 
 Models.Article.belongsToMany(Models.Category, {

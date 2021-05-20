@@ -34,7 +34,7 @@ module.exports.getArticleById = async (req, res) => {
     const categories = await getData(`${URL}/categories`);
     const articleCategories = categories.filter((it) => article.category.includes(it.title));
     const {avatar, userName, role} = req.cookies;
-    article.createdDate = changeDateView(article.createdDate);
+    article.createdDate = changeDateViewOnlyDate(article.createdDate);
     const commentsData = article.comments;
     commentsData.forEach((it) => {
       it.createdDate = changeDateView(it.createdDate);
@@ -155,6 +155,15 @@ module.exports.updateArticle = async (req, res) => {
       categoriesTitles,
       csrf: req.csrfToken()
     });
+  }
+};
+
+module.exports.deleteArticle = async (req, res) => {
+  try {
+    await axios.delete(`${URL}/articles/${req.params.id}`);
+    return res.redirect(`/my`);
+  } catch (err) {
+    return renderError(err.response.status, res);
   }
 };
 

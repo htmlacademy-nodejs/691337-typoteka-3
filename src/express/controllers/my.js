@@ -12,7 +12,10 @@ module.exports.getArticles = async (req, res) => {
     data.articles.forEach((it) => {
       it.createdDate = changeDateViewOnlyDate(it.createdDate);
     });
-    return res.render(`articles/my`, {articles: data.articles});
+    return res.render(`articles/my`, {
+      articles: data.articles,
+      csrf: req.csrfToken(),
+    });
   } catch (err) {
     return renderError(err.response.status, res);
   }

@@ -14,8 +14,10 @@ block wrapper
           each item in articles
             li.notes__list-item
               time.notes__item-time(datetime= item.createdDate)= item.createdDate
-              a.notes__item-text(href='/articles/edit/' + item.id)= item.title
-              button.notes__button.button.button--close-item(type='button')
-                span.visually-hidden Закрыть строку списка
+              a.notes__item-text(href=`/articles/edit/${item.id}`)= item.title
+              form(action=`/articles/${item.id}/delete` method='POST' enctype='multipart/form-data' autocomplete='off')
+                input(type='hidden' name='_csrf' value= csrf)
+                button.notes__button.button.button--close-item(type='submit')
+                  span.visually-hidden Закрыть строку списка
   block footer
     include ../common/footer.pug
