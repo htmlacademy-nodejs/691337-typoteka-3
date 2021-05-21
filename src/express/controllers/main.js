@@ -112,6 +112,34 @@ module.exports.addCategory = async (req, res) => {
   }
 };
 
+module.exports.editOrDeleteCategory = async (req, res) => {
+
+  const action = req.body.action;
+  const category = {
+    title: req.body.title
+  };
+
+  try {
+    if (action === `update`) {
+      await axios.put(`${URL}/categories/${req.params.id}`, category);
+    }
+    if (action === `delete`) {
+      await axios.delete(`${URL}/categories/${req.params.id}`);
+    }
+    return res.redirect(`/categories`);
+  } catch (err) {
+    logger.error(`Error: ${err.message}`);
+    const errorsList = err.response.data;
+    const categories = await getData(`${URL}/categories`);
+    return res.render(`main/all-categories`, {
+      errorMessageAction: errorsList[0],
+      data: category,
+      categories,
+      csrf: req.csrfToken(),
+    });
+  }
+};
+
 module.exports.addNewReader = async (req, res) => {
   const reader = {
     email: req.body.email,

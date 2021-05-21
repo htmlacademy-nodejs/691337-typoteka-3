@@ -186,6 +186,10 @@ module.exports.storage = {
     });
   },
 
+  removeCategoryById: (categoryId) => {
+    return Models.Category.destroy({where: {id: categoryId}});
+  },
+
   updateArticle: async (articleId, newData) => {
     const {title, createdDate, announce, fullText, category, picture} = newData;
     const updatedArticle = {
@@ -209,6 +213,18 @@ module.exports.storage = {
     await currentArticle.update(updatedArticle, {});
     await currentArticle.addCategories(categories);
     return currentArticle;
+  },
+
+  updateCategory: async (categoryId, newData) => {
+    const {title} = newData;
+
+    const currentCategory = await Models.Category.findByPk(categoryId);
+    if (currentCategory === null) {
+      return undefined;
+    }
+    currentCategory.title = title;
+    await currentCategory.save();
+    return currentCategory;
   },
 
   addNewComment: async (articleId, comment) => {

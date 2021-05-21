@@ -17,6 +17,7 @@ mainRouter.post(`/login`, upload.single(`upload`), csrfProtection, controller.au
 mainRouter.get(`/logout`, controller.logout);
 mainRouter.get(`/categories`, [csrfProtection, authAdmin], controller.getCategories);
 mainRouter.post(`/categories`, upload.any(), [csrfProtection, authAdmin], controller.addCategory);
+mainRouter.post(`/categories/:id`, upload.any(), [csrfProtection, authAdmin], controller.editOrDeleteCategory);
 mainRouter.get(`/search`, controller.getMatchedArticles);
 
 module.exports = mainRouter;
