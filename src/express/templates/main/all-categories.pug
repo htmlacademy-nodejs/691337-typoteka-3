@@ -31,8 +31,8 @@ block wrapper
                   span.visually-hidden Редактировать категорию
                 button.category__button.button.button--category(type='submit' name='action' value='update') Сохранить
                 button.category__button.button.button--category(type='submit' name='action' value='delete') Удалить
-        if errorMessageAction
-          p.form__error-message(style= {'padding-left': '40px'})= errorMessageAction
+            if (errorMessageAction && (categoryId == item.id))
+              p.form__error-message(style= {'padding-left': '40px'})= errorMessageAction
 
   block footer
     include ../common/footer.pug

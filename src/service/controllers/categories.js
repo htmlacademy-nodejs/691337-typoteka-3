@@ -30,6 +30,17 @@ module.exports.updateCategory = async (req, res) => {
   return res.status(HttpCode.OK).json(category);
 };
 
+module.exports.checkArticlesExist = async (req, res, next) => {
+  const existArticles = await storage.checkArticlesExist(req.params.categoryId);
+
+  if (existArticles) {
+    logger.error(`End request with error ${HttpCode.BAD_REQUEST}`);
+    return res.status(HttpCode.BAD_REQUEST).json([`Данная категория содержит статьи. Удаление невозможно.`]);
+  }
+
+  return next();
+};
+
 module.exports.removeCategory = async (req, res) => {
   const category = await storage.removeCategoryById(req.params.categoryId);
 

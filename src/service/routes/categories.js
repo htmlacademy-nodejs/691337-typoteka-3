@@ -10,6 +10,6 @@ const categoriesRouter = new express.Router();
 categoriesRouter.get(`/`, controller.getCategories);
 categoriesRouter.post(`/`, checkValidity(categorySchema), controller.addCategory);
 categoriesRouter.put(`/:categoryId`, paramsValidator(`categoryId`), checkValidity(categorySchema), controller.updateCategory);
-categoriesRouter.delete(`/:categoryId`, paramsValidator(`categoryId`), controller.removeCategory);
+categoriesRouter.delete(`/:categoryId`, [paramsValidator(`categoryId`), controller.checkArticlesExist], controller.removeCategory);
 
 module.exports = categoriesRouter;

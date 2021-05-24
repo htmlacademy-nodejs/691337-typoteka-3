@@ -273,6 +273,13 @@ module.exports.storage = {
     return newCategory;
   },
 
+  checkArticlesExist: async (categoryId) => {
+
+    const currentCategory = await Models.Category.findByPk(categoryId);
+    const articlesAmount = await currentCategory.countArticles();
+    return articlesAmount > 0;
+  },
+
   checkEmail: async (userData) => {
     const {email} = userData;
     const user = await Models.Reader.findOne({where: {email}});

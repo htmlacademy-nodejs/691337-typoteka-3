@@ -133,6 +133,7 @@ module.exports.editOrDeleteCategory = async (req, res) => {
     const categories = await getData(`${URL}/categories`);
     return res.render(`main/all-categories`, {
       errorMessageAction: errorsList[0],
+      categoryId: req.params.id,
       data: category,
       categories,
       csrf: req.csrfToken(),
