@@ -11,17 +11,18 @@ block wrapper
     section.main-page__publication.publication
       h1.publication__title Комментарии
       ul.publication__list
-        each item, index in articles
-          - const commentsList = comments[index]
-          each comment in commentsList
-            li.publication__list-item
-              .publication__header
-                img.publication__list-image(src='/img/avatar-small-2.png' width='20' height='20' alt='Аватар пользователя')
-                b.publication__list-name Александр Петров
-                time.publication__item-time(datetime= comment.createdDate)= comment.createdDate
-              a.publication__item-text(href='#')= comment.text
-              p.publication__text-strong= item.title
-              button.publication__button.button.button--close-item(type='button')
+        each item in comments
+          li.publication__list-item
+            .publication__header
+              - const avatar = item.readerId.avatar == `` ? `/img/icons/smile.svg` : `/img/${item.readerId.avatar}`
+              img.publication__list-image(src= avatar width='20' height='20' alt='Аватар пользователя')
+              b.publication__list-name= `${item.readerId.firstname} ${item.readerId.lastname}`
+              time.publication__item-time(datetime= item.createdDate)= item.createdDate
+            a.publication__item-text(href='#')= item.text
+            p.publication__text-strong= item.articleTitle
+            form(action=`/my/comments/${item.articleId}/${item.id}/delete` method='POST' enctype='multipart/form-data' autocomplete='off')
+              input(type='hidden' name='_csrf' value= csrf)
+              button.publication__button.button.button--close-item(type='submit')
                 span.visually-hidden Закрыть строку списка
 
   block footer

@@ -19,5 +19,4 @@ articlesRouter.get(`/:id`, csrfProtection, controller.getArticleById);
 articlesRouter.post(`/:id`, upload.any(), csrfProtection, controller.addComment);
 articlesRouter.post(`/:id/delete`, upload.any(), [csrfProtection, authAdmin], controller.deleteArticle);
 
-
 module.exports = articlesRouter;
