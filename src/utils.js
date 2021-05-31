@@ -71,6 +71,10 @@ module.exports.changeDateViewOnlyDate = (date) => {
   return moment(date).format(`DD.MM.YYYY`);
 };
 
+module.exports.changeDateViewForCalendar = (date) => {
+  return moment(date).format(`YYYY-MM-DD`);
+};
+
 module.exports.renderError = (errStatus, res) => {
   if (errStatus >= HttpCode.INTERNAL_SERVER_ERROR) {
     res.status(errStatus).render(`errors/500`);

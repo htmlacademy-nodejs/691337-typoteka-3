@@ -23,8 +23,8 @@ module.exports = (sequelize, DataTypes, Model) => {
     },
   }, {
     sequelize,
-    timestamps: false,
-    paranoid: false,
+    timestamps: true,
+    paranoid: true,
   });
 
   return Article;

@@ -19,7 +19,7 @@ block wrapper
         section.articles-category__list.preview
           h2.visually-hidden Список превью статей
           +articlesList()
-          - const route = '/articles/category/' + category.id + '/?page='
+          - const route = `/articles/category/${category.id}/?page=`
           +pagination(route)
 
     block footer

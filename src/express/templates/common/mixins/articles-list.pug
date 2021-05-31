@@ -10,10 +10,10 @@ mixin articlesList()
               a.preview__breadcrumbs-link(href='#')= el
         if hasPicture
           .preview__background
-            img.preview__background-image(src='/img/' + item.picture width='460' height='240' srcset='/img/' + item.picture alt='Фотография' + item.picture)
+            img.preview__background-image(src=`/img/${item.picture}` width='460' height='240' srcset=`/img/${item.picture}` alt= item.picture)
         time.preview__time(datetime= item.createdDate)= item.createdDate
         h3.preview__name
-          a.preview__name-link(href='/articles/' + item.id)= item.title
+          a.preview__name-link(href=`/articles/${item.id}`)= item.title
         p.preview__text= item.announce
         a.preview__comment(href='#')
           | Комментарии

@@ -21,7 +21,7 @@ block wrapper
               each item in data
                 .search__result
                   time.search__date(datetime= item.createdDate)= item.createdDate
-                  a.search__link(href='/articles/' + item.id)= item.title
+                  a.search__link(href=`/articles/${item.id}`)= item.title
         else
           if !query
             .search-page__wrapper

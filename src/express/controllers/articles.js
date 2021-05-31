@@ -1,6 +1,6 @@
 'use strict';
 const axios = require(`axios`);
-const {getData, normalizeDateFormat, changeDateViewOnlyDate, changeDateView, renderError} = require(`../../utils`);
+const {getData, normalizeDateFormat, changeDateViewOnlyDate, changeDateViewForCalendar, changeDateView, renderError} = require(`../../utils`);
 const {URL} = require(`../../constants`);
 const {getLogger} = require(`../../logger`);
 
@@ -17,7 +17,7 @@ module.exports.getArticleByIdToEdit = async (req, res) => {
     const categories = await getData(`${URL}/categories`);
     const categoriesTitles = categories.map((it) => it.title);
     const article = await getData(`${URL}/articles/${req.params.id}`);
-    article.createdDate = changeDateViewOnlyDate(article.createdDate);
+    article.createdDate = changeDateViewForCalendar(article.createdDate);
     return res.render(`articles/edit-post`, {
       data: article,
       categoriesTitles,

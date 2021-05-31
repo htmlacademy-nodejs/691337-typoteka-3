@@ -28,9 +28,9 @@ block wrapper
               if discussed.length > 0
                 ul.hot__list
                   each item in discussed
-                    - const announce = item.announce.length > 100 ? item.announce.slice(0, 100) + '...' : item.announce
+                    - const announce = item.announce.length > 100 ? `${item.announce.slice(0, 100)}...` : item.announce
                     li.hot__list-item
-                      a.hot__list-link(href='/articles/' + item.id)= announce
+                      a.hot__list-link(href=`/articles/${item.id}`)= announce
                         sup.hot__link-sup= item.commentsAmount
               else
                 p.hot__empty Здесь пока ничего нет...
@@ -43,9 +43,10 @@ block wrapper
                   each item in comments
                     - const text = item.text.length > 100 ? item.text.slice(0, 100) + '...' : item.text
                     li.last__list-item
-                      img.last__list-image(src='/img/' + item.readerId.avatar width='20' height='20' alt='Аватар пользователя')
-                      b.last__list-name= item.readerId.firstname + ' ' + item.readerId.lastname
-                      a.last__list-link(href='/articles/' + item.articleId)= text
+                      - const avatar = item.readerId.avatar == `` ? `/img/icons/smile.svg` : `/img/${item.readerId.avatar}`
+                      img.last__list-image(src= avatar width='20' height='20' alt='Аватар пользователя')
+                      b.last__list-name= `${item.readerId.firstname} ${item.readerId.lastname}`
+                      a.last__list-link(href=`/articles/${item.articleId}`)= text
               else
                 p.last__empty Здесь пока ничего нет...
           section.main-page__list.preview

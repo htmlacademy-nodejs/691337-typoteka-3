@@ -22,7 +22,7 @@ block wrapper
       if categories.length > 0
         ul.category__list
           each item in categories
-            - const idName = 'modify-form-category-' + item.id
+            - const idName = `modify-form-category-${item.id}`
             li.category__list-item
               form(action=`/categories/${item.id}` method='POST' enctype='multipart/form-data' autocomplete='off')
                 input(type='hidden' name='_csrf' value= csrf)
