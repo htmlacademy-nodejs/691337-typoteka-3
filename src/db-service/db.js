@@ -76,13 +76,12 @@ const connectDb = async () => {
   }
 };
 
-const initDb = async (articles, comments, categories, fn) => {
+const initDb = async (articles, categories, fn) => {
   try {
     await sequelize.sync({force: true});
     logger.info(`Database structure created successful`);
 
     await Models.Article.bulkCreate(articles);
-    await Models.Comment.bulkCreate(comments);
     await Models.Category.bulkCreate(categories);
 
     const allArticles = await Models.Article.findAll({raw: true});

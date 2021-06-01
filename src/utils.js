@@ -59,8 +59,8 @@ module.exports.getData = async (routePath) => {
 };
 
 module.exports.normalizeDateFormat = (date) => {
-  const dateString = date.split(`.`).reverse().join(`-`);
-  return moment(dateString).format();
+  const dateString = date.split(`T`);
+  return moment(dateString[0]).format();
 };
 
 module.exports.changeDateView = (date) => {

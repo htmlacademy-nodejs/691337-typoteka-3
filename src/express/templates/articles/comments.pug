@@ -14,7 +14,7 @@ block wrapper
         each item in comments
           li.publication__list-item
             .publication__header
-              - const avatar = item.readerId.avatar == `` ? `/img/icons/smile.svg` : `/img/${item.readerId.avatar}`
+              - const avatar = item.readerId.avatar === `` ? `/img/icons/smile.svg` : `/img/${item.readerId.avatar}`
               img.publication__list-image(src= avatar width='20' height='20' alt='Аватар пользователя')
               b.publication__list-name= `${item.readerId.firstname} ${item.readerId.lastname}`
               time.publication__item-time(datetime= item.createdDate)= item.createdDate

@@ -8,7 +8,6 @@ const {sequelize, initDb} = require(`../../db-service/db`);
 const FILE_PATH_TITLES = `./data/titles.txt`;
 const FILE_PATH_CATEGORIES = `./data/categories.txt`;
 const FILE_PATH_SENTENCES = `./data/sentences.txt`;
-const FILE_PATH_COMMENTS = `./data/comments.txt`;
 const FILE_PATH_PICTURES = `./data/pictures.txt`;
 
 const DEFAULT_AMOUNT = 3;
@@ -37,9 +36,6 @@ const readContent = async (filepath) => {
 const getRandomDate = () => new Date(getRandomInt(DateRange.min, DateRange.max))
   .toISOString().split(`T`)[0];
 
-const getRandomComments = (comments) => Array(getRandomInt(2, 5)).fill(``)
-  .map(() => comments[getRandomInt(0, comments.length - 1)]);
-
 const getRandomCategories = (categories) => Array(getRandomInt(1, 3)).fill(``)
   .map(() => getRandomInt(START_INDEX, categories.length))
   .reduce((acc, it) => !acc.includes(it) ? [...acc, it] : acc, []);
@@ -55,20 +51,6 @@ const generateArticlesData = (amount, titles, sentences, pictures) => Array(amou
   'fullText': shuffle(sentences).slice(0, getRandomInt(0, sentences.length - 1)).join(` `),
 }));
 
-const generateCommentsData = (amount, comments) => Array(amount).fill(START_INDEX)
-  .map((it, index) => {
-    const articleId = it + index;
-    const articleComments = getRandomComments(comments);
-
-    return articleComments
-      .map((el) => ({
-        'text': el,
-        'createdDate': getRandomDate(),
-        articleId
-      }));
-  })
-  .flat();
-
 const generateCategoriesData = (categories) => categories.map((it) => {
   return {
     'title': it
@@ -78,11 +60,10 @@ const generateCategoriesData = (categories) => categories.map((it) => {
 module.exports = {
   name: `--filldb`,
   async run(args) {
-    const [titles, categories, sentences, comments, pictures] = await Promise.all([
+    const [titles, categories, sentences, pictures] = await Promise.all([
       readContent(FILE_PATH_TITLES),
       readContent(FILE_PATH_CATEGORIES),
       readContent(FILE_PATH_SENTENCES),
-      readContent(FILE_PATH_COMMENTS),
       readContent(FILE_PATH_PICTURES),
     ]);
 
@@ -95,10 +76,9 @@ module.exports = {
     }
 
     const articlesData = generateArticlesData(articleAmount, titles, sentences, pictures);
-    const commentsData = generateCommentsData(articleAmount, comments);
     const categoriesData = generateCategoriesData(categories);
 
-    await initDb(articlesData, commentsData, categoriesData, getRandomCategories);
+    await initDb(articlesData, categoriesData, getRandomCategories);
     await sequelize.close();
   },
 };
