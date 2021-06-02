@@ -121,8 +121,11 @@ module.exports.addArticle = async (req, res) => {
   } catch (err) {
     logger.error(`Error: ${err.message}`);
     const errorsList = err.response.data;
+    const errorFieldsList = errorsList.map((it) => it.path).flat();
+
     return res.render(`articles/new-post`, {
       errorsList,
+      errorFieldsList,
       data: article,
       categoriesTitles,
       csrf: req.csrfToken(),
@@ -148,9 +151,12 @@ module.exports.updateArticle = async (req, res) => {
   } catch (err) {
     logger.error(`Error: ${err.message}`);
     const errorsList = err.response.data;
+    const errorFieldsList = errorsList.map((it) => it.path).flat();
     article.createdDate = changeDateViewOnlyDate(article.createdDate);
+
     return res.render(`articles/edit-post`, {
       errorsList,
+      errorFieldsList,
       data: article,
       categoriesTitles,
       csrf: req.csrfToken()

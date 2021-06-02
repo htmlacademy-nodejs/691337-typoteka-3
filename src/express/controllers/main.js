@@ -104,7 +104,7 @@ module.exports.addCategory = async (req, res) => {
     const errorsList = err.response.data;
     const categories = await getData(`${URL}/categories`);
     return res.render(`main/all-categories`, {
-      errorMessage: errorsList[0],
+      errorMessage: errorsList[0].message,
       data: category,
       categories,
       csrf: req.csrfToken(),
@@ -132,7 +132,7 @@ module.exports.editOrDeleteCategory = async (req, res) => {
     const errorsList = err.response.data;
     const categories = await getData(`${URL}/categories`);
     return res.render(`main/all-categories`, {
-      errorMessageAction: errorsList[0],
+      errorMessageAction: errorsList[0].message,
       categoryId: req.params.id,
       data: category,
       categories,

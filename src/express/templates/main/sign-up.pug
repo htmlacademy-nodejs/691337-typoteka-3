@@ -36,7 +36,7 @@ block wrapper
                   p.form__error-message При регистрации произошли ошибки:
                   ul.form__errors
                     each item in errorsList
-                      li.form__error= item
+                      li.form__error= item.message
               .form__image-loader
                 a.form__avatar.avatar
                   img(src='img/icons/smile.svg' alt='аватар пользователя')

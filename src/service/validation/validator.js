@@ -12,9 +12,9 @@ module.exports = (schema) => (
     try {
       await schema.validateAsync(data, {abortEarly: false});
     } catch (err) {
-      const errorList = err.details;
-      logger.error(`End request with error ${HttpCode.BAD_REQUEST} ${errorList.map((it) => it.message)}`);
-      res.status(HttpCode.BAD_REQUEST).json(errorList.map((it) => it.message));
+      const errorsList = err.details;
+      logger.error(`End request with error ${HttpCode.BAD_REQUEST} ${errorsList.map((it) => it.message)}`);
+      res.status(HttpCode.BAD_REQUEST).json(errorsList);
       return;
     }
     next();

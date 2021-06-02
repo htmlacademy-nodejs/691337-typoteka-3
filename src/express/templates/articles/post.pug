@@ -61,7 +61,7 @@ block wrapper
                   button.comments__button.button.button--colored(type='submit') Опубликовать
                 if errorsList
                   each item in errorsList
-                    p.comments__error= item
+                    p.comments__error= item.message
             else
               .comments__footer.comments__footer--visitor
                 a(href='/login')
