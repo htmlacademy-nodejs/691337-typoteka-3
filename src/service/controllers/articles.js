@@ -11,6 +11,12 @@ module.exports.getArticles = async (req, res) => {
   return res.json(articles);
 };
 
+module.exports.getAllArticles = async (req, res) => {
+  const articles = await storage.getAllArticles();
+  logger.info(`End request with status code ${res.statusCode}`);
+  return res.json(articles);
+};
+
 module.exports.getArticleById = async (req, res) => {
   const article = await storage.getArticleById(req.params.articleId);
 

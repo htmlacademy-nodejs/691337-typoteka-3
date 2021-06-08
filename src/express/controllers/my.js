@@ -10,12 +10,12 @@ const getArticleTitle = (articles, id) => {
 
 module.exports.getArticles = async (req, res) => {
   try {
-    const data = await getData(`${URL}/articles`);
-    data.articles.forEach((it) => {
+    const articles = await getData(`${URL}/articles/all`);
+    articles.forEach((it) => {
       it.createdDate = changeDateViewOnlyDate(it.createdDate);
     });
     return res.render(`articles/my`, {
-      articles: data.articles,
+      articles,
       csrf: req.csrfToken(),
     });
   } catch (err) {
@@ -25,8 +25,7 @@ module.exports.getArticles = async (req, res) => {
 
 module.exports.getComments = async (req, res) => {
   try {
-    const data = await getData(`${URL}/articles`);
-    const articles = data.articles;
+    const articles = await getData(`${URL}/articles/all`);
     const comments = articles
     .map((it) => it.comments)
     .flat()

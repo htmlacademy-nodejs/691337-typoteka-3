@@ -10,6 +10,7 @@ const articlesRouter = new express.Router();
 articlesRouter.use(express.json());
 
 articlesRouter.get(`/`, controller.getArticles);
+articlesRouter.get(`/all`, controller.getAllArticles);
 articlesRouter.get(`/:articleId`, paramsValidator(`articleId`), controller.getArticleById);
 articlesRouter.get(`/category/:categoryId`, paramsValidator(`categoryId`), controller.getArticlesByCategory);
 articlesRouter.get(`/:articleId/comments`, paramsValidator(`articleId`), controller.getComments);

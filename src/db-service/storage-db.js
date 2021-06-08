@@ -135,6 +135,17 @@ module.exports.storage = {
     return {articles, articlesAmount, pagesAmount, currentPage, pagesToView, mostDiscussedArticles, lastComments};
   },
 
+  getAllArticles: async () => {
+    const rawArticles = await Models.Article.findAll({
+      include: tableJoinTemplate,
+      order: [[`createdDate`, `DESC`]]
+    });
+
+    const articles = await Promise.all(rawArticles.map((it) => normalizeArticleData(it)));
+
+    return articles;
+  },
+
   getArticleById: async (articleId) => {
     const article = await Models.Article.findByPk(articleId, {
       include: tableJoinTemplate
