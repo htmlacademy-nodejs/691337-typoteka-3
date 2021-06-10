@@ -19,13 +19,11 @@ block wrapper
               .form__field
                 label
                   input(type='email' name='email' value= data.email placeholder='Электронная почта' required)
-              if loginError
-                p.form__error-message= loginError
               .form__field
                 label
                   input(type='password' name='password' placeholder='Пароль' required)
-              if passError
-                p.form__error-message= passError
+              if loginError
+                p.form__error-message= loginError
               button.form__submit-btn.form__submit-btn--log-in.button.button--colored(type='submit') Войти
 
   block footer

@@ -18,7 +18,7 @@ block wrapper
               img.publication__list-image(src= avatar width='20' height='20' alt='Аватар пользователя')
               b.publication__list-name= `${item.readerId.firstname} ${item.readerId.lastname}`
               time.publication__item-time(datetime= item.createdDate)= item.createdDate
-            a.publication__item-text(href='#')= item.text
+            a.publication__item-text(href=`/articles/${item.articleId}`)= item.text
             p.publication__text-strong= item.articleTitle
             form(action=`/my/comments/${item.articleId}/${item.id}/delete` method='POST' enctype='multipart/form-data' autocomplete='off')
               input(type='hidden' name='_csrf' value= csrf)

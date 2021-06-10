@@ -24,14 +24,14 @@ module.exports.authenticateReader = async (req, res, next) => {
 
   if (!existsReader) {
     logger.error(`End request with error ${HttpCode.FORBIDDEN}`);
-    return res.status(HttpCode.FORBIDDEN).json([{loginError: LoginMessage.READER_NOT_EXISTS}]);
+    return res.status(HttpCode.FORBIDDEN).json(LoginMessage.WRONG_DATA);
   }
 
   const isPasswordCorrect = await comparePassHashSum(existsReader, req.body.pass);
 
   if (!isPasswordCorrect) {
     logger.error(`End request with error ${HttpCode.FORBIDDEN}`);
-    return res.status(HttpCode.FORBIDDEN).json([{passError: LoginMessage.WRONG_PASSWORD}]);
+    return res.status(HttpCode.FORBIDDEN).json(LoginMessage.WRONG_DATA);
   }
   res.locals.user = existsReader;
   return next();

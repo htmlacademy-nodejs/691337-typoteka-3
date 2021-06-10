@@ -11,7 +11,7 @@ block wrapper
     main
       section.search-page
         if data.length > 0
-          .search-page__wrapper
+          .search-page__wrapper(style={height: 'auto', 'padding-bottom': '5px'})
             h1 Поиск
             .search.search-page__form
               form(action='' method='get')

@@ -22,7 +22,7 @@ block wrapper
               ul.post__themes.themes
                 each item in categories
                   li.themes__item
-                    a.themes__item-link(href='#')= item.title
+                    a.themes__item-link(href=`/articles/category/${item.id}`)= item.title
                       sup= item.articlesAmount
                     button.themes__remove-btn(type='button') Удалить категорию
             - const hasPicture = data.picture !== null && data.picture !== ''

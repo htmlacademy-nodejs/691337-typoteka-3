@@ -28,6 +28,8 @@ module.exports.getArticles = async (req, res) => {
     data.articles.forEach((it) => {
       it.createdDate = changeDateViewOnlyDate(it.createdDate);
     });
+    console.log(data.articles);
+    console.log(categories);
     const {avatar, userName, role} = req.cookies;
     return res.render(`main/main`, {
       articles: data.articles,
@@ -188,11 +190,8 @@ module.exports.authenticateReader = async (req, res) => {
     return res.redirect(`/`);
   } catch (err) {
     logger.error(`Error: ${err}`);
-    const loginError = err.response.data[0].loginError;
-    const passError = err.response.data[0].passError;
     return res.render(`main/login`, {
-      loginError,
-      passError,
+      loginError: err.response.data,
       data: reader,
       csrf: req.csrfToken()
     });

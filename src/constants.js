@@ -41,8 +41,7 @@ module.exports.RegisterMessage = {
 };
 
 module.exports.LoginMessage = {
-  READER_NOT_EXISTS: `Пользователь с таким email не зарегистрирован`,
-  WRONG_PASSWORD: `Неверный логин или пароль`
+  WRONG_DATA: `Неверный логин или пароль`
 };
 
 module.exports.UserRole = {
