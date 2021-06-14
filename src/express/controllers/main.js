@@ -28,8 +28,6 @@ module.exports.getArticles = async (req, res) => {
     data.articles.forEach((it) => {
       it.createdDate = changeDateViewOnlyDate(it.createdDate);
     });
-    console.log(data.articles);
-    console.log(categories);
     const {avatar, userName, role} = req.cookies;
     return res.render(`main/main`, {
       articles: data.articles,

@@ -32,8 +32,7 @@ const errorsList = [
   RegisterMessage.WRONG_READER_LASTNAME,
   RegisterMessage.WRONG_EMAIL,
   RegisterMessage.MIN_PASSWORD_LENGTH,
-  RegisterMessage.PASSWORDS_NOT_EQUAL,
-  RegisterMessage.AVATAR_EMPTY_VALUE
+  RegisterMessage.PASSWORDS_NOT_EQUAL
 ];
 
 test(`When create user status code should be 201`, async () => {
@@ -49,19 +48,20 @@ test(`When not valid data sent`, async () => {
   const res = await request(app).post(`/api/user`)
   .send(newReader.notValid);
   expect(res.statusCode).toBe(HttpCode.BAD_REQUEST);
-  expect(res.body).toEqual(errorsList);
+  const errorsMessageList = res.body.map((it) => it.message);
+  expect(errorsMessageList).toEqual(errorsList);
 });
 test(`When not correct login data sent`, async () => {
   const res = await request(app).post(`/api/user/login`).send({
     email: newReader.notValid.email,
     pass: newReader.notValid.pass
   });
-  expect(res.body).toEqual([{loginError: LoginMessage.READER_NOT_EXISTS}]);
+  expect(res.body).toEqual(LoginMessage.WRONG_DATA);
 });
 test(`When not correct password sent`, async () => {
   const res = await request(app).post(`/api/user/login`).send({
     email: newReader.valid.email,
     pass: newReader.notValid.pass
   });
-  expect(res.body).toEqual([{passError: LoginMessage.WRONG_PASSWORD}]);
+  expect(res.body).toEqual(LoginMessage.WRONG_DATA);
 });

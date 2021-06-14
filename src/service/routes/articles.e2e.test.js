@@ -27,7 +27,8 @@ const newArticle = {
 
 const newComment = {
   valid: {
-    text: `Предложенный метод найдет применение как в космологии, так и в нейрохирургии.`
+    text: `Предложенный метод найдет применение как в космологии, так и в нейрохирургии.`,
+    readerId: `1`
   },
   notValid: {
     text: ``
@@ -84,8 +85,9 @@ describe(`PUT routes /api/articles`, () => {
     const article = res.body.articles[0];
     const resArticle = await request(app).put(`/api/articles/${article.id}`)
       .send(newArticle.notValid);
+    const errorsMessageList = resArticle.body.map((it) => it.message);
     expect(resArticle.statusCode).toBe(HttpCode.BAD_REQUEST);
-    expect(resArticle.body).toEqual(errorsList);
+    expect(errorsMessageList).toEqual(errorsList);
   });
 });
 
@@ -111,8 +113,9 @@ describe(`POST routes /api/articles`, () => {
   test(`When not valid article data sent`, async () => {
     const resArticle = await request(app).post(`/api/articles/`)
       .send(newArticle.notValid);
+    const errorsMessageList = resArticle.body.map((it) => it.message);
     expect(resArticle.statusCode).toBe(HttpCode.BAD_REQUEST);
-    expect(resArticle.body).toEqual(errorsList);
+    expect(errorsMessageList).toEqual(errorsList);
   });
   test(`When not valid comment data sent`, async () => {
     const res = await request(app).get(`/api/articles`);
