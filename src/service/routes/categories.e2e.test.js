@@ -41,7 +41,6 @@ test(`When delete category status code should be 400, check properties`, async (
   const category = res.body.filter((it) => it.articlesAmount > 0)[0];
   const resCategory = await request(app).delete(`/api/categories/${category.id}`);
   expect(resCategory.statusCode).toBe(HttpCode.BAD_REQUEST);
-
 });
 
 

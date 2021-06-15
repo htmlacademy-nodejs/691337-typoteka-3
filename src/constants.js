@@ -56,7 +56,10 @@ module.exports.CommentMessage = {
 
 module.exports.CategoryMessage = {
   MIN_TITLE_LENGTH: `Название должно быть не меньше 5 символов`,
-  MAX_TITLE_LENGTH: `Название должно быть не больше 30 символов`
+  MAX_TITLE_LENGTH: `Название должно быть не больше 30 символов`,
+  ARTICLES_EXIST: {
+    message: `Данная категория содержит статьи. Удаление невозможно.`
+  }
 };
 
 

@@ -1,7 +1,7 @@
 'use strict';
 const {getLogger} = require(`../../logger`);
 const {storage} = require(`../../db-service/storage-db`);
-const {HttpCode} = require(`../../constants`);
+const {HttpCode, CategoryMessage} = require(`../../constants`);
 
 const logger = getLogger();
 
@@ -35,7 +35,7 @@ module.exports.checkArticlesExist = async (req, res, next) => {
 
   if (existArticles) {
     logger.error(`End request with error ${HttpCode.BAD_REQUEST}`);
-    return res.status(HttpCode.BAD_REQUEST).json([`Данная категория содержит статьи. Удаление невозможно.`]);
+    return res.status(HttpCode.BAD_REQUEST).json([CategoryMessage.ARTICLES_EXIST]);
   }
 
   return next();
