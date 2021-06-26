@@ -28,7 +28,7 @@ block wrapper
             - const hasPicture = data.picture !== null && data.picture !== ''
             if hasPicture
               .post__picture
-                img(src=`/img/${data.picture}` alt= data.picture)
+                img(src=`/img/${data.picture}` width='940' height='490' alt= data.picture)
             .post__text
               h3= data.announce
               p= data.fullText

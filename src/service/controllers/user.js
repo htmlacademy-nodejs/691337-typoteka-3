@@ -46,9 +46,9 @@ module.exports.createReader = async (req, res) => {
 
 module.exports.makeTokens = async (req, res) => {
   const reader = res.locals.user;
-  const {id} = reader;
+  const {id, firstname, lastname, role, avatar} = reader;
 
-  const {accessToken, refreshToken} = makeTokens({id});
+  const {accessToken, refreshToken} = makeTokens({id, firstname, lastname, role, avatar});
   await storage.addRefreshToken(refreshToken);
   return res.json({accessToken, refreshToken, reader});
 };
@@ -75,8 +75,8 @@ module.exports.refreshToken = async (req, res) => {
       return res.status(HttpCode.FORBIDDEN).end();
     }
 
-    const {id} = userData;
-    const {accessToken, refreshToken} = makeTokens({id});
+    const {id, firstname, lastname, role, avatar} = userData;
+    const {accessToken, refreshToken} = makeTokens({id, firstname, lastname, role, avatar});
     await storage.deleteRefreshToken(currentToken);
     await storage.addRefreshToken(refreshToken);
     return res.json({accessToken, refreshToken});

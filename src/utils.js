@@ -103,3 +103,23 @@ module.exports.upload = multer({
   storage,
   fileFilter
 });
+
+module.exports.getUserData = (data) => {
+
+  if (!data) {
+    return {
+      id: ``,
+      avatar: ``,
+      userName: ``,
+      role: ``
+    };
+  }
+
+  const {id, avatar, firstname, lastname, role} = data;
+  return {
+    id,
+    avatar,
+    userName: `${firstname} ${lastname}`,
+    role
+  };
+};

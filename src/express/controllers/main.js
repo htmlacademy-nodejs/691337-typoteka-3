@@ -1,9 +1,10 @@
 'use strict';
 
 const axios = require(`axios`);
-const {getData, renderError, changeDateViewOnlyDate} = require(`../../utils`);
+const {getData, renderError, changeDateViewOnlyDate, getUserData} = require(`../../utils`);
 const {URL} = require(`../../constants`);
 const {getLogger} = require(`../../logger`);
+const decodeJwt = require(`jwt-decode`);
 
 const logger = getLogger();
 
@@ -28,7 +29,8 @@ module.exports.getArticles = async (req, res) => {
     data.articles.forEach((it) => {
       it.createdDate = changeDateViewOnlyDate(it.createdDate);
     });
-    const {avatar, userName, role} = req.cookies;
+    const {accessToken} = req.cookies;
+    const userData = accessToken ? await decodeJwt(accessToken) : undefined;
     return res.render(`main/main`, {
       articles: data.articles,
       view: data.pagesToView,
@@ -36,11 +38,7 @@ module.exports.getArticles = async (req, res) => {
       categories: categories.filter((it) => it.articlesAmount > 0),
       discussed: data.mostDiscussedArticles,
       comments: data.lastComments,
-      user: {
-        avatar,
-        userName,
-        role
-      },
+      user: getUserData(userData)
     });
   } catch (err) {
     return renderError(err.response.status, res);
@@ -54,14 +52,11 @@ module.exports.getMatchedArticles = async (req, res) => {
     matchedArticles.forEach((it) => {
       it.createdDate = changeDateViewOnlyDate(it.createdDate);
     });
-    const {avatar, userName, role} = req.cookies;
+    const {accessToken} = req.cookies;
+    const userData = accessToken ? await decodeJwt(accessToken) : undefined;
     return res.render(`main/search`, {
       data: matchedArticles,
-      user: {
-        avatar,
-        userName,
-        role
-      },
+      user: getUserData(userData),
       query: searchString
     });
   } catch (err) {
@@ -174,17 +169,8 @@ module.exports.authenticateReader = async (req, res) => {
   try {
     const response = await axios.post(`${URL}/user/login`, reader);
     const {accessToken, refreshToken} = response.data;
-    const {id, role, firstname, lastname, avatar} = response.data.reader;
     await res.cookie(`accessToken`, `${accessToken}`);
     await res.cookie(`refreshToken`, `${refreshToken}`);
-    await res.cookie(`role`, `${role}`);
-    await res.cookie(`readerId`, `${id}`);
-
-    if (role === `reader`) {
-      await res.cookie(`userName`, `${firstname} ${lastname}`);
-      await res.cookie(`avatar`, `${avatar}`);
-    }
-
     return res.redirect(`/`);
   } catch (err) {
     logger.error(`Error: ${err}`);
@@ -203,10 +189,6 @@ module.exports.logout = async (req, res) => {
     await axios.post(`${URL}/user/logout`, {refreshToken});
     await res.clearCookie(`accessToken`);
     await res.clearCookie(`refreshToken`);
-    await res.clearCookie(`role`);
-    await res.clearCookie(`id`);
-    await res.clearCookie(`avatar`);
-    await res.clearCookie(`userName`);
     return res.redirect(`/login`);
   } catch (err) {
     return renderError(err.response.status, res);

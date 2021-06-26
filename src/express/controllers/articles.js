@@ -1,6 +1,7 @@
 'use strict';
 const axios = require(`axios`);
-const {getData, normalizeDateFormat, changeDateViewOnlyDate, changeDateViewForCalendar, changeDateView, renderError} = require(`../../utils`);
+const decodeJwt = require(`jwt-decode`);
+const {getData, normalizeDateFormat, changeDateViewOnlyDate, changeDateViewForCalendar, changeDateView, renderError, getUserData} = require(`../../utils`);
 const {URL} = require(`../../constants`);
 const {getLogger} = require(`../../logger`);
 
@@ -33,7 +34,8 @@ module.exports.getArticleById = async (req, res) => {
     const article = await getData(`${URL}/articles/${req.params.id}`);
     const categories = await getData(`${URL}/categories`);
     const articleCategories = categories.filter((it) => article.category.includes(it.title));
-    const {avatar, userName, role} = req.cookies;
+    const {accessToken} = req.cookies;
+    const userData = accessToken ? await decodeJwt(accessToken) : undefined;
     article.createdDate = changeDateViewOnlyDate(article.createdDate);
     const commentsData = article.comments;
     commentsData.forEach((it) => {
@@ -47,11 +49,7 @@ module.exports.getArticleById = async (req, res) => {
       data: article,
       categories: articleCategories,
       comments: commentsData,
-      user: {
-        avatar,
-        userName,
-        role
-      },
+      user: getUserData(userData),
       csrf: req.csrfToken(),
     });
   } catch (err) {
@@ -67,18 +65,15 @@ module.exports.getArticlesByCategory = async (req, res) => {
     data.articles.forEach((it) => {
       it.createdDate = changeDateViewOnlyDate(it.createdDate);
     });
-    const {avatar, userName, role} = req.cookies;
+    const {accessToken} = req.cookies;
+    const userData = accessToken ? await decodeJwt(accessToken) : undefined;
     return res.render(`articles/articles-by-category`, {
       articles: data.articles,
       view: data.pagesToView,
       current: data.currentPage,
       category: data.categoryData,
       categories: categories.filter((it) => it.articlesAmount > 0),
-      user: {
-        avatar,
-        userName,
-        role
-      },
+      user: getUserData(userData),
     });
   } catch (err) {
     return renderError(err.response.status, res);
@@ -174,7 +169,9 @@ module.exports.deleteArticle = async (req, res) => {
 };
 
 module.exports.addComment = async (req, res) => {
-  const {readerId, avatar, userName, role} = req.cookies;
+  const {accessToken} = req.cookies;
+  const userData = accessToken ? await decodeJwt(accessToken) : undefined;
+  const readerId = getUserData(userData).id.toString();
   const comment = {
     readerId,
     text: req.body.text
@@ -191,11 +188,7 @@ module.exports.addComment = async (req, res) => {
       data: currentArticle.article,
       categories: currentArticle.articleCategories,
       comments: currentArticle.commentsData,
-      user: {
-        avatar,
-        userName,
-        role
-      },
+      user: getUserData(userData),
       csrf: req.csrfToken(),
     });
   }

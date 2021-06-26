@@ -12,7 +12,6 @@ const csrfProtection = csrf({cookie: true});
 articlesRouter.get(`/category/:id`, controller.getArticlesByCategory);
 articlesRouter.get(`/add`, [csrfProtection, authAdmin], controller.getNewArticleForm);
 articlesRouter.post(`/add`, upload.single(`upload`), [csrfProtection, authAdmin], controller.addArticle);
-articlesRouter.post(`/add`, upload.any(), [csrfProtection, authAdmin], controller.addArticle);
 articlesRouter.get(`/edit/:id`, [csrfProtection, authAdmin], controller.getArticleByIdToEdit);
 articlesRouter.post(`/edit/:id`, upload.single(`upload`), [csrfProtection, authAdmin], controller.updateArticle);
 articlesRouter.get(`/:id`, csrfProtection, controller.getArticleById);

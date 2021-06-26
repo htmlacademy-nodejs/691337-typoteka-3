@@ -11,7 +11,8 @@
     "run:api": "node ./src/service/service.js --server",
     "run:ssr": "node ./src/express/index.js",
     "start::debug": "cross-env NODE_ENV=development LOG_LEVEL=debug nodemon ./src/service/service.js --server || pino-pretty",
-    "start-front-server": "nodemon ./src/express/index.js"
+    "start-front-server": "nodemon ./src/express/index.js",
+    "fill-db": "node ./src/service/service.js --filldb 10"
   },
   "repository": {
     "type": "git",
@@ -43,6 +44,7 @@
     "express": "4.17.1",
     "joi": "17.3.0",
     "jsonwebtoken": "8.5.1",
+    "jwt-decode": "3.1.2",
     "moment": "2.29.1",
     "multer": "1.4.2",
     "nanoid": "2.1.11",
