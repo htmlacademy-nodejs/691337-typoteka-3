@@ -1,6 +1,8 @@
 'use strict';
 
 const express = require(`express`);
+const http = require(`http`);
+const socketIO = require(`socket.io`);
 const path = require(`path`);
 const cookieParser = require(`cookie-parser`);
 const {getLogger} = require(`../logger`);
@@ -12,8 +14,10 @@ const PORT = 8080;
 const PUBLIC_DIR = `../../public`;
 const UPLOAD_DIR = `upload`;
 
-const app = express();
 const logger = getLogger();
+const app = express();
+const server = http.createServer(app);
+const io = socketIO(server);
 
 app.use(cookieParser());
 app.use(`/`, mainRouter);
@@ -27,10 +31,21 @@ app.use(express.urlencoded({extended: false}));
 
 app.set(`views`, path.resolve(__dirname, `templates`));
 app.set(`view engine`, `pug`);
+app.set(`io`, io);
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   logger.info(`Server start on ${PORT}`);
 })
 .on(`err`, (err) => {
   logger.error(`Server can't start. Error: ${err}`);
 });
+
+io.on(`connection`, (socket) => {
+  const {address: ip} = socket.handshake;
+  console.log(`Новое подключение: ${ip}`);
+
+  socket.on(`disconnect`, () => {
+    console.log(`Client off: ${ip}`);
+  });
+});
+

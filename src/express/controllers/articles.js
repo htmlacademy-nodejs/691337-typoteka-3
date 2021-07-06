@@ -169,6 +169,7 @@ module.exports.deleteArticle = async (req, res) => {
 };
 
 module.exports.addComment = async (req, res) => {
+  const io = req.app.get(`io`);
   const {accessToken} = req.cookies;
   const userData = accessToken ? await decodeJwt(accessToken) : undefined;
   const readerId = getUserData(userData).id.toString();
@@ -179,6 +180,13 @@ module.exports.addComment = async (req, res) => {
 
   try {
     await axios.post(`${URL}/articles/${req.params.id}/comments`, comment);
+
+    const articlesData = await getData(`${URL}/articles`);
+    const lastComments = articlesData.lastComments;
+    const mostDiscussedArticles = articlesData.mostDiscussedArticles;
+    io.emit(`last_comments`, lastComments);
+    io.emit(`discussed_articles`, mostDiscussedArticles);
+
     return res.redirect(`/articles/${req.params.id}`);
   } catch (err) {
     logger.error(`Error: ${err.message}`);
