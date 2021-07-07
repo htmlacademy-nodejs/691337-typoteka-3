@@ -38,7 +38,7 @@ block wrapper
                   span.last__icon.last__icon--cloud
                 ul.last__list
                   each item in comments
-                    - const text = item.text.length > 100 ? item.text.slice(0, 100) + '...' : item.text
+                    - const text = item.text.length > 100 ? `${item.text.slice(0, 100)}...` : item.text
                     li.last__list-item
                       - const avatar = item.readerId.avatar == `` ? `/img/icons/smile.svg` : `/img/${item.readerId.avatar}`
                       img.last__list-image(src= avatar width='20' height='20' alt='Аватар пользователя')

@@ -42,10 +42,9 @@ server.listen(PORT, () => {
 
 io.on(`connection`, (socket) => {
   const {address: ip} = socket.handshake;
-  console.log(`Новое подключение: ${ip}`);
-
+  logger.info(`Client on: ${ip}`);
   socket.on(`disconnect`, () => {
-    console.log(`Client off: ${ip}`);
+    logger.info(`Client off`);
   });
 });
 
