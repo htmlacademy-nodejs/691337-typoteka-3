@@ -1,4 +1,0 @@
-Ivan, Petrov, ivpetr@fan.local, author
-Viktor, Sidorov, vsidor@fan.local, reader
-Oleg, Ivanov, oliv@fan.local, reader
-Denis, Kotov, denkot@fan.local, reader

@@ -13,7 +13,7 @@ module.exports.checkReaderExists = async (req, res, next) => {
 
   if (existsReader) {
     logger.error(`End request with error ${HttpCode.BAD_REQUEST}`);
-    return res.status(HttpCode.BAD_REQUEST).json([RegisterMessage.READER_ALREADY_REGISTER]);
+    return res.status(HttpCode.BAD_REQUEST).json([{message: RegisterMessage.READER_ALREADY_REGISTER}]);
   }
 
   return next();
