@@ -10,7 +10,7 @@ const FILE_PATH_CATEGORIES = `./data/categories.txt`;
 const FILE_PATH_SENTENCES = `./data/sentences.txt`;
 const FILE_PATH_PICTURES = `./data/pictures.txt`;
 
-const DEFAULT_AMOUNT = 3;
+const DEFAULT_AMOUNT = 20;
 const START_INDEX = 1;
 const MAX_AMOUNT = 1000;
 const MS_IN_MONTH = 30 * 24 * 60 * 60 * 1000;
