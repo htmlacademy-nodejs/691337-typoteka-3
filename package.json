@@ -5,14 +5,14 @@
   "main": "./src/service/service.js",
   "scripts": {
     "test": "npm run eslint",
-    "test::rest": "jest .e2e.test.js --coverage",
+    "test::rest": "jest .e2e.test.js",
     "eslint": "eslint --ext .js src/",
     "start": "concurrently --names \"API, SSR\" --prefix-colors \"green, red\" \"npm:run:api\" \"npm:run:ssr\"",
     "run:api": "node ./src/service/service.js --server",
     "run:ssr": "node ./src/express/index.js",
     "start::debug": "cross-env NODE_ENV=development LOG_LEVEL=debug nodemon ./src/service/service.js --server || pino-pretty",
     "start-front-server": "nodemon ./src/express/index.js",
-    "fill-db": "node ./src/service/service.js --filldb 10"
+    "fill-db": "node ./src/service/service.js --filldb 20"
   },
   "repository": {
     "type": "git",
