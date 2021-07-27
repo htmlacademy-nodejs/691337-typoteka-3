@@ -8,7 +8,7 @@ const decodeJwt = require(`jwt-decode`);
 
 const logger = getLogger();
 
-module.exports.getCategories = async (req, res) => {
+const getCategories = async (req, res) => {
   try {
     const categories = await getData(`${URL}/categories`);
     return res.render(`main/all-categories`, {
@@ -21,7 +21,7 @@ module.exports.getCategories = async (req, res) => {
   }
 };
 
-module.exports.getArticles = async (req, res) => {
+const getArticles = async (req, res) => {
   try {
     const currentPage = req.query.page;
     const categories = await getData(`${URL}/categories`);
@@ -45,7 +45,7 @@ module.exports.getArticles = async (req, res) => {
   }
 };
 
-module.exports.getMatchedArticles = async (req, res) => {
+const getMatchedArticles = async (req, res) => {
   try {
     const searchString = req.query.search;
     const matchedArticles = await getData(`${URL}/search?query=${encodeURI(searchString)}`);
@@ -64,7 +64,7 @@ module.exports.getMatchedArticles = async (req, res) => {
   }
 };
 
-module.exports.getRegisterForm = async (req, res) => {
+const getRegisterForm = async (req, res) => {
   try {
     return res.render(`main/sign-up`, {
       data: {},
@@ -75,7 +75,7 @@ module.exports.getRegisterForm = async (req, res) => {
   }
 };
 
-module.exports.getLoginForm = async (req, res) => {
+const getLoginForm = async (req, res) => {
   try {
     return res.render(`main/login`, {
       data: {},
@@ -86,7 +86,7 @@ module.exports.getLoginForm = async (req, res) => {
   }
 };
 
-module.exports.addCategory = async (req, res) => {
+const addCategory = async (req, res) => {
   const category = {
     title: req.body[`add-category`],
   };
@@ -107,7 +107,7 @@ module.exports.addCategory = async (req, res) => {
   }
 };
 
-module.exports.editOrDeleteCategory = async (req, res) => {
+const editOrDeleteCategory = async (req, res) => {
 
   const action = req.body.action;
   const category = {
@@ -136,7 +136,7 @@ module.exports.editOrDeleteCategory = async (req, res) => {
   }
 };
 
-module.exports.addNewReader = async (req, res) => {
+const addNewReader = async (req, res) => {
   const reader = {
     email: req.body.email,
     firstname: req.body.name,
@@ -160,7 +160,7 @@ module.exports.addNewReader = async (req, res) => {
   }
 };
 
-module.exports.authenticateReader = async (req, res) => {
+const authenticateReader = async (req, res) => {
   const reader = {
     email: req.body.email,
     pass: req.body.password
@@ -182,7 +182,7 @@ module.exports.authenticateReader = async (req, res) => {
   }
 };
 
-module.exports.logout = async (req, res) => {
+const logout = async (req, res) => {
   const {refreshToken} = req.cookies;
 
   try {
@@ -193,4 +193,17 @@ module.exports.logout = async (req, res) => {
   } catch (err) {
     return renderError(err.response.status, res);
   }
+};
+
+module.exports = {
+  getCategories,
+  getArticles,
+  getMatchedArticles,
+  getRegisterForm,
+  getLoginForm,
+  addCategory,
+  editOrDeleteCategory,
+  addNewReader,
+  authenticateReader,
+  logout
 };

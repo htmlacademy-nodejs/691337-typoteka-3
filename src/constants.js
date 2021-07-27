@@ -1,13 +1,13 @@
 'use strict';
 
-module.exports.USER_ARGV_INDEX = 2;
-module.exports.DEFAULT_COMMAND = `--help`;
-module.exports.URL = `http://localhost:3000/api`;
-module.exports.ExitCode = {
+const USER_ARGV_INDEX = 2;
+const DEFAULT_COMMAND = `--help`;
+const URL = `http://localhost:3000/api`;
+const ExitCode = {
   success: 0,
   error: 1,
 };
-module.exports.HttpCode = {
+const HttpCode = {
   OK: 200,
   CREATED: 201,
   NO_CONTENT: 204,
@@ -18,7 +18,7 @@ module.exports.HttpCode = {
   UNAUTHORIZED: 401,
 };
 
-module.exports.ArticleMessage = {
+const ArticleMessage = {
   REQUIRED_FIELD: `Поле обязательно для заполнения`,
   MIN_TITLE_LENGTH: `Заголовок должен быть не меньше 30 символов`,
   MAX_TITLE_LENGTH: `Заголовок должен быть не больше 250 символов`,
@@ -28,7 +28,7 @@ module.exports.ArticleMessage = {
   CATEGORY_REQUIRED: `Необходимо выбрать минимум 1 категорию`
 };
 
-module.exports.RegisterMessage = {
+const RegisterMessage = {
   READER_ALREADY_REGISTER: `Пользователь с таким email уже зарегистрирован`,
   REQUIRED_FIELD: `Поле обязательно для заполнения`,
   WRONG_EMAIL: `Некорректный email`,
@@ -40,21 +40,21 @@ module.exports.RegisterMessage = {
   AVATAR_EMPTY_VALUE: `Аватар отсутствует или имеет недопустимый формат файла`
 };
 
-module.exports.LoginMessage = {
+const LoginMessage = {
   WRONG_DATA: `Неверный логин или пароль`
 };
 
-module.exports.UserRole = {
+const UserRole = {
   READER: `reader`,
   AUTHOR: `author`
 };
 
-module.exports.CommentMessage = {
+const CommentMessage = {
   EMPTY_COMMENT: `Сообщение не может быть пустым, напишите что-нибудь!`,
   MIN_COMMENT_LENGTH: `Комментарий должен быть не меньше 20 символов`
 };
 
-module.exports.CategoryMessage = {
+const CategoryMessage = {
   MIN_TITLE_LENGTH: `Название должно быть не меньше 5 символов`,
   MAX_TITLE_LENGTH: `Название должно быть не больше 30 символов`,
   ARTICLES_EXIST: {
@@ -62,4 +62,16 @@ module.exports.CategoryMessage = {
   }
 };
 
-
+module.exports = {
+  USER_ARGV_INDEX,
+  DEFAULT_COMMAND,
+  URL,
+  ExitCode,
+  HttpCode,
+  ArticleMessage,
+  RegisterMessage,
+  LoginMessage,
+  UserRole,
+  CommentMessage,
+  CategoryMessage
+};

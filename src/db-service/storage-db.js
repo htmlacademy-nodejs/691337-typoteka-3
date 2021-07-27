@@ -101,7 +101,7 @@ const getPagesToView = (pagesAmount, currentPage) => {
   };
 };
 
-module.exports.storage = {
+const storage = {
   getCategories: async () => {
     const rawCategories = await Models.Category.findAll({});
     const categories = await Promise.all(Array(rawCategories.length)
@@ -329,4 +329,8 @@ module.exports.storage = {
       order: [[`createdDate`, `DESC`]]
     });
   },
+};
+
+module.exports = {
+  storage
 };

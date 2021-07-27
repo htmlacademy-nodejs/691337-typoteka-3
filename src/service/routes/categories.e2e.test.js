@@ -32,13 +32,13 @@ test(`When not valid category data sent`, async () => {
 });
 test(`When delete category status code should be 204`, async () => {
   const res = await request(app).get(`/api/categories`);
-  const category = res.body.filter((it) => it.articlesAmount === 0)[0];
+  const category = res.body.find((it) => it.articlesAmount === 0);
   const resCategory = await request(app).delete(`/api/categories/${category.id}`);
   expect(resCategory.statusCode).toBe(HttpCode.NO_CONTENT);
 });
 test(`When delete category status code should be 400, check properties`, async () => {
   const res = await request(app).get(`/api/categories`);
-  const category = res.body.filter((it) => it.articlesAmount > 0)[0];
+  const category = res.body.find((it) => it.articlesAmount > 0);
   const resCategory = await request(app).delete(`/api/categories/${category.id}`);
   expect(resCategory.statusCode).toBe(HttpCode.BAD_REQUEST);
 });

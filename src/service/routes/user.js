@@ -8,7 +8,7 @@ const userRouter = new express.Router();
 
 userRouter.post(`/`, [checkValidity(userSchema), controller.checkReaderExists], controller.createReader);
 userRouter.post(`/login`, controller.authenticateReader, controller.makeTokens);
-userRouter.post(`/refresh`, controller.refreshToken);
+userRouter.post(`/refresh`, controller.refreshTokens);
 userRouter.post(`/logout`, controller.logout);
 
 module.exports = userRouter;

@@ -39,10 +39,11 @@ test(`When create user status code should be 201`, async () => {
   const res = await request(app).post(`/api/user`).send(newReader.valid);
   expect(res.statusCode).toBe(HttpCode.CREATED);
 });
+
 test(`When create user with an existing email status code should be 400`, async () => {
   const res = await request(app).post(`/api/user`).send(newReader.valid);
   expect(res.statusCode).toBe(HttpCode.BAD_REQUEST);
-  expect(res.body).toEqual([RegisterMessage.READER_ALREADY_REGISTER]);
+  expect(res.body[0].message).toEqual(RegisterMessage.READER_ALREADY_REGISTER);
 });
 test(`When not valid data sent`, async () => {
   const res = await request(app).post(`/api/user`)
