@@ -9,9 +9,9 @@
     "eslint": "eslint --ext .js src/",
     "start": "concurrently --names \"API, SSR\" --prefix-colors \"green, red\" \"npm:run:api\" \"npm:run:ssr\"",
     "run:api": "node ./src/service/service.js --server",
-    "run:ssr": "node ./src/express/index.js",
+    "run:ssr": "node ./src/express/express.js",
     "start::debug": "cross-env NODE_ENV=development LOG_LEVEL=debug nodemon ./src/service/service.js --server || pino-pretty",
-    "start-front-server": "nodemon ./src/express/index.js",
+    "start-front-server": "nodemon ./src/express/express.js",
     "fill-db": "node ./src/service/service.js --filldb 20"
   },
   "repository": {
@@ -28,12 +28,12 @@
     "eslint": "6.8.0",
     "eslint-config-htmlacademy": "0.5.2",
     "jest": "25.4.0",
-    "nodemon": "^2.0.4",
+    "nodemon": "2.0.4",
     "pino-pretty": "4.0.0",
     "supertest": "4.0.2"
   },
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "0.21.1",
     "bcrypt": "5.0.0",
     "chalk": "3.0.0",
     "concurrently": "6.0.2",
