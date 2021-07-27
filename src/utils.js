@@ -25,21 +25,18 @@ const storage = multer.diskStorage({
     cb(null, `${uniqueName}.${extension}`);
   }
 });
+
 const fileFilter = (req, file, cb) => {
-  if (FileType.includes(file.mimetype)) {
-    cb(null, true);
-  } else {
-    cb(null, false);
-  }
+  return cb(null, FileType.includes(file.mimetype));
 };
 
-module.exports.getRandomInt = (min, max) => {
+const getRandomInt = (min, max) => {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-module.exports.shuffle = (someArray) => {
+const shuffle = (someArray) => {
   for (let i = someArray.length - 1; i > 0; i--) {
     const randomPosition = Math.floor(Math.random() * i);
     [someArray[i], someArray[randomPosition]] = [someArray[randomPosition], someArray[i]];
@@ -48,7 +45,7 @@ module.exports.shuffle = (someArray) => {
   return someArray;
 };
 
-module.exports.getData = async (routePath) => {
+const getData = async (routePath) => {
   try {
     const content = await axios.get(routePath);
     return content.data;
@@ -58,24 +55,24 @@ module.exports.getData = async (routePath) => {
   }
 };
 
-module.exports.normalizeDateFormat = (date) => {
+const normalizeDateFormat = (date) => {
   const dateString = date.split(`T`);
   return moment(dateString[0]).format();
 };
 
-module.exports.changeDateView = (date) => {
+const changeDateView = (date) => {
   return moment(date).format(`DD.MM.YYYY, HH:mm`);
 };
 
-module.exports.changeDateViewOnlyDate = (date) => {
+const changeDateViewOnlyDate = (date) => {
   return moment(date).format(`DD.MM.YYYY`);
 };
 
-module.exports.changeDateViewForCalendar = (date) => {
+const changeDateViewForCalendar = (date) => {
   return moment(date).format(`YYYY-MM-DD`);
 };
 
-module.exports.renderError = (errStatus, res) => {
+const renderError = (errStatus, res) => {
   if (errStatus >= HttpCode.INTERNAL_SERVER_ERROR) {
     res.status(errStatus).render(`errors/500`);
   } else {
@@ -83,28 +80,28 @@ module.exports.renderError = (errStatus, res) => {
   }
 };
 
-module.exports.getPassHashSum = async (pass) => {
+const getPassHashSum = async (pass) => {
   const hash = await bcrypt.hash(pass, saltRounds);
   return hash;
 };
 
-module.exports.makeTokens = (tokenData) => {
+const createTokens = (tokenData) => {
   const accessToken = jwt.sign(tokenData, JWT_ACCESS_SECRET, {expiresIn: `20m`});
   const refreshToken = jwt.sign(tokenData, JWT_REFRESH_SECRET);
   return {accessToken, refreshToken};
 };
 
-module.exports.comparePassHashSum = async (user, pass) => {
+const comparePassHashSum = async (user, pass) => {
   const match = await bcrypt.compare(pass, user.password);
   return match;
 };
 
-module.exports.upload = multer({
+const upload = multer({
   storage,
   fileFilter
 });
 
-module.exports.getUserData = (data) => {
+const getUserData = (data) => {
 
   if (!data) {
     return {
@@ -122,4 +119,20 @@ module.exports.getUserData = (data) => {
     userName: `${firstname} ${lastname}`,
     role
   };
+};
+
+module.exports = {
+  getRandomInt,
+  shuffle,
+  getData,
+  normalizeDateFormat,
+  changeDateView,
+  changeDateViewOnlyDate,
+  changeDateViewForCalendar,
+  renderError,
+  getPassHashSum,
+  createTokens,
+  comparePassHashSum,
+  upload,
+  getUserData
 };

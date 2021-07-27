@@ -8,7 +8,7 @@ const {JWT_ACCESS_SECRET} = require(`../db-service/config`);
 const {URL, HttpCode} = require(`../constants`);
 const logger = getLogger();
 
-module.exports.authAdmin = async (req, res, next) => {
+const authAdmin = async (req, res, next) => {
 
   const {accessToken, refreshToken} = req.cookies;
 
@@ -40,4 +40,8 @@ module.exports.authAdmin = async (req, res, next) => {
   }
 
   return next();
+};
+
+module.exports = {
+  authAdmin
 };

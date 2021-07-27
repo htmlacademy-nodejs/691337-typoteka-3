@@ -5,20 +5,20 @@ const {HttpCode, CategoryMessage} = require(`../../constants`);
 
 const logger = getLogger();
 
-module.exports.getCategories = async (req, res) => {
+const getCategories = async (req, res) => {
   const categories = await storage.getCategories();
   logger.info(`End request with status code ${res.statusCode}`);
   return res.json(categories);
 };
 
-module.exports.addCategory = async (req, res) => {
+const addCategory = async (req, res) => {
   const category = await storage.addNewCategory(req.body);
 
   logger.info(`End request with status code ${HttpCode.CREATED}`);
   return res.status(HttpCode.CREATED).json(category);
 };
 
-module.exports.updateCategory = async (req, res) => {
+const updateCategory = async (req, res) => {
   const category = await storage.updateCategory(req.params.categoryId, req.body);
 
   if (!category) {
@@ -30,7 +30,7 @@ module.exports.updateCategory = async (req, res) => {
   return res.status(HttpCode.OK).json(category);
 };
 
-module.exports.checkArticlesExist = async (req, res, next) => {
+const checkArticlesExist = async (req, res, next) => {
   const existArticles = await storage.checkArticlesExist(req.params.categoryId);
 
   if (existArticles) {
@@ -41,7 +41,7 @@ module.exports.checkArticlesExist = async (req, res, next) => {
   return next();
 };
 
-module.exports.removeCategory = async (req, res) => {
+const removeCategory = async (req, res) => {
   const category = await storage.removeCategoryById(req.params.categoryId);
 
   if (!category) {
@@ -53,3 +53,10 @@ module.exports.removeCategory = async (req, res) => {
   return res.status(HttpCode.NO_CONTENT).end();
 };
 
+module.exports = {
+  getCategories,
+  addCategory,
+  updateCategory,
+  checkArticlesExist,
+  removeCategory
+};

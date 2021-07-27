@@ -3,12 +3,12 @@ const jwt = require(`jsonwebtoken`);
 const {getLogger} = require(`../../logger`);
 const {storage} = require(`../../db-service/storage-db`);
 const {HttpCode, RegisterMessage, LoginMessage} = require(`../../constants`);
-const {comparePassHashSum, makeTokens} = require(`../../utils`);
+const {comparePassHashSum, createTokens} = require(`../../utils`);
 const {JWT_REFRESH_SECRET} = require(`../../db-service/config`);
 
 const logger = getLogger();
 
-module.exports.checkReaderExists = async (req, res, next) => {
+const checkReaderExists = async (req, res, next) => {
   const existsReader = await storage.checkEmail(req.body);
 
   if (existsReader) {
@@ -19,7 +19,7 @@ module.exports.checkReaderExists = async (req, res, next) => {
   return next();
 };
 
-module.exports.authenticateReader = async (req, res, next) => {
+const authenticateReader = async (req, res, next) => {
   const existsReader = await storage.checkEmail(req.body);
 
   if (!existsReader) {
@@ -37,23 +37,23 @@ module.exports.authenticateReader = async (req, res, next) => {
   return next();
 };
 
-module.exports.createReader = async (req, res) => {
+const createReader = async (req, res) => {
   const user = await storage.addNewReader(req.body);
   logger.info(`End request with status code ${res.statusCode}`);
   logger.info(`End request with status code ${res.statusCode}`);
   return res.status(HttpCode.CREATED).json(user);
 };
 
-module.exports.makeTokens = async (req, res) => {
+const makeTokens = async (req, res) => {
   const reader = res.locals.user;
   const {id, firstname, lastname, role, avatar} = reader;
 
-  const {accessToken, refreshToken} = makeTokens({id, firstname, lastname, role, avatar});
+  const {accessToken, refreshToken} = createTokens({id, firstname, lastname, role, avatar});
   await storage.addRefreshToken(refreshToken);
   return res.json({accessToken, refreshToken, reader});
 };
 
-module.exports.refreshToken = async (req, res) => {
+const refreshTokens = async (req, res) => {
   const token = req.body.refreshToken;
 
   if (!token) {
@@ -76,14 +76,14 @@ module.exports.refreshToken = async (req, res) => {
     }
 
     const {id, firstname, lastname, role, avatar} = userData;
-    const {accessToken, refreshToken} = makeTokens({id, firstname, lastname, role, avatar});
+    const {accessToken, refreshToken} = createTokens({id, firstname, lastname, role, avatar});
     await storage.deleteRefreshToken(currentToken);
     await storage.addRefreshToken(refreshToken);
     return res.json({accessToken, refreshToken});
   });
 };
 
-module.exports.logout = async (req, res) => {
+const logout = async (req, res) => {
   const token = req.body.refreshToken;
 
   if (!token) {
@@ -102,4 +102,13 @@ module.exports.logout = async (req, res) => {
 
   logger.info(`End request with status code ${HttpCode.NO_CONTENT}`);
   return res.status(HttpCode.NO_CONTENT).end();
+};
+
+module.exports = {
+  checkReaderExists,
+  authenticateReader,
+  createReader,
+  makeTokens,
+  refreshTokens,
+  logout
 };

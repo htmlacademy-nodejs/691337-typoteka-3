@@ -13,7 +13,7 @@ const currentArticle = {
   commentsData: []
 };
 
-module.exports.getArticleByIdToEdit = async (req, res) => {
+const getArticleByIdToEdit = async (req, res) => {
   try {
     const categories = await getData(`${URL}/categories`);
     const categoriesTitles = categories.map((it) => it.title);
@@ -29,7 +29,7 @@ module.exports.getArticleByIdToEdit = async (req, res) => {
   }
 };
 
-module.exports.getArticleById = async (req, res) => {
+const getArticleById = async (req, res) => {
   try {
     const article = await getData(`${URL}/articles/${req.params.id}`);
     const categories = await getData(`${URL}/categories`);
@@ -57,7 +57,7 @@ module.exports.getArticleById = async (req, res) => {
   }
 };
 
-module.exports.getArticlesByCategory = async (req, res) => {
+const getArticlesByCategory = async (req, res) => {
   try {
     const currentPage = req.query.page;
     const categories = await getData(`${URL}/categories`);
@@ -80,7 +80,7 @@ module.exports.getArticlesByCategory = async (req, res) => {
   }
 };
 
-module.exports.getNewArticleForm = async (req, res) => {
+const getNewArticleForm = async (req, res) => {
   try {
     const categories = await getData(`${URL}/categories`);
     const categoriesTitles = categories.map((it) => it.title);
@@ -98,7 +98,7 @@ module.exports.getNewArticleForm = async (req, res) => {
   }
 };
 
-module.exports.addArticle = async (req, res) => {
+const addArticle = async (req, res) => {
   const categories = await getData(`${URL}/categories`);
   const categoriesTitles = categories.map((it) => it.title);
   const article = {
@@ -128,7 +128,7 @@ module.exports.addArticle = async (req, res) => {
   }
 };
 
-module.exports.updateArticle = async (req, res) => {
+const updateArticle = async (req, res) => {
   const categories = await getData(`${URL}/categories`);
   const categoriesTitles = categories.map((it) => it.title);
   const article = {
@@ -159,7 +159,7 @@ module.exports.updateArticle = async (req, res) => {
   }
 };
 
-module.exports.deleteArticle = async (req, res) => {
+const deleteArticle = async (req, res) => {
   try {
     await axios.delete(`${URL}/articles/${req.params.id}`);
     return res.redirect(`/my`);
@@ -168,7 +168,7 @@ module.exports.deleteArticle = async (req, res) => {
   }
 };
 
-module.exports.addComment = async (req, res) => {
+const addComment = async (req, res) => {
   const io = req.app.get(`io`);
   const {accessToken} = req.cookies;
   const userData = accessToken ? await decodeJwt(accessToken) : undefined;
@@ -200,4 +200,15 @@ module.exports.addComment = async (req, res) => {
       csrf: req.csrfToken(),
     });
   }
+};
+
+module.exports = {
+  getArticleByIdToEdit,
+  getArticleById,
+  getArticlesByCategory,
+  getNewArticleForm,
+  addArticle,
+  updateArticle,
+  deleteArticle,
+  addComment
 };

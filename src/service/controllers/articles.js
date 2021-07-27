@@ -5,19 +5,19 @@ const {HttpCode} = require(`../../constants`);
 
 const logger = getLogger();
 
-module.exports.getArticles = async (req, res) => {
+const getArticles = async (req, res) => {
   const articles = await storage.getArticles(req.query.page);
   logger.info(`End request with status code ${res.statusCode}`);
   return res.json(articles);
 };
 
-module.exports.getAllArticles = async (req, res) => {
+const getAllArticles = async (req, res) => {
   const articles = await storage.getAllArticles();
   logger.info(`End request with status code ${res.statusCode}`);
   return res.json(articles);
 };
 
-module.exports.getArticleById = async (req, res) => {
+const getArticleById = async (req, res) => {
   const article = await storage.getArticleById(req.params.articleId);
 
   if (!article) {
@@ -29,7 +29,7 @@ module.exports.getArticleById = async (req, res) => {
   return res.json(article);
 };
 
-module.exports.getArticlesByCategory = async (req, res) => {
+const getArticlesByCategory = async (req, res) => {
   const articles = await storage.getArticlesByCategoryId(req.params.categoryId, req.query.page);
 
   if (!articles) {
@@ -41,7 +41,7 @@ module.exports.getArticlesByCategory = async (req, res) => {
   return res.json(articles);
 };
 
-module.exports.getComments = async (req, res) => {
+const getComments = async (req, res) => {
   const comments = await storage.getComments(req.params.articleId);
 
   if (!comments) {
@@ -53,7 +53,7 @@ module.exports.getComments = async (req, res) => {
   return res.json(comments);
 };
 
-module.exports.removeArticle = async (req, res) => {
+const removeArticle = async (req, res) => {
   const article = await storage.removeArticleById(req.params.articleId);
 
   if (!article) {
@@ -65,7 +65,7 @@ module.exports.removeArticle = async (req, res) => {
   return res.status(HttpCode.NO_CONTENT).end();
 };
 
-module.exports.removeComment = async (req, res) => {
+const removeComment = async (req, res) => {
   const comment = await storage.removeCommentById(req.params.articleId, req.params.commentId);
 
   if (!comment) {
@@ -77,7 +77,7 @@ module.exports.removeComment = async (req, res) => {
   return res.status(HttpCode.NO_CONTENT).end();
 };
 
-module.exports.updateArticle = async (req, res) => {
+const updateArticle = async (req, res) => {
   const article = await storage.updateArticle(req.params.articleId, req.body);
 
   if (!article) {
@@ -89,7 +89,7 @@ module.exports.updateArticle = async (req, res) => {
   return res.status(HttpCode.OK).json(article);
 };
 
-module.exports.addComment = async (req, res) => {
+const addComment = async (req, res) => {
   const comment = await storage.addNewComment(req.params.articleId, req.body);
 
   if (!comment) {
@@ -101,9 +101,22 @@ module.exports.addComment = async (req, res) => {
   return res.status(HttpCode.CREATED).json(comment);
 };
 
-module.exports.addArticle = async (req, res) => {
+const addArticle = async (req, res) => {
   const article = await storage.addNewArticle(req.body);
 
   logger.info(`End request with status code ${HttpCode.CREATED}`);
   return res.status(HttpCode.CREATED).json(article);
+};
+
+module.exports = {
+  getArticles,
+  getAllArticles,
+  getArticleById,
+  getArticlesByCategory,
+  getComments,
+  removeArticle,
+  removeComment,
+  updateArticle,
+  addComment,
+  addArticle
 };

@@ -8,7 +8,7 @@ const getArticleTitle = (articles, id) => {
   return currentArticle[0].title;
 };
 
-module.exports.getArticles = async (req, res) => {
+const getArticles = async (req, res) => {
   try {
     const articles = await getData(`${URL}/articles/all`);
     articles.forEach((it) => {
@@ -23,7 +23,7 @@ module.exports.getArticles = async (req, res) => {
   }
 };
 
-module.exports.getComments = async (req, res) => {
+const getComments = async (req, res) => {
   try {
     const articles = await getData(`${URL}/articles/all`);
     const comments = articles
@@ -44,11 +44,17 @@ module.exports.getComments = async (req, res) => {
   }
 };
 
-module.exports.deleteComment = async (req, res) => {
+const deleteComment = async (req, res) => {
   try {
     await axios.delete(`${URL}/articles/${req.params.articleId}/comments/${req.params.commentId}`);
     return res.redirect(`/my/comments`);
   } catch (err) {
     return renderError(err.response.status, res);
   }
+};
+
+module.exports = {
+  getArticles,
+  getComments,
+  deleteComment
 };
